@@ -1,0 +1,94 @@
+# S2L2_Abrongen.COG
+
+
+symbols
+
+message	user0
+message	entered
+message	pulse
+message	crossed
+message	arrived
+
+sector	startsector	
+surface	adjoin
+surface	adjoin2
+
+thing		abron		mask=0x04
+thing		abeghost
+thing		ghost1
+thing		camera1
+
+template	abetemp
+
+
+int		on=0		local
+int 		done=0	local
+int		player	local
+
+end
+#=======================================================================
+code
+user0:
+
+	on=1;
+	return;
+	
+entered:
+	if (on==1)
+
+	{	
+			if (done) return;
+			done=1;
+   			player=GetLocalPlayerThing();
+   			SetActorFlags(player, 0xa00000);
+			SetCurrentCamera(0);
+			SetCameraFocus(0, camera1);
+//make him
+			
+			abron=CreateThing(abetemp, abeghost);
+			CaptureThing(abron);
+
+//scoop out brain   	
+			AiSetMode(abron, 0x2009);
+  			AIClearMode(abron, 0x1000);	
+
+			setpulse(2.0);
+
+//tell him what to do
+			//Print("Hey Max, look at this!");
+			AiSetMode(abron, 0x2009);
+  			AIClearMode(abron, 0x1000);
+			AISetMoveSpeed(abron, 2);
+			AISetLookPos(abron, GetThingPos(ghost1));
+			AISetMovePos(abron, GetThingPos(ghost1));
+			SetActorExtraSpeed(abron, 8);
+			ClearActorFlags(player, 0xa00000);
+			Sleep(2.0);
+			SetCurrentCamera(0);
+			SetCameraFocus(0, player);
+		}
+			return;
+crossed:
+		call entered;
+		return;
+
+arrived:
+		if (GetSenderRef()== abron)
+		{
+		DestroyThing(abron);
+		return;
+		} 
+
+pulse:		
+//ghost him out when he's done				
+			player=GetLocalPlayerThing();
+			if(!HasLOS(player, abron))
+				{
+				DestroyThing(abron);
+				SetPulse(0.0);
+				}
+			return;
+
+			
+			
+end

@@ -1,0 +1,423 @@
+# Jedi Knight Missions Cog Script
+#
+# S4L3_CRATESANDMEN3.COG
+#
+# Woohoo, watch crates and men be generated before your very eyes!
+# Plus, it does a bunch of other stuff.  Learn cog if you want to know more.
+#
+# [TT]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+message	startup
+message	user0
+message	user1
+message	user2
+message	user3
+message	user4
+message	pulse
+message	crossed
+message	created
+message	arrived
+
+int		done=0			local
+int		pirate0			linkid=3		local
+int		pirate1			linkid=4		local
+int		crate0			local
+int		crate1			local
+int		crate2			local
+int		newcrate0			local
+int		newcrate1			local
+int		newcrate2			local
+int		craneactive=0		local
+int		ready=1			local
+int		cratenum=0			local
+int		cratespeed=3.0
+int		cranespeed=4.0
+int		nearby=0			local
+int		curframe0=1			local
+int		curframe1=1			local
+int		numframes=1
+int		patrolspeed=1		local
+int		betweencrates=10
+
+thing		pirate0pos			// ghost object for pirate1	
+thing		pirate1pos
+thing		crate0pos
+thing		crate1pos
+thing		crate2pos			
+thing		crane				linkid=1
+thing		ghost0
+thing		ghost1
+thing		ghost2
+
+template	pirate_tpl
+template	crate_tpl
+template	newcrate_tpl
+
+flex		distance=1.0		local
+flex		f				local
+
+surface	nearbyin			linkid=2
+surface	nearbyout			linkid=2
+
+cog		shipcog
+cog		commandcog
+cog		conveyorcog
+cog		conveyorcog2
+
+
+end
+
+
+
+code
+
+startup:
+	Sendmessage(shipcog, user7);			// here I am!
+	Return;
+
+crossed:
+	If(GetSenderID() == 2)
+		{
+		If(nearby == 0)
+			{
+			nearby=1;
+			// Print("cratecog: crossed adjoin.  nearby = 1");
+			}
+		else
+		If(nearby == 1)
+			{
+			nearby=0;
+			// Print("cratecog: crossed adjoin.  nearby = 0");
+			}
+		} 
+	return;
+
+user0:
+
+	// Print("cratecog: user0 message received.");
+	Setpulse(5);
+	Return;
+
+user1:
+	if(craneactive == 0)
+		{
+		craneactive=1;
+		// Print("Cratecog recieved user1 message.");
+		MoveToFrame(crate0, 5, cratespeed);
+		WaitForStop(crate0);
+		SendMessage(conveyorcog, user1);
+		// Print("cratecog: Ready for pick up.");
+		craneactive=0;
+		call pickup1;
+		}
+	else
+	if(craneactive == 1)
+		{
+		sleep(3);
+		call user1;
+		}
+		Return;
+
+user2:
+	if(craneactive == 0)
+		{
+		craneactive=1;
+		// Print("Cratecog received user2 message.");
+		MoveToFrame(crate1, 5, cratespeed);
+		WaitForStop(crate1);
+		SendMessage(conveyorcog, user1);	
+		// Print("cratecog: Ready for pick up.");
+		craneactive=0;
+		call pickup2;
+		}
+	else
+	if(craneactive == 1)
+		{
+		sleep(3);
+		call user2;
+		}
+	Return;
+
+user3:
+	if(craneactive == 0)
+		{
+		craneactive=1;
+		// Print("Cratecog received user3 message.");
+		MoveToFrame(crate2, 5, cratespeed);
+		WaitForStop(crate2);
+		SendMessage(conveyorcog, user1);
+		// Print("cratecog: Ready for pick up.");
+		craneactive=0;
+		call pickup3;
+		}
+	else
+	if(craneactive == 1)
+		{
+		sleep(3);
+		call user3;
+		}
+	Return;
+
+user4:
+	conveyorcog2=GetSenderRef();
+	Return;
+
+Pulse:
+distance = VectorDist(GetThingPos(pirate0pos), GetThingPos(GetLocalPlayerThing()));	
+if(distance >= 4)
+	{	
+	if(IsThingVisible(pirate0pos) == 0)
+			{
+				Setpulse(0);
+				// Print("cratecog: creating pirates.");
+				DestroyThing(pirate0);
+				DestroyThing(pirate1);
+				pirate0 = CreateThing(pirate_tpl, pirate0pos);
+				pirate1 = CreateThing(pirate_tpl, pirate1pos);
+				crate0 = CreateThing(crate_tpl, crate0pos);
+				crate1 = CreateThing(crate_tpl, crate1pos);
+				crate2 = CreateThing(crate_tpl, crate2pos);
+				CaptureThing(pirate0);
+				CaptureThing(pirate1);
+				Sendmessage(conveyorcog2, user0);
+				MovetoFrame(crate0, 2, 0.5);
+				MoveToFrame(crate1, 2, 0.5);
+				MoveToFrame(crate2, 2, 0.5);
+				WaitForStop(crate0);
+				MoveToFrame(crate0, 3, cratespeed);
+				SendMessage(conveyorcog2, user1);
+				PathMovePause(crate1);
+				PathMovePause(crate2);
+				Sleep(betweencrates);
+				SendMessage(conveyorcog2, user0);
+				PathMoveResume(crate1);
+				PathMoveResume(crate2);
+				WaitForStop(crate1);
+				MoveToFrame(crate1, 3, cratespeed);
+				SendMessage(conveyorcog2, user1);
+				PathMovePause(crate2);
+				Sleep(betweencrates);
+				SendMessage(conveyorcog2, user0);
+				PathMoveResume(crate2);
+				WaitForStop(crate2);
+				MoveToFrame(crate2, 3, cratespeed);
+				SendMessage(conveyorcog2, user1);
+				SendMessage(shipcog, user1);
+				call movecrates;
+				}
+	}
+	Return;
+
+created:
+	If(GetSenderID() == 3)
+		{
+		if (begun) return;
+		begun = 1;
+		AISetMoveSpeed(pirate0, patrolspeed);
+		AISetLookFrame(pirate0, curframe0);
+		AISetMoveFrame(pirate0, curframe0);
+		}
+	If(GetSenderID() == 4)
+		{
+		AiSetMoveSpeed(pirate1, patrolspeed);
+		AiSetLookFrame(pirate1, curframe1);
+		AiSetMoveFrame(pirate1, curframe1);
+		}
+		return;
+
+arrived:
+	If(GetSenderID() == 3)
+		{
+		curframe0 = curframe0 + 1;
+		if (curframe0 > numframes) return;
+		Sleep(rand() *5);
+		AISetLookFrame(pirate0, curframe0);
+		AISetMoveFrame(pirate0, curframe0);
+		}
+	If(GetSenderID() == 4)
+		{
+		curframe1 = curframe1 + 1;
+		if (curframe1 > numframes) return;
+		Sleep(rand() *4);
+		AiSetLookFrame(pirate1, curframe1);
+		AiSetMoveFrame(pirate1, curframe1);
+		}
+	return;
+
+
+		
+
+movecrates:
+
+	WaitForStop(crate0);
+	MoveToFrame(crate0, 4, cratespeed);
+	WaitForStop(crate1);
+	MoveToFrame(crate1, 4, cratespeed);
+	WaitForStop(crate0);
+	SendMessage(commandcog, user0);
+	WaitForStop(crate2);
+	MoveToFrame(crate2, 4, cratespeed);
+	WaitForStop(crate1);
+	SendMessage(commandcog, user1);
+	WaitForStop(crate2);
+	SendMessage(commandcog, user2);
+	Return; 
+
+
+pickup1:
+	If(craneactive == 0)
+		{
+		// Print("cratecog: Starting pickup1");
+		craneactive=1;
+		SkipToFrame(crane, 1, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 10, cranespeed);
+		WaitForStop(crane);
+		AttachThingToThing(crate0, crane);
+		// Print("Grabbed Crate");
+		SkipToFrame(crane, 1, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 3, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 7, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 12, cranespeed);
+		WaitForStop(crane);
+		newcrate0=CreateThing(newcrate_tpl, ghost0);
+		DestroyThing(crate0);
+		Sleep(2);
+		SkipToFrame(crane, 7, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 3, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 1, cranespeed);
+		WaitforStop(crane);
+		craneactive=0;
+		Return;
+		}
+	else
+	If(craneactive == 1)
+		{
+		sleep(5);
+		call pickup1;
+		}
+	Return;
+
+pickup2:
+	If(craneactive == 0)
+		{
+		// Print("cratecog: Starting pickup2");
+		craneactive=1;
+		SkipToFrame(crane, 1, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 10, cranespeed);
+		WaitForStop(crane);
+		AttachThingToThing(crate1, crane);
+		SkipToFrame(crane, 1, cranespeed);
+		WaitForStop(crane);
+		// Print("Grabbed Crate");
+		SkipToFrame(crane, 3, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 4, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 9, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 14, cranespeed);
+		WaitForStop(crane);
+		newcrate1=CreateThing(newcrate_tpl, ghost1);
+		DestroyThing(crate1);
+		Sleep(2);
+		SkipToFrame(crane, 9, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 4, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 3, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 1, cranespeed);
+		WaitforStop(crane);
+		craneactive=0;
+		Return;
+		}
+	else
+	If(craneactive == 1)
+		{
+		sleep(5);
+		call pickup2;
+		}
+	Return;
+	
+pickup3:
+	If(craneactive == 0)
+		{
+		// Print("cratecog: Starting pickup3");
+		craneactive=1;
+		SkipToFrame(crane, 1, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 10, cranespeed);
+		WaitForStop(crane);
+		AttachThingToThing(crate2, crane);
+		SkipToFrame(crane, 1, cranespeed);
+		WaitForStop(crane);
+		// Print("Grabbed Crate");
+		SkipToFrame(crane, 2, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 6, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 15, cranespeed);
+		WaitForStop(crane);
+		newcrate2=CreateThing(newcrate_tpl, ghost2);
+		DestroyThing(crate2);
+		Sleep(2);
+		call returncrate2;
+		SkipToFrame(crane, 6, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 2, cranespeed);
+		WaitForStop(crane);
+		SkipToFrame(crane, 1, cranespeed);
+		WaitForStop(crane);
+		Sleep(2);
+		SkipToFrame(crane, 0, cranespeed);
+		WaitForStop(crane);
+		// Print("cratecog: Finished 3 crates.");
+		craneactive=0;
+		Sleep(25);
+		call completecircle;
+		Return;
+		}
+	else
+	If(craneactive == 1)
+		{
+		sleep(5);
+		call pickup3;
+		}
+	Return;
+
+
+completecircle:
+	if (nearby == 0)
+		{
+		DestroyThing(newcrate0);
+		DestroyThing(newcrate1);
+		DestroyThing(newcrate2);
+		// Print("cratecog sending user2 message to shipcog");
+		SendMessage(shipcog, user2);
+		Return;
+		}
+	else
+	if (nearby == 1);
+		{
+		sleep(10);
+		call completecircle;	
+		Return;
+		}
+	Return;
+
+
+end
+
+ 

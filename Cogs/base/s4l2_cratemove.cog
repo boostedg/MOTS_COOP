@@ -1,0 +1,60 @@
+# Jedi Knight Cog Script
+#
+# S4L2_cratemove.cog
+#
+# [DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved		
+
+symbols
+	message	startup
+	message	entered
+	message	arrived
+
+	thing		crate
+
+	vector	vec0			desc=conveyor_direction
+
+	flex		speed=4.0	desc=conveyor_speed
+
+	surface	convey0		nolink
+   surface	convey1		nolink
+
+	sound		wav0
+ 
+   int		moved=0		local
+	int		channel0		local
+	int      animsurf0   local
+   int		animsurf1	local
+
+   surface  startsurf
+
+end
+
+code
+startup:
+	ThingLight(crate, 0.4, 0.0);
+
+	return;
+
+entered:
+	if (moved) return;
+	moved = 1;
+   
+   MoveToFrame(crate, 1, speed);
+ 
+	channel0=PlaySoundThing(wav0, conveyor, 1.0, -1, 300.0, 0x1);
+ 
+   animsurf0=SlideWall(convey0, vec0, speed);
+   animsurf1=SlideWall(convey1, vec0, speed);
+	
+   return;
+
+arrived:
+	StopSound(channel0, 0.5);
+
+   StopAnim(animsurf0);
+   StopAnim(animsurf1);
+	return;
+	
+end

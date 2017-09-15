@@ -1,0 +1,104 @@
+# Jedi Knight Missions Cog Script
+#
+# S1L1_DropShip.cog
+#
+# A-Wing go bye-bye.
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved		
+
+symbols
+
+message		activated
+message		startup
+message		pulse
+
+sound		groan=16metalgroan04.wav		local
+sound		detach=09pipesdetatch.wav		local
+sound		move=09pipesmove.wav			local
+sound		boom=expl_04.wav			local	
+
+thing		crane1
+thing		crane2
+thing		awing
+thing		c_ghost1				desc=a_ghost_thing_in_leia
+thing		c_ghost2				desc=a_ghost_thing_in_leia
+thing		c_ghost3
+thing		c_ghost4
+thing		a_ghost1				desc=a_ghost_thing_in_leia
+thing		a_ghost2				desc=a_ghost_thing_in_leia
+thing		a_ghost3				desc=a_ghost_thing_in_leia
+thing		a_ghost4				desc=a_ghost_thing_in_leia
+
+int		done=0				local
+int		explosion			local
+vector		posOffset			local
+vector		angOffset			local
+
+template	explosion_tpl=+raildet_exp	local
+
+surface		dropbutton			linkid=1
+
+end
+
+# ========================================================================================
+
+code
+startup:
+	SetWallCel(dropbutton, 0);
+	return;
+activated:
+	if (done) return;
+	done=1;
+	SetWallCel(dropbutton, 1);
+	PlaySoundThing(detach, crane1, 0.6, -1, -1, 128);      // play activate sound
+	MoveToFrame(crane1, 1, 0.8);
+	PlaySoundThing(move, crane1, 0.6, -1, -1, 128);
+	MoveToFrame(crane2, 1, 0.8);
+	MoveToFrame(awing, 1, 0.8);
+	WaitForStop(crane1);
+	PlaySoundLocal(boom, 1.0, 0.0, 0);
+	SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .5, 80.0);
+	SetPulse(0.1);
+	Sleep(0.5);
+	PlaySoundThing(groan, crane1, 1.0, -1, -1, 128);
+	explosion = CreateThing(explosion_tpl, c_ghost1);
+	explosion = CreateThing(explosion_tpl, c_ghost3);
+	PlaySoundThing(groan, crane1, 1.0, -1, -1, 0);
+	MoveToFrame(crane2, 2, 0.8);
+	MoveToFrame(awing, 2, 0.8);	
+	PlaySoundThing(groan, crane2, 1.0, -1, -1, 128);
+	explosion = CreateThing(explosion_tpl, c_ghost2);
+	explosion = CreateThing(explosion_tpl, c_ghost4);
+	explosion = CreateThing(explosion_tpl, c_ghost3);
+	PlaySoundThing(groan, crane2, 1.0, -1, -1, 128);
+	MoveToFrame(awing, 3, 8);
+	WaitForStop(awing);
+	explosion = CreateThing(explosion_tpl, a_ghost1);
+	explosion = CreateThing(explosion_tpl, awing);
+	SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .5, 80.0);
+	SetPulse(0.1);
+	DestroyThing(awing);
+	Sleep(0.05);
+	explosion = CreateThing(explosion_tpl, a_ghost2);
+	Sleep(0.05);
+	explosion = CreateThing(explosion_tpl, a_ghost3);
+	Sleep(0.01);
+	explosion = CreateThing(explosion_tpl, a_ghost4);
+	SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .5, 80.0);
+	SetPulse(0.1);
+
+return;
+
+pulse:
+	posOffset = VectorSet(Rand()*0.01, Rand()*0.01, Rand()*0.01);
+	angOffset = VectorSet(Rand(), Rand(), Rand());
+	SetPOVShake(posOffset, angOffset, .5, 80.0);
+	SetPulse(0);
+	
+	return;
+
+end
+
+

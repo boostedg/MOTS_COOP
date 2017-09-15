@@ -1,0 +1,75 @@
+# Jedi Knight Cog Script
+#
+# S1L1_brokenlift.COG
+#
+# Broken elevator
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+symbols
+
+message		entered
+message		exited
+message		pulse
+
+thing		lift
+thing		bombdummy1
+thing		bombdummy2
+
+template	explosion_tpl=+raildet_exp	local
+
+sector		beginlift
+sector		offlift1
+sector		offlift2
+
+sound		boom=expl_04.wav		local
+
+int		done=0				local
+int		keepgoing=0			local
+int		done2=0				local
+
+end
+
+code
+#----------------------------------------------
+entered:
+	if (GetSenderRef()==beginlift)
+	{
+	if (done2) return;
+	done2=1;
+	keepgoing=0;
+	SetPulse(0.1);
+		if (done) return;
+		done=1;
+		PlaySoundLocal(boom, 1.0, 0.0, 0);
+		CreateThing(explosion_tpl, bombdummy1);
+	}
+	return;
+#----------------------------------------------
+pulse:
+	SetPulse(0);
+	MoveToFrame(lift, 1, 2);
+	WaitForStop(lift);
+	CreateThing(explosion_tpl, bombdummy1);
+	Sleep(0.1);
+	CreateThing(explosion_tpl, bombdummy2);
+	Sleep(0.5);
+	MoveToFrame(lift, 0, 2);
+	WaitForStop(lift);
+	call stillmove;
+	return;
+#----------------------------------------------
+exited:
+	if ((GetSenderRef()==offlift1) || (GetSenderRef()==offlift2))
+	{
+	keepgoing=1;
+	done2=0;
+	}
+	return;	
+#----------------------------------------------
+stillmove:
+	if (keepgoing) return;
+	SetPulse(0.1);
+	return;
+end

@@ -1,0 +1,40 @@
+# Jedi Knight Cog Script
+#
+#	Sith door.  Just moves.  No tricks.
+#
+# [RK]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved     
+# ========================================================================================
+
+symbols
+
+message	activate
+
+thing		stone
+
+int         CurFrame=0    local
+
+sound    rocksound=slidestart.wav
+
+
+
+end
+
+# ========================================================================================
+
+code
+
+activate:
+	
+	//print ("OUCH!");
+	PlaySoundLocal(rocksound, 1.0, 0.0, 0.0);
+	CurFrame = GetCurFrame(stone) + 1;
+	MoveToFrame(stone, CurFrame, 2);
+	return;
+	
+# ........................................................................................
+
+
+end
+

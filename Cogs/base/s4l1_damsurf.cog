@@ -1,0 +1,34 @@
+# Jedi Knight Cog Script
+# S4L1_damsurf.cog
+# damaged surface creates sparks.
+# [SH]
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+   message		startup
+   message		damaged
+   message		activated
+   message		timer
+   surface		switch		mask=0x440
+   thing		ghostspark
+   template		spark=+sparks		local	
+   sound		wav0=00ElectrExplo03.wav	local
+   int		frame=2
+   int		init=0
+end
+
+code
+startup:
+   SetWallCel(switch,init);
+   if (GetWallCel(switch)==frame) SetTimer(Rand()*6+6);
+   return;
+activated:
+   if (GetWallCel(switch)==0) return;
+damaged:
+timer:
+   CreateThing(spark,ghostspark);
+   PlaySoundPos(wav0, SurfaceCenter(switch), 0.5,-1,-1,0);
+   SetWallCel(switch,frame);
+   SetTimer(Rand()*6+6);
+   return;
+end

@@ -1,0 +1,14 @@
+# Jedi Knight AI File
+#
+# DEFAULT.AI
+#
+# Default AI - Don't do anything
+# All difficulty levels
+#
+# [CR]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+alignment=-1.0, rank=0.5, fov=180, maxstep=0.0, sightdist=5.0, heardist=2.0, accuracy=0.50
+
+#instinct		args

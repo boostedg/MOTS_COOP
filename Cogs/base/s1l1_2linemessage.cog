@@ -1,0 +1,48 @@
+# Jedi Knight Cog Script
+#
+# S1L1_message.COG
+#
+# Fan that damages player.
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+sector	    	messagesector
+
+int         	cogstring1=11001 
+int         	cogstring2=11001                      	
+int         	done=0                      	local
+flex		sleeptime
+
+sound		voice1
+sound		voice2
+
+message		entered
+
+
+end
+
+# ========================================================================================
+
+code
+entered:
+	if (done) return;
+	done=1;
+
+	Sleep(sleeptime);
+
+   	jkPrintUNIString(-1, cogstring1);
+	PlayVoiceLocal(voice1, 1.0, 0.0, 0);
+	Sleep(GetSoundLen(voice1));
+	Sleep(0.5);
+   	jkPrintUNIString(-1, cogstring2);
+	PlayVoiceLocal(voice2, 1.0, 0.0, 0);
+	Sleep(GetSoundLen(voice2));
+	
+	return;
+end
+

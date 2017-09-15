@@ -1,0 +1,54 @@
+# Jedi Knight Cog Script
+# S4L1_bridgeelev.cog
+# 3stop bridge funiculum elevator.
+# [SH]
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+   message		entered
+   message		activated
+   message		timer
+   surface		call0
+   surface		call1
+   surface		call2
+   thing		elev
+   int		pause=0			local
+   sound		wav0=activate02.wav	local
+end
+
+code
+activated:
+   if ((GetWallCel(call0)==1)||(GetSenderRef()==elev))return;
+   call turnon;
+   if (GetSenderRef()==call0) MoveToFrame(elev,0,2);
+   if (GetSenderRef()==call1) MoveToFrame(elev,1,2);
+   if (GetSenderRef()==call2) MoveToFrame(elev,2,2);
+   WaitForStop(elev);
+   SetTimer(.1);
+   return;
+entered:
+   if (pause) return;
+   call turnon;
+   if(GetCurFrame(elev)==0) MoveToFrame(elev,1,2);
+   if(GetCurFrame(elev)==1) MoveToFrame(elev,2,2);
+   if(GetCurFrame(elev)==2) MoveToFrame(elev,0,2);
+   WaitForStop(elev);
+   SetTimer(2.0);
+   return;
+timer:
+   pause=0;
+   for (i=0;i<=2;i=i+1)
+	{
+	PlaySoundPos(wav0, SurfaceCenter(call0[i]), 0.5,-1,-1,0);
+	SetWallCel(call0[i],0);
+	}
+   return;
+turnon:
+   pause=1;
+   for (j=0;j<=2;j=j+1)
+	{
+	PlaySoundPos(wav0, SurfaceCenter(call0[j]), 0.5,-1,-1,0);
+	SetWallCel(call0[j],1);
+	}
+   return;	
+end

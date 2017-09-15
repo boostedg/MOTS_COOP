@@ -1,0 +1,53 @@
+# Jedi Knight Cog Script
+#
+# 03_lightning.cog
+#
+# Script for electric pulses in battery pool in house.
+#
+# [DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+	message	crossed		
+	message	pulse
+	message  timer		
+	
+	thing		ghost0	linkid=-1
+	thing		ghost1	linkid=-1
+   thing		ghost2	linkid=-1
+	thing		ghost3	linkid=-1
+   thing		ghost4	linkid=-1
+	thing		ghost5	linkid=-1
+
+	
+	flex		pulserate=0.25
+	
+	int	dummy	local
+	int	number local
+	
+	surface	adjoin0
+ 
+	template	flash=+force_lightning	local
+	
+	sound	wav0=ForceFieldHit01.wav
+
+end
+
+
+code
+crossed:
+	SetPulse(pulserate);
+   return;
+	
+pulse:
+	SetTimer(rand());
+	return;
+
+timer:
+	number = rand()*6;
+	dummy = CreateThing(flash, ghost0[number]);
+	PlaySoundThing(wav0, ghost0[number], 0.5, -1, -1, 0);
+	return;
+
+end

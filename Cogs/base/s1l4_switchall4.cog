@@ -1,0 +1,443 @@
+##S1L4_SwitchAll4.cog
+
+symbols
+message	activated
+message	startup
+message	entered
+message	arrived
+int		potential=0	local
+int		countdnslptime=2
+int		countup=0	local
+int		speed=4
+int		OkayIAmReadyNow=0	local
+surface	switch01	linkid=1
+surface	switch02	linkid=2
+surface	switch03	linkid=3
+surface	switch04	linkid=4
+surface	countdown01	
+surface	countdown02	
+surface	countdown03	
+surface	countdown04	
+sector	EndLevelSector	linkid=6
+sector	switch01sec
+sector	switch02sec
+sector	switch03sec
+sector	switch04sec
+sector	countdown01sec
+sector	countdown02sec
+sector	countdown03sec
+sector	countdown04sec
+sound		activate02=activate02.wav
+sound		lgclick1=lgclick1.wav
+thing		TroopTransport	linkid=5
+end
+
+code
+startup:
+	SetWallCel(switch01,0);
+	SetWallCel(switch02,0);
+	SetWallCel(switch03,0);
+	SetWallCel(switch04,0);
+	SetWallCel(countdown01,0);
+	SetWallCel(countdown02,0);
+	SetWallCel(countdown03,0);
+	SetWallCel(countdown04,0);
+	SetSectorLight(switch01sec,0.25,0.1);
+	SetSectorLight(switch02sec,0.25,0.1);
+	SetSectorLight(switch03sec,0.25,0.1);
+	SetSectorLight(switch04sec,0.25,0.1);
+	SetSectorLight(countdown01sec,0.25,0.1);
+	SetSectorLight(countdown02sec,0.25,0.1);
+	SetSectorLight(countdown03sec,0.25,0.1);
+	SetSectorLight(countdown04sec,0.25,0.1);
+	return;
+activated:	
+if((GetSenderID()==1)&&(GetWallCel(switch01)==0)&&(potential==0))	//first switch is switch01
+	{
+		countup=(countup+1);
+		potential=1;
+		SetWallCel(switch01,1);
+		PlaySoundPos(activate02,SurfaceCenter(switch01),1,-1,-1,0);
+		SetWallCel(countdown01,4);
+		SetWallCel(countdown02,4);
+		SetWallCel(countdown03,4);
+		SetWallCel(countdown04,4);
+		SetSectorLight(switch01sec,1,0.25);
+		SetSectorLight(countdown01sec,1,0.25);
+		SetSectorLight(countdown02sec,1,0.25);
+		SetSectorLight(countdown03sec,1,0.25);
+		SetSectorLight(countdown04sec,1,0.25);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(countdown01,3);
+		SetWallCel(countdown02,3);
+		SetWallCel(countdown03,3);
+		SetWallCel(countdown04,3);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(countdown01,2);
+		SetWallCel(countdown02,2);
+		SetWallCel(countdown03,2);
+		SetWallCel(countdown04,2);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(countdown01,1);
+		SetWallCel(countdown02,1);
+		SetWallCel(countdown03,1);
+		SetWallCel(countdown04,1);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(switch01,0);
+		SetWallCel(switch02,0);
+		SetWallCel(switch03,0);
+		SetWallCel(switch04,0);
+		SetWallCel(countdown01,0);
+		SetWallCel(countdown02,0);
+		SetWallCel(countdown03,0);
+		SetWallCel(countdown04,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		SetSectorLight(switch01sec,0.25,0.25);
+		SetSectorLight(switch02sec,0.25,0.25);
+		SetSectorLight(switch03sec,0.25,0.25);
+		SetSectorLight(switch04sec,0.25,0.25);
+		SetSectorLight(countdown01sec,0.25,0.25);
+		SetSectorLight(countdown02sec,0.25,0.25);
+		SetSectorLight(countdown03sec,0.25,0.25);
+		SetSectorLight(countdown04sec,0.25,0.25);
+		countup=0;
+		potential=0;
+		return;
+	}
+if((GetSenderID()==2)&&(GetWallCel(switch02)==0)&&(potential==0))	//first switch is switch02
+	{
+		countup=(countup+1);
+		potential=1;
+		SetWallCel(switch02,1);
+		PlaySoundPos(activate02,SurfaceCenter(switch02),1,-1,-1,0);
+		SetWallCel(countdown01,4);
+		SetWallCel(countdown02,4);
+		SetWallCel(countdown03,4);
+		SetWallCel(countdown04,4);
+		SetSectorLight(switch02sec,1,0.25);
+		SetSectorLight(countdown01sec,1,0.25);
+		SetSectorLight(countdown02sec,1,0.25);
+		SetSectorLight(countdown03sec,1,0.25);
+		SetSectorLight(countdown04sec,1,0.25);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(countdown01,3);
+		SetWallCel(countdown02,3);
+		SetWallCel(countdown03,3);
+		SetWallCel(countdown04,3);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(countdown01,2);
+		SetWallCel(countdown02,2);
+		SetWallCel(countdown03,2);
+		SetWallCel(countdown04,2);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(countdown01,1);
+		SetWallCel(countdown02,1);
+		SetWallCel(countdown03,1);
+		SetWallCel(countdown04,1);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(switch01,0);
+		SetWallCel(switch02,0);
+		SetWallCel(switch03,0);
+		SetWallCel(switch04,0);
+		SetWallCel(countdown01,0);
+		SetWallCel(countdown02,0);
+		SetWallCel(countdown03,0);
+		SetWallCel(countdown04,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		SetSectorLight(switch01sec,0.25,0.25);
+		SetSectorLight(switch02sec,0.25,0.25);
+		SetSectorLight(switch03sec,0.25,0.25);
+		SetSectorLight(switch04sec,0.25,0.25);
+		SetSectorLight(countdown01sec,0.25,0.25);
+		SetSectorLight(countdown02sec,0.25,0.25);
+		SetSectorLight(countdown03sec,0.25,0.25);
+		SetSectorLight(countdown04sec,0.25,0.25);
+		countup=0;
+		potential=0;
+		return;
+	}
+if((GetSenderID()==3)&&(GetWallCel(switch03)==0)&&(potential==0))	//first switch is switch03
+	{
+		countup=(countup+1);
+		potential=1;
+		SetWallCel(switch03,1);
+		PlaySoundPos(activate02,SurfaceCenter(switch03),1,-1,-1,0);
+		SetWallCel(countdown01,4);
+		SetWallCel(countdown02,4);
+		SetWallCel(countdown03,4);
+		SetWallCel(countdown04,4);
+		SetSectorLight(switch03sec,1,0.25);
+		SetSectorLight(countdown01sec,1,0.25);
+		SetSectorLight(countdown02sec,1,0.25);
+		SetSectorLight(countdown03sec,1,0.25);
+		SetSectorLight(countdown04sec,1,0.25);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(countdown01,3);
+		SetWallCel(countdown02,3);
+		SetWallCel(countdown03,3);
+		SetWallCel(countdown04,3);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(countdown01,2);
+		SetWallCel(countdown02,2);
+		SetWallCel(countdown03,2);
+		SetWallCel(countdown04,2);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(countdown01,1);
+		SetWallCel(countdown02,1);
+		SetWallCel(countdown03,1);
+		SetWallCel(countdown04,1);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(switch01,0);
+		SetWallCel(switch02,0);
+		SetWallCel(switch03,0);
+		SetWallCel(switch04,0);
+		SetWallCel(countdown01,0);
+		SetWallCel(countdown02,0);
+		SetWallCel(countdown03,0);
+		SetWallCel(countdown04,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		SetSectorLight(switch01sec,0.25,0.25);
+		SetSectorLight(switch02sec,0.25,0.25);
+		SetSectorLight(switch03sec,0.25,0.25);
+		SetSectorLight(switch04sec,0.25,0.25);
+		SetSectorLight(countdown01sec,0.25,0.25);
+		SetSectorLight(countdown02sec,0.25,0.25);
+		SetSectorLight(countdown03sec,0.25,0.25);
+		SetSectorLight(countdown04sec,0.25,0.25);
+		countup=0;
+		potential=0;
+		return;
+	}
+if((GetSenderID()==4)&&(GetWallCel(switch04)==0)&&(potential==0))	//first switch is switch04
+	{
+		countup=(countup+1);
+		potential=1;
+		SetWallCel(switch04,1);
+		PlaySoundPos(activate02,SurfaceCenter(switch04),1,-1,-1,0);
+		SetWallCel(countdown01,4);
+		SetWallCel(countdown02,4);
+		SetWallCel(countdown03,4);
+		SetWallCel(countdown04,4);
+		SetSectorLight(switch04sec,1,0.25);
+		SetSectorLight(countdown01sec,1,0.25);
+		SetSectorLight(countdown02sec,1,0.25);
+		SetSectorLight(countdown03sec,1,0.25);
+		SetSectorLight(countdown04sec,1,0.25);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(countdown01,3);
+		SetWallCel(countdown02,3);
+		SetWallCel(countdown03,3);
+		SetWallCel(countdown04,3);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(countdown01,2);
+		SetWallCel(countdown02,2);
+		SetWallCel(countdown03,2);
+		SetWallCel(countdown04,2);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(countdown01,1);
+		SetWallCel(countdown02,1);
+		SetWallCel(countdown03,1);
+		SetWallCel(countdown04,1);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		Sleep(countdnslptime);
+		if(countup==4) return;
+		SetWallCel(switch01,0);
+		SetWallCel(switch02,0);
+		SetWallCel(switch03,0);
+		SetWallCel(switch04,0);
+		SetWallCel(countdown01,0);
+		SetWallCel(countdown02,0);
+		SetWallCel(countdown03,0);
+		SetWallCel(countdown04,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown01),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown02),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown03),1,-1,-1,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(countdown04),1,-1,-1,0);
+		SetSectorLight(switch01sec,0.25,0.25);
+		SetSectorLight(switch02sec,0.25,0.25);
+		SetSectorLight(switch03sec,0.25,0.25);
+		SetSectorLight(switch04sec,0.25,0.25);
+		SetSectorLight(countdown01sec,0.25,0.25);
+		SetSectorLight(countdown02sec,0.25,0.25);
+		SetSectorLight(countdown03sec,0.25,0.25);
+		SetSectorLight(countdown04sec,0.25,0.25);
+		countup=0;
+		potential=0;
+		return;
+	}
+if((GetSenderID()==1)&&(GetWallCel(switch01)==0)&&(potential==1))	//next switch is switch01
+	{
+		countup=(countup+1);
+		SetWallCel(switch01,1);
+		PlaySoundPos(activate02,SurfaceCenter(switch01),1,-1,-1,0);
+		SetSectorLight(switch01sec,1,0.25);
+		if((countup==4)&&(OkayIAmReadyNow==0))
+		{
+			potential=0;
+			OkayIAmReadyNow=1;
+			Sleep(0.5);
+			MoveToFrame(TroopTransport,1,speed);			
+		}
+		return;
+	}
+if((GetSenderID()==2)&&(GetWallCel(switch02)==0)&&(potential==1))	//next switch is switch02
+	{
+		countup=(countup+1);
+		SetWallCel(switch02,1);
+		PlaySoundPos(activate02,SurfaceCenter(switch02),1,-1,-1,0);
+		SetSectorLight(switch02sec,1,0.25);
+		if((countup==4)&&(OkayIAmReadyNow==0))
+		{
+			potential=0;
+			OkayIAmReadyNow=1;
+			Sleep(0.5);
+			MoveToFrame(TroopTransport,1,speed);			
+		}
+		return;
+	}
+if((GetSenderID()==3)&&(GetWallCel(switch03)==0)&&(potential==1))	//next switch is switch03
+	{
+		countup=(countup+1);
+		SetWallCel(switch03,1);
+		PlaySoundPos(activate02,SurfaceCenter(switch03),1,-1,-1,0);
+		SetSectorLight(switch03sec,1,0.25);
+		if((countup==4)&&(OkayIAmReadyNow==0))
+		{
+			potential=0;
+			OkayIAmReadyNow=1;
+			Sleep(0.5);
+			MoveToFrame(TroopTransport,1,speed);			
+		}
+		return;
+	}
+if((GetSenderID()==4)&&(GetWallCel(switch04)==0)&&(potential==1))	//next switch is switch04
+	{
+		countup=(countup+1);
+		SetWallCel(switch04,1);
+		PlaySoundPos(activate02,SurfaceCenter(switch04),1,-1,-1,0);
+		SetSectorLight(switch04sec,1,0.25);
+		if((countup==4)&&(OkayIAmReadyNow==0))
+		{
+			potential=0;
+			OkayIAmReadyNow=1;
+			Sleep(0.5);
+			MoveToFrame(TroopTransport,1,speed);			
+		}
+		return;
+	}
+	return;
+entered:
+if((GetSenderID()==5)&&(OkayIAmReadyNow==1))
+	{
+		OkayIAmReadyNow=-1;
+		MoveToFrame(TroopTransport,0,speed);
+		return;
+	}
+if((GetSenderID()==6)&&(OkayIAmReadyNow==-1))
+	{
+		SendMessageEx(GetMasterCOG(),user0,1,0,0,0);
+		return;
+	}
+	return;
+arrived:
+	if(GetSenderID()!=5) return;
+	if(IsThingMoving(TroopTransport)==1) return;
+	if(GetCurFrame(TroopTransport)==1) return;
+	OkayIAmReadyNow=0;
+	potential=0;
+	countup=0;
+	SetWallCel(switch01,0);
+	SetWallCel(switch02,0);
+	SetWallCel(switch03,0);
+	SetWallCel(switch04,0);
+	SetWallCel(countdown01,0);
+	SetWallCel(countdown02,0);
+	SetWallCel(countdown03,0);
+	SetWallCel(countdown04,0);
+	SetSectorLight(switch01sec,0.25,0.1);
+	SetSectorLight(switch02sec,0.25,0.1);
+	SetSectorLight(switch03sec,0.25,0.1);
+	SetSectorLight(switch04sec,0.25,0.1);
+	SetSectorLight(countdown01sec,0.25,0.1);
+	SetSectorLight(countdown02sec,0.25,0.1);
+	SetSectorLight(countdown03sec,0.25,0.1);
+	SetSectorLight(countdown04sec,0.25,0.1);
+	return;
+end
+
+
+
+
+
+

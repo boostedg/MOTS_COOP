@@ -1,0 +1,53 @@
+# Jedi Knight Cog Script
+#
+# S1L1_DoorGen.cog
+#
+#  Close them hangar doors.
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+thing       	pos                             desc=generator_ghost
+thing       	targetThing                     desc=target_ghost
+
+cog		hangardoor	
+template    	enemyTpl                        desc=enemy_to_generate
+
+sector      	theSector
+
+int         	enemy                           local
+int         	done=0                          local
+int		nomore=0			local
+
+message     	entered
+message     	killed
+message	    	timer
+message		user2
+
+end
+
+# ========================================================================================
+code
+entered:
+   	if(done) return;
+   	done = 1;
+	if (nomore) return;
+   	enemy = CreateThing(enemyTpl, pos);
+   	CaptureThing(enemy);
+   	AISetMoveThing(enemy, targetThing);
+	return;
+# ........................................................................................
+killed:
+	done=0;
+   	Return;
+# ........................................................................................
+user2:
+	nomore=1;
+	return;
+
+end
+
+

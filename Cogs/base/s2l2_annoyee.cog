@@ -1,0 +1,35 @@
+## reeyee hangin' out
+
+symbols
+message	startup
+message	timer
+message	damaged
+
+sector	startreeyee
+
+thing		reeyee	mask=-1
+
+sound		burble1=ReeYee02.wav		local
+sound		burble2=ReeYee03.wav		local
+
+int		awake=0		local
+end
+
+code
+startup:
+	AISetMode(reeyee, 0x2000);
+	return;
+
+damaged:
+	if (awake) return;
+
+	awake = 1;
+	AIClearMode(reeyee, 0x2000);
+	AISetMode(reeyee, 0x200);
+	return;
+
+end
+
+
+
+

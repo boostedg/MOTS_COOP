@@ -1,0 +1,44 @@
+# Jedi Knight Cog Script
+# S4L1_lightning.cog
+# surface triggers voice and unistring
+# [SH]
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+   message		entered
+   message		exited
+   message		pulse
+   sector		sect00
+   sector		sect01
+   sector		sect02
+   sector		sect03
+   sector		sect04
+   sector		sect05
+   thing		ghostlite00
+   thing		ghostlite01
+   thing		ghostlite02
+   thing		ghostlite03
+   thing		ghostlite04
+   thing		ghostlite05
+   thing		ghostlite06
+   thing		ghostlite07
+   thing		ghostlite08
+   thing		ghostlite09
+   template    	lightning=+force_lightning    local
+   flex		pulsetime=1.0
+   int		done=0				local
+   sound		lightsound=ltsaberhit05.wav	local
+end
+
+code
+entered:
+   if (GetSenderRef()==sect00) done=1;
+   if (done) SetPulse(pulsetime);
+   return;
+exited:
+   SetPulse(0);
+   return;
+pulse:
+   FireProjectile(ghostlite00[rand()*9.9],lightning,lightsound,24,'0 0 0','0 0 0',1.0,0x60,45,45);
+   return;
+end

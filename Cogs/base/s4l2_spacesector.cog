@@ -1,0 +1,64 @@
+# Jedi Knight Cog Script
+#
+# S4L2_spacesector.COG
+# 
+# 
+# DB 
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+  
+
+symbols
+
+message     entered
+message     pulse
+
+sector      outside
+
+vector		vec0
+
+int         player=0          local
+int         gripTrackID=-1    local
+
+
+end
+
+code
+
+entered:
+
+   SectorThrust(outside, vec0, 5.0);
+   
+   player=GetLocalPlayerThing();
+   
+   SetPulse(0.5);
+
+   Sleep(0.5);
+
+   gripTrackID=PlayNode(player, 25);
+
+   return;
+
+
+pulse:
+
+   SetPulse(1.0);
+
+   DamageThing(player, 30, 0x1, player);
+
+   if (GetThingHealth(player) <=0)
+         
+      {
+      SetPulse(0);
+      if (gripTrackID!=-1)
+         {
+         StopKey(player, gripTrackID, 0.1);
+         gripTrackID=-1;
+         }
+      }
+
+    return;
+
+   end
+

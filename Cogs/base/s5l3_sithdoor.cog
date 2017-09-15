@@ -1,0 +1,37 @@
+# Jedi Knight Cog Script
+#
+#	Sith door.  Just moves.  No tricks.
+#
+# [RK]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved     
+# ========================================================================================
+
+symbols
+message	entered
+message	arrived
+
+sector	trigger
+
+thing		door
+
+
+int		begun=0		local
+end
+
+# ========================================================================================
+
+code
+
+entered:
+	if (begun) return;
+	
+	begun = 1;
+	MoveToFrame(door, 1, 2);
+	return;
+	
+# ........................................................................................
+
+
+end
+

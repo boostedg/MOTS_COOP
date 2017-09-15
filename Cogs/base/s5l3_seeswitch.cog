@@ -1,0 +1,70 @@
+# Jedi Knight Cog Script
+#
+#	It's the Force_Seeing puzzle!
+#	Works two ways: if you enter the sector w/ seeing on
+#	and if you activate seeing while in the sector (checks every #	1 second)
+#
+# [RK]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved     
+# ========================================================================================
+
+symbols
+message	activated
+message	startup
+message	entered
+message	pulse
+
+sector	forcebaby
+sector	doorSector
+surface	switch
+thing		door
+thing		othadoor
+
+
+int		player	local
+
+end 
+
+# ========================================================================================
+
+code
+startup:
+	player = GetLocalPlayerThing();
+	SetWallCel(switch, 0);
+	SetSectorAdjoins(doorSector, 0);
+	return;
+
+entered:
+
+			SetPulse(1);
+			if (IsInvActivated (player, 23) && (GetWallCel (switch) == 0))
+			{
+			SetWallCel(switch, 1);
+			}
+			return;
+	
+activated:
+		if (GetWallCel(switch) == 1)
+			{
+				SetWallCel(switch, 2);
+				MoveToFrame(door, 1, 1);
+				MoveToFrame(othadoor, 1, 1);
+				SetSectorAdjoins(doorSector, 1);
+			}
+			return;
+
+pulse:
+				if (IsInvActivated (player, 23) && (GetWallCel (switch) == 0))
+			{
+			SetWallCel(switch, 1);
+			SetPulse(0);
+			}
+
+			return;
+	
+# ........................................................................................
+
+
+end
+

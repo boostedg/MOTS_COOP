@@ -1,0 +1,19 @@
+# Jedi Knight AI File
+#
+# TURBDEFAULT.AI2
+#
+# Box Turret AI
+# Hard difficulty
+#
+# [CR]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+alignment=-1.0, rank=0.5, fov=360, sightdist=6.0, heardist=2.0
+
+#instinct			args
+#############################################
+LookForTarget   	500.0, 30000.0
+TurretFire      	1250.0, 120.0, 180.0, 180.0, 6.0, 0.25, 750.0, 12000.0, 1.0
+
+

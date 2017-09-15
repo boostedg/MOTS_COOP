@@ -1,0 +1,61 @@
+# Jedi Knight Cog Script
+#
+#	It's another Force_Seeing puzzle!
+#	Works two ways: if you enter the sector w/ seeing on
+#	and if you activate seeing while in the sector (checks every #	.25 seconds)
+#	(5) sets the wall to solid, (0)makes it go away!
+#
+# [RK]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved     
+# ========================================================================================
+
+symbols
+message	activated
+message	startup
+message	entered
+message	pulse
+
+sector	wasblind
+surface	nowIsee
+
+
+
+int		player	local
+
+end 
+
+# ========================================================================================
+
+code
+startup:
+	player = GetLocalPlayerThing();
+	SetFaceGeoMode(nowIsee, 5);
+	return;
+
+entered:
+
+			SetPulse(.25);
+			if (IsInvActivated (player, 23))
+			{
+			setadjoinflags(nowIsee,2);
+			SetFaceGeoMode(nowIsee, 0);
+			}
+			return;
+			
+	
+pulse:
+			if (IsInvActivated (player, 23))
+			{
+			setadjoinflags(nowIsee,2);
+			SetFaceGeoMode(nowIsee, 0);
+			SetPulse(0);
+			}
+
+			return;
+	
+# ........................................................................................
+
+
+end
+

@@ -1,0 +1,71 @@
+# Jedi Knight Cog Script
+#
+# S4L2_startup.cog
+#
+#
+# [DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved		
+
+symbols
+	message	startup
+   message  arrived
+
+	thing		ship        nolink
+   thing    door01      nolink
+   thing    door02      nolink
+   thing    crate1
+
+	vector	vec0			desc=conveyor_direction
+
+	surface	convey0		nolink
+   surface	convey1		nolink
+
+	sound		wav0=CrowEngineWhine02.wav	local
+	sound		wav1=00conveyoramb01.wav	local
+
+   flex		movespeed1
+   flex     movespeed2
+   flex     movespeed3
+
+   int		moved=0		local
+	int		channel0		local
+	int      animsurf0   local
+   int		animsurf1	local
+
+
+end
+
+code
+startup:
+   //Sleep(1.0);
+	
+   MoveToFrame(ship, 2, movespeed1);
+
+   MoveToFrame(door01, 1, movespeed2);
+   MoveToFrame(door02, 1, movespeed2);	
+   
+ //PlaySoundThing(wav0, ship, 1.0, -1, 300.0, 0x0);
+ //PlaySoundThing(wav0, ship, 1.0, -1, 300.0, 0x0);
+
+	ThingLight(crate1, 0.4, 0.0);
+   
+   MoveToFrame(crate1, 2, movespeed3);
+ 
+	channel0=PlaySoundThing(wav1, conveyor, 1.0, -1, 300.0, 0x1);
+   
+   animsurf0=SlideWall(convey0, vec0, movespeed3);
+   animsurf1=SlideWall(convey1, vec0, movespeed3);
+
+	return;
+
+arrived:
+	StopSound(channel0, 0.5);
+   DestroyThing(crate1);
+
+   StopAnim(animsurf0);
+   StopAnim(animsurf1);
+
+	return;
+	
+end

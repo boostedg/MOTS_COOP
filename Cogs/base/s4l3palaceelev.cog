@@ -1,0 +1,61 @@
+# Jedi Knight Cog Script
+#
+# S4L3palaceelev.cog
+#
+# Elevator Script for S4L3 palace entrance
+#
+# [CM]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved		
+
+symbols
+	message		activated
+	message		crossed
+
+	surface		callSwitch0		linkid=0
+	surface		raiseadj		linkid=1
+	
+	sound		wav0=Activate01.wav	local
+	
+	thing		elevator		
+
+	float		moveSpeed=4.0
+
+	float		sleeptime=0.25
+end
+
+
+code
+activated:
+	if ((GetSenderId() == 0) && (GetCurFrame(elevator) == 0))
+	{
+	PlaySoundPos(wav0,(GetSurfaceCenter(callSwitch0)), 1.5, -1, -1, 0x0);
+	}
+
+	else if ((GetSenderId() == 0) && (GetCurFrame(elevator) == 1))
+	{
+	PlaySoundPos(wav0,(GetSurfaceCenter(callSwitch0)), 1.5, -1, -1, 0x0);
+	SetWallCel(callSwitch0,1);
+	MoveToFrame(elevator,0,moveSpeed);
+	WaitForStop(elevator);
+	SetWallCel(callSwitch0,0);
+	}
+	return;
+
+
+crossed:
+	if (GetSenderId() == 1)
+	{
+	Sleep(sleeptime);
+	SetWallCel(callSwitch0, 1);
+	MoveToFrame(elevator,1,moveSpeed);
+	WaitForStop(elevator);
+	SetWallCel(callSwitch0,0);
+	}
+	return;
+
+	
+
+end
+
+ 

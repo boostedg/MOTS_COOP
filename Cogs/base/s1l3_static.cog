@@ -1,0 +1,35 @@
+#S1L3_Static.cog
+
+symbols
+message	startup
+message	timer
+int		timertime	local
+surface	screen
+sound		static=00techamb02.wav
+end
+
+code
+startup:
+	SetWallCel(screen,0);
+	timertime=((rand()*0.25)+.001);
+	SetTimer(timertime);
+	return;
+timer:
+	if(GetWallCel(screen)==0)
+	{
+		SetWallCel(screen,1);
+		timertime=(rand()*0.25);
+		SetTimer(timertime);
+		return;
+	}
+	if(GetWallCel(screen)==1)
+	{
+		SetWallCel(screen,0);
+		timertime=(rand()*0.25);
+		SetTimer(timertime);
+		return;
+	}
+	return;
+end
+
+

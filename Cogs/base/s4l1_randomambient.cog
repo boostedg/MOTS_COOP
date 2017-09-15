@@ -1,0 +1,53 @@
+# Jedi Knight Cog Script
+# S4L1_RandomAmbient.cog
+# Plays a random sound at random intervals with random volume and panning
+# altered to let the xwing laser sound multiple times
+#
+# [SXC,SH]
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+	message		startup
+	message		timer
+
+	sound		wav0
+	sound		wav1
+	sound		wav2
+	sound		wav3
+	sound		wav4
+	int		numsounds
+
+	flex		min_interval
+	flex		range_interval
+	flex		min_volume
+	flex		range_volume
+
+	int		temp		local
+end
+
+code
+
+#==================================================================================================
+
+startup:
+	settimer(min_interval+(rand()*range_interval));
+	return;
+
+#==================================================================================================
+
+timer:
+	temp = rand()*numsounds;
+	playsoundlocal(wav0[temp], (min_volume+(rand()*range_volume)), ((rand()*2)-1.0), 0);
+	if ((temp>=2)&&(temp<=4))
+		{
+		Sleep(GetSoundLen(wav2));
+		playsoundlocal(wav3, (min_volume+(rand()*range_volume)), ((rand()*2)-1.0), 0);
+		Sleep(GetSoundLen(wav3));
+		playsoundlocal(wav2, (min_volume+(rand()*range_volume)), ((rand()*2)-1.0), 0);
+		Sleep(GetSoundLen(wav2));
+		playsoundlocal(wav3, (min_volume+(rand()*range_volume)), ((rand()*2)-1.0), 0);
+		}
+	settimer(min_interval+(rand()*range_interval));
+	return;
+end
+

@@ -1,0 +1,51 @@
+# Jedi Knight Cog Script
+#
+# S5L2_RandomAmbient.cog
+#
+# Plays a random sound at random intervals with random volume and panning
+#
+# [YB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+message     startup
+message     timer
+
+sound       wav0
+sound       wav1
+sound       wav2
+sound       wav3
+int         numsounds
+
+flex        min_interval
+flex        range_interval
+flex        min_volume
+flex        range_volume
+
+int         temp                             local
+end
+
+code
+
+#==================================================================================================
+
+startup:
+   SetTimer(min_interval+(rand()*range_interval));
+   return;
+
+#==================================================================================================
+
+timer:
+   // check that the player is not underwater
+   if(!(GetSectorFlags(GetThingSector(GetLocalPlayerThing())) & 2))
+   {
+      temp = rand()*numsounds;
+      PlaySoundLocal(wav0[temp], (min_volume+(rand()*range_volume)), ((rand()*2)-1.0), 0);
+   }
+
+   SetTimer(min_interval+(rand()*range_interval));
+   Return;
+
+end
+

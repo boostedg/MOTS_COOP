@@ -1,0 +1,84 @@
+# Jedi Knight Cog Script
+#
+# S5L2_storm.cog
+#
+# Random lightning effects.
+#
+# [JS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# ========================================================================================
+
+symbols
+message	startup		
+message	timer		
+message	pulse
+
+thing		player
+sound		wav0=lightning1.wav		// rumble
+sound		wav1=lightning2.wav		// rumble
+sound		wav2=thunder1.wav			// rumble
+sound		wav3=thunder2.wav			// rumble
+
+flex		min_interval
+flex		range_interval
+flex		min_volume
+flex		range_volume
+
+int		temp
+
+end
+
+# ========================================================================================
+
+code
+
+startup:
+	SetTimerEx(min_interval+(rand()*range_interval), 1, 0, 0);
+	player = GetLocalPlayerThing();
+	return;
+
+# ........................................................................................
+
+timer:
+	temp = rand();
+	if(GetSenderId() == 1)
+	{
+		blindingEffectHandle = newColorEffect(0, 0, 0, 0, 0, 0, 160 + 8 * temp, 160 + 8 * temp, 160 + 8 * temp, 1.0);
+		SetTimerEx(0.1, 2, 0, 0);
+	}	
+	
+	if(GetSenderId() == 2)
+	{ 	
+		if(blindingEffectHandle!=-1)
+		{
+			freeColorEffect(blindingEffectHandle);
+			blindingEffectHandle = -1;
+		}
+		// Get the effect ramping down
+		AddDynamicTint(player, 255, 255, 255);
+		SetTimerEx(min_interval+(rand()*range_interval), 1, 0, 0);
+		
+		// Add global lighting
+		WorldFlash(1, 0.5);
+		SetTimerEx(temp+2, 3, 0, 0);
+		
+		// Play lightning sounds
+		if(rand() < 0.50)
+			PlaySoundLocal(wav0, 1.5, 0.0, 0);
+		else
+			PlaySoundLocal(wav1, 1.5, 0.0, 0);
+	}
+	
+	if(GetSenderId() == 3)
+	{
+		// Play thunder sounds
+		if(rand() < 0.50)
+			PlaySoundLocal(wav2, 1.5, 0.0, 0);
+		else
+			PlaySoundLocal(wav3, 1.5, 0.0, 0);
+	}
+	return;
+
+end
+

@@ -1,0 +1,86 @@
+# Jedi Knight Cog Script
+#
+##  S2L4_Prisonwar.cog
+#
+# Modified 00_AITurnCoat.cog
+#
+# "prisoners" attack Guards instead of Mara
+#
+# [DS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+#
+
+symbols
+message	startup
+message     damaged
+message	killed
+
+thing		prisoner0   linkid=0	mask=-1
+thing		prisoner1	linkid=1	mask=-1
+thing		prisoner2	linkid=2	mask=-1
+thing		prisoner3	linkid=3	mask=-1
+thing		prisoner4	linkid=4	mask=-1
+
+int         i           local
+int         locked=0    local
+
+flex		rydist	local
+
+thing		victim	mask=-1
+thing       rybad       local
+
+end
+
+# ========================================================================================
+
+code
+startup:
+	sleep(3);
+
+	for (i=0; i<=4; i=i+1)
+	{
+		if (prisoner0[i] >= 0)
+		AISetFireTarget(prisoner0[i], victim);
+		AISetMoveThing(prisoner0[i], victim);
+		AISetLookPos(prisoner0[i], GetThingPos(victim));
+		AISetMode(prisoner0[i], 0x202);
+		AIClearMode(prisoner0[i], 0x1004);
+      }	
+	return;
+
+damaged:
+	if(getsenderref() != victim) return;
+	if(locked == 1) return;
+	
+	rybad = prisoner0;
+	rydist = VectorDist(GetThingPos(victim), GetThingPos(rybad));
+	
+	for (i=1; i<=4; i=i+1)
+	{
+		if ((VectorDist(GetThingPos(victim), GetThingPos(prisoner0[i]))) < rydist)
+		{
+			rybad = prisoner0[i];	
+			rydist = VectorDist(GetThingPos(victim), GetThingPos(rybad));
+	#		PrintFlex(rydist);
+		}
+	}	
+	
+	AISetFireTarget(victim, rybad);
+	AISetMoveThing(victim, rybad);
+	AISetLookPos(victim, GetThingPos(rybad));
+	AISetMode(victim, 0x202);
+	AIClearMode(victim, 0x1004);
+	
+	locked=1;
+	return;
+   
+killed:
+	# Print("Something was killed!");
+
+	if (getsenderref() == victim) return;
+	locked = 0;
+	return;
+end
+
+

@@ -1,0 +1,57 @@
+# S2L2_Abron2.COG
+
+
+symbols
+
+message	entered
+message	crossed
+
+surface	thebar
+sector	thehangar
+
+thing		theship
+thing		thedoors
+
+sound       boom=expl_06.wav     		local
+sound		takeoff=shuttletakeoff.wav	local
+sound		hyperout=hyperout.wav		local
+
+int		done=0	local
+int		go=0		local
+
+end
+#=======================================================================
+code
+
+entered:
+	if (done) return;
+	if (go) 
+		{
+			
+			done=1;
+			MoveToFrame(theship, 1, 2);
+			PlaySoundLocal(takeoff, 1.0, 0.0, 0.0);
+			WaitForStop(theship);
+			MoveToFrame(theship, 2, 5);
+			WaitForStop(theship);
+			MoveToFrame(theship, 3, 30);
+			PlaySoundLocal(hyperout, 1.0, 0.0, 0.0);
+			WaitForStop(theship);
+			DestroyThing(theship);
+		}
+		return;
+
+crossed:
+	
+	if (GetCurFrame(thedoors)==0)
+		{
+			go=1;
+			//print("set to go");
+
+		}
+		return;
+
+
+
+end
+

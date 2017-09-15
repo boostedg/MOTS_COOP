@@ -1,0 +1,40 @@
+# Jedi Knight Cog Script
+#
+# S2L2_neonsign.cog
+#
+# Ingar's neon sign COG
+# this cog will cycle through frames 0-(lastFrame-1), at framerate fps
+# if damaged, it will go to frame lastFrame and stop
+#
+# [IS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved		
+
+symbols
+	message	startup
+	message	damaged
+
+	surface	sign							mask=0x448
+	float		fps=2.0
+	int		garbage						local
+	template	sparks=+sparks				local
+   sound		snd=00ElectrExplo01.wav local
+end
+
+code
+startup:
+	// Start the animation looping but skipping the first 2 frames
+	SurfaceAnim(sign, fps, 0x5);
+	return;
+
+damaged:
+	if (GetWallCel(sign) == 0)
+		return;
+
+   garbage = PlaySoundPos(snd, SurfaceCenter(sign), 1.0, -1, -1, 0);
+	StopSurfaceAnim(sign);
+	garbage = SetWallCel(sign, 0);
+	garbage = CreateThing(sparks, GetSourceRef());
+	return;
+end
+

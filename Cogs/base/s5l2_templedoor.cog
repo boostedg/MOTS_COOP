@@ -1,0 +1,39 @@
+# Jedi Knight Cog Script
+#
+# S5L2_templedoor.cog
+#
+# Entered message opens door at end of level.
+#
+# [JS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# ========================================================================================
+
+symbols
+message	entered		
+sector	trigger				desc=trigger_sector
+thing		door0		 			desc=temple_door
+flex		movespeed=1
+
+thing		eye_pos0					desc=generator_ghost
+thing		eye_pos1					desc=generator_ghost
+thing		eye_pos2					desc=generator_ghost
+thing		eye_pos3					desc=generator_ghost
+template	eye_tpl					desc=object_to_generate
+
+end
+
+# ========================================================================================
+
+code
+
+entered:
+	MoveToFrame(door0, 1, movespeed);
+	CreateThing(eye_tpl, eye_pos0); 
+	CreateThing(eye_tpl, eye_pos1); 
+	CreateThing(eye_tpl, eye_pos2); 
+	CreateThing(eye_tpl, eye_pos3); 
+	return;
+	 
+end
+

@@ -1,0 +1,65 @@
+# S2L2_falconaway.COG
+
+
+symbols
+
+message	startup
+message	entered
+message	crossed
+message	pulse
+
+sector	thehangar
+surface	adjoin
+
+thing		theship
+thing		schmitty
+thing		klie
+thing		goldie
+thing		dana
+
+sound		takeoff=shuttletakeoff.wav	local
+sound		hyperout=hyperout.wav		local
+
+int		done=0	local
+
+end
+#=======================================================================
+code
+
+startup:	
+	AISetMode(klie, 0x432);
+	AISetMode(schmitty, 0x432);
+	AISetMode(goldie, 0x432);
+	AISetMode(dana, 0x432);	
+	return;
+
+entered:
+	if (done) return;
+
+			done=1;
+			MoveToFrame(theship, 1, 5);
+			PlaySoundLocal(takeoff, 1.0, 0.0, 0.0);
+			WaitForStop(theship);
+			MoveToFrame(theship, 2, 8);
+			WaitForStop(theship);
+			MoveToFrame(theship, 3, 100);
+			PlaySoundLocal(hyperout, 1.0, 0.0, 0.0);
+			WaitForStop(theship);
+			DestroyThing(theship);	
+			return;
+
+crossed:
+	SetPulse(1.0);
+	return;
+
+pulse:
+	AISetFireTarget(klie, theship);
+	AISetFireTarget(schmitty, theship);
+	AISetFireTarget(goldie, theship);
+	AISetFireTarget(dana, theship);
+	return;
+
+
+
+end
+

@@ -1,0 +1,274 @@
+# Jedi Knight Cog Script
+#
+# S1L1_Poweron.COG
+#
+# Reroute power to turn on lights and open a few doors
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+message 	startup
+message		user3
+message		timer
+	
+thing 		coupling
+thing		bulb0
+thing		bulb1
+thing		bulb2
+thing		bulb3
+thing		bulb4
+thing		bulb5
+thing		bulb6
+thing		bulb7
+thing		bulb8
+thing		bulb9
+thing		bulb10
+thing		bulb11
+thing		bulb12
+thing		bulb13
+thing		bulb14
+thing		bulb15
+thing		bulb16
+thing		bulb17
+thing		bulb18
+thing		bulb19
+thing		bulb20
+thing		bulb21
+thing		bulb22
+thing		bulb23
+thing		bulb24
+
+surface		powerind1
+surface		powerind2
+surface		redlit11
+surface		redlit12
+surface		redlit21
+surface		redlit22
+
+cog		brokendoor0
+cog		brokendoor1
+cog		brokendoor2	
+cog		brokendoor3	
+cog		getout	
+
+flex		minLight=0.35				local
+flex		maxLight=1.0				local	
+flex		min_interval=0.2			local
+flex		range_interval=0.8			local
+flex        	volume=0.1				local
+
+sound		crackle=forcefieldhit01.wav		local
+sound		couplingmove=funicularmove01.wav	local
+sound		couplingstop=funicularstop01.wav	local	
+sound		powerup=16enginestart01.wav		local	
+sound		voice=r2talk05.wav
+
+sector 		lamp0
+sector		lamp1
+sector		lamp2
+sector		lamp3
+sector 		lamp4
+sector		lamp5
+sector		lamp6
+sector		lamp7
+sector 		lamp8
+sector		lamp9
+sector		lamp10
+sector		lamp11
+sector 		lamp12
+sector		lamp13
+sector		lamp14
+sector		lamp15
+sector		lamp16
+sector 		lamp17
+sector		lamp18
+sector		lamp19
+sector 		lamp20
+sector		lamp21
+
+int		done=0				local
+
+cog		switch
+
+thing		soundPos1		nolink
+
+sound		wav0
+
+float		minDist=-1			local
+float		maxDist=-1			local
+float		volume=0.75			local
+
+end
+#-----------------------------------
+code
+
+startup:
+	SetTimerEx(min_interval+(rand()*range_interval), 0, 0, 0);
+	SetWallCel(redlit11, 0);
+	SetWallCel(redlit12, 0);
+	SetWallCel(redlit21, 1);
+	SetWallCel(redlit22, 1);
+	SetWallCel(powerind1, 2);
+	SetWallCel(powerind2, 4);
+	return;
+#-----------------------------------
+timer:
+	if (done) return;
+	If (GetSenderID()==0)
+	{
+	settimerEx(min_interval+(rand()*range_interval), 1, 0, 0);
+	SetThingLight(bulb0, (minLight+rand()*maxLight), 0);
+		PlaySoundThing(crackle, bulb0, volume, -1, 10, 0);
+	SetThingLight(bulb1, (minLight+rand()*maxLight), 0);
+	SetThingLight(bulb3, (minLight+rand()*maxLight), 0);
+		PlaySoundThing(crackle, bulb3, volume, -1, 10, 0);
+	SetThingLight(bulb4, (minLight+rand()*maxLight), 0);
+	SetThingLight(bulb5, (minLight+rand()*maxLight), 0);
+		PlaySoundThing(crackle, bulb5, volume, -1, 10, 0);
+	SetThingLight(bulb6, (minLight+rand()*maxLight), 0);
+		PlaySoundThing(crackle, bulb6, volume, -1, 10, 0);
+	SetThingLight(bulb7, (minLight+rand()*maxLight), 0);
+	SetThingLight(bulb8, (minLight+rand()*maxLight), 0);
+		PlaySoundThing(crackle, bulb8, volume, -1, 10, 0);
+	SetThingLight(bulb9, (minLight+rand()*maxLight), 0);
+	SetThingLight(bulb10, (minLight+rand()*maxLight), 0);
+		PlaySoundThing(crackle, bulb10, volume, -1, 10, 0);
+	SetThingLight(bulb11, (minLight+rand()*maxLight), 0);
+	SetThingLight(bulb12, (minLight+rand()*maxLight), 0);
+		PlaySoundThing(crackle, bulb12, volume, -1, 10, 0);
+	SetThingLight(bulb13, (minLight+rand()*maxLight), 0);
+	SetThingLight(bulb14, (minLight+rand()*maxLight), 0);
+		PlaySoundThing(crackle, bulb14, volume, -1, 10, 0);
+	SetThingLight(bulb15, (minLight+rand()*maxLight), 0);
+	SetThingLight(bulb16, (minLight+rand()*maxLight), 0);
+		PlaySoundThing(crackle, bulb16, volume, -1, 10, 0);
+	SetThingLight(bulb17, (minLight+rand()*maxLight), 0);
+	SetThingLight(bulb18, (minLight+rand()*maxLight), 0);
+		PlaySoundThing(crackle, bulb18, volume, -1, 10, 0);
+	SetThingLight(bulb19, (minLight+rand()*maxLight), 0);
+	SetThingLight(bulb20, (minLight+rand()*maxLight), 0);
+		PlaySoundThing(crackle, bulb20, volume, -1, 10, 0);
+	SetThingLight(bulb21, (minLight+rand()*maxLight), 0);
+	SetThingLight(bulb22, (minLight+rand()*maxLight), 0);
+		PlaySoundThing(crackle, bulb22, volume, -1, 10, 0);
+	SetThingLight(bulb23, (minLight+rand()*maxLight), 0);
+		PlaySoundThing(crackle, bulb23, volume, -1, 10, 0);
+	SetThingLight(bulb24, (minLight+rand()*maxLight), 0);
+	}
+	else
+	If (getsenderid()==1)
+	{
+	SetTimerEx(min_interval+(rand()*range_interval), 0, 0, 0);
+	SetThingLight(bulb0, minlight, 0);
+	SetThingLight(bulb1, minlight, 0);
+	SetThingLight(bulb2, minlight, 0);
+	SetThingLight(bulb3, minlight, 0);
+	SetThingLight(bulb4, minlight, 0);
+	SetThingLight(bulb5, minlight, 0);
+	SetThingLight(bulb6, minlight, 0);
+	SetThingLight(bulb7, minlight, 0);
+	SetThingLight(bulb8, minlight, 0);
+	SetThingLight(bulb9, minlight, 0);
+	SetThingLight(bulb10, minlight, 0);
+	SetThingLight(bulb11, minlight, 0);
+	SetThingLight(bulb12, minlight, 0);
+	SetThingLight(bulb13, minlight, 0);
+	SetThingLight(bulb14, minlight, 0);
+	SetThingLight(bulb15, minlight, 0);
+	SetThingLight(bulb16, minlight, 0);
+	SetThingLight(bulb17, minlight, 0);
+	SetThingLight(bulb18, minlight, 0);
+	SetThingLight(bulb19, minlight, 0);
+	SetThingLight(bulb20, minlight, 0);
+	SetThingLight(bulb21, minlight, 0);
+	SetThingLight(bulb22, minlight, 0);
+	SetThingLight(bulb23, minlight, 0);
+	SetThingLight(bulb24, minlight, 0);
+	}
+	return;
+#------------------------------------------------------------------
+user3:
+	if (done) return;
+	done=1;
+	SetWallCel(redlit11, 1);
+	SetWallCel(redlit12, 1);
+	SetWallCel(redlit21, 1);
+	SetWallCel(redlit22, 1);
+	SetWallCel(powerind1, 4);
+	SetWallCel(powerind2, 4);
+	MovetoFrame(coupling, 1, 5);
+	PlaySoundThing(couplingmove, coupling, 1, -1, -1, 0x32);
+	WaitForStop(coupling);
+	PlaySoundThing(couplingstop, coupling, 1, -1, -1, 0x128);
+	Sleep(1.5);
+	PlaySoundThing(powerup, coupling, 1, -1, -1, 0x260);
+	Sleep(2);
+	SetWallCel(redlit11, 1);
+	SetWallCel(redlit12, 1);
+	SetWallCel(redlit21, 0);
+	SetWallCel(redlit22, 0);
+	SetWallCel(powerind1, 4);
+	SetWallCel(powerind2, 0);
+	SetThingLight(bulb0, 0.75, 0);
+	SetThingLight(bulb1, 0.75, 0);
+	SetThingLight(bulb2, 0.75, 0);
+	SetThingLight(bulb3, 0.75, 0);
+	SetThingLight(bulb4, 0.75, 0);
+	SetThingLight(bulb5, 0.75, 0);
+	SetThingLight(bulb6, 0.75, 0);
+	SetThingLight(bulb7, 0.75, 0);
+	SetThingLight(bulb8, 0.75, 0);
+	SetThingLight(bulb9, 0.75, 0);
+	SetThingLight(bulb10, 0.5, 0);
+	SetThingLight(bulb11, 0.75, 0);
+	SetThingLight(bulb12, 0.75, 0);
+	SetThingLight(bulb13, 0.75, 0);
+	SetThingLight(bulb14, 0.75, 0);
+	SetThingLight(bulb15, 0.75, 0);
+	SetThingLight(bulb16, 0.75, 0);
+	SetThingLight(bulb17, 0.75, 0);
+	SetThingLight(bulb18, 0.75, 0);
+	SetThingLight(bulb19, 0.75, 0);
+	SetThingLight(bulb20, 0.75, 0);
+	SetThingLight(bulb21, 0.75, 0);
+	SetThingLight(bulb22, 0.75, 0);
+	SetThingLight(bulb23, 1, 0);
+	SetThingLight(bulb24, 1, 0);
+	SetSectorLight(lamp0, 1, 0);
+	SetSectorLight(lamp1, 1, 0);
+	SetSectorLight(lamp2, 1, 0);
+	SetSectorLight(lamp3, 1, 0);
+	SetSectorLight(lamp4, 1, 0);
+	SetSectorLight(lamp5, 1, 0);
+	SetSectorLight(lamp6, 1, 0);
+	SetSectorLight(lamp7, 1, 0);
+	SetSectorLight(lamp8, 1, 0);
+	SetSectorLight(lamp9, 1, 0);
+	SetSectorLight(lamp10, 1, 0);
+	SetSectorLight(lamp11, 1, 0);
+	SetSectorLight(lamp12, 1, 0);
+	SetSectorLight(lamp13, 1, 0);
+	SetSectorLight(lamp14, 1, 0);
+	SetSectorLight(lamp15, 1, 0);
+	SetSectorLight(lamp16, 1, 0);
+	SetSectorLight(lamp17, 1, 0);
+	SetSectorLight(lamp18, 1, 0);
+	SetSectorLight(lamp19, 1, 0);
+	SetSectorLight(lamp20, 1, 0);
+	SetSectorLight(lamp21, 1, 0);
+	SendMessage(brokendoor0, user1);
+	SendMessage(brokendoor1, user1);
+	SendMessage(brokendoor2, user1);
+	SendMessage(brokendoor3, user1);
+	SendMessage(getout, user1);
+      	SendMessageEx(GetMasterCOG(), user0, 1, 0, 0, 0);
+	PlaySoundThing(wav0, soundPos1, volume, minDist, maxDist, 0x045);
+	return;
+
+end
+
+	
+

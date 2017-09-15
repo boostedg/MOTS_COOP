@@ -1,0 +1,279 @@
+##S1L4_SecurityDoor.cog
+
+symbols
+message	startup
+message	activate
+message	arrived
+
+surface	switch1	linkid=1
+surface	switch2	linkid=2
+surface	switch3	linkid=3
+surface	switch4	linkid=4
+
+sector	switch1sector
+sector	switch2sector
+sector	switch3sector
+sector	switch4sector
+
+int		switch1on=0		local
+int		switch2on=0		local
+int		switch3on=0		local
+int		switch4on=0		local
+
+sound		forcefieldon01=forcefieldon01.wav		local
+sound		forcefieldoff01=forcefieldoff01.wav	local
+sound		lgclick1=lgclick1.wav				local
+
+thing		securitydoor
+end
+
+code
+startup:
+	SetWallCel(switch1,0);
+	SetWallCel(switch2,0);
+	SetWallCel(switch3,0);
+	SetWallCel(switch4,0);
+	SetSectorLight(switch1sector,0.25,0.25);
+	SetSectorLight(switch2sector,0.25,0.25);
+	SetSectorLight(switch3sector,0.25,0.25);
+	SetSectorLight(switch4sector,0.25,0.25);
+	return;
+
+activate:
+	if((GetSenderID()==1)&&(IsThingMoving(securitydoor)==1))	//switch1 fails door is moving
+	{
+		PlaySoundPos(lgclick1,SurfaceCenter(switch1),1,-1,-1,0);
+		return;
+	}
+	if((GetSenderID()==2)&&(IsThingMoving(securitydoor)==1))	//switch2 fails door is moving
+	{
+		PlaySoundPos(lgclick1,SurfaceCenter(switch2),1,-1,-1,0);
+		return;
+	}
+	if((GetSenderID()==3)&&(IsThingMoving(securitydoor)==1))	//switch3 fails door is moving
+	{
+		PlaySoundPos(lgclick1,SurfaceCenter(switch3),1,-1,-1,0);
+		return;
+	}
+	if((GetSenderID()==4)&&(IsThingMoving(securitydoor)==1))	//switch4 fails door is moving
+	{
+		PlaySoundPos(lgclick1,SurfaceCenter(switch4),1,-1,-1,0);
+		return;
+	}
+	if((GetSenderID()==1)&&(GetCurFrame(securitydoor)==1))	//switch1 fails door is up
+	{
+		PlaySoundPos(lgclick1,SurfaceCenter(switch1),1,-1,-1,0);
+		return;
+	}
+	if((GetSenderID()==2)&&(GetCurFrame(securitydoor)==1))	//switch2 fails door is up
+	{
+		PlaySoundPos(lgclick1,SurfaceCenter(switch2),1,-1,-1,0);
+		return;
+	}
+	if((GetSenderID()==3)&&(GetCurFrame(securitydoor)==1))	//switch3 fails door is up
+	{
+		PlaySoundPos(lgclick1,SurfaceCenter(switch3),1,-1,-1,0);
+		return;
+	}
+	if((GetSenderID()==4)&&(GetCurFrame(securitydoor)==1))	//switch4 fails door is up
+	{
+		PlaySoundPos(lgclick1,SurfaceCenter(switch4),1,-1,-1,0);
+		return;
+	}
+	if((GetSenderID()==1)&&(switch1on==0))				//activating switch1
+	{
+		SetWallCel(switch1,1);
+		PlaySoundPos(forcefieldon01,SurfaceCenter(switch1),1,-1,-1,0);
+		SetSectorLight(switch1sector,1,0.25);
+		switch1on=1;
+		return;
+	}
+	if((GetSenderID()==1)&&(switch1on==1))				//deactivating switch1
+	{
+		SetWallCel(switch1,0);
+		SetWallCel(switch2,0);
+		SetWallCel(switch3,0);
+		SetWallCel(switch4,0);
+		PlaySoundPos(forcefieldoff01,SurfaceCenter(switch1),1,-1,-1,0);
+		SetSectorLight(switch1sector,0.25,0.25);
+		SetSectorLight(switch2sector,0.25,0.25);
+		SetSectorLight(switch3sector,0.25,0.25);
+		SetSectorLight(switch4sector,0.25,0.25);
+		switch1on=0;
+		switch2on=0;
+		switch3on=0;
+		switch4on=0;
+		return;
+	}
+	if((GetSenderID()==2)&&(switch1on==0))				//switch 2 fails if switch 1 is off
+	{
+		SetWallCel(switch1,0);
+		SetWallCel(switch2,0);
+		SetWallCel(switch3,0);
+		SetWallCel(switch4,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(switch2),1,-1,-1,0);
+		SetSectorLight(switch1sector,0.25,0.25);
+		SetSectorLight(switch2sector,0.25,0.25);
+		SetSectorLight(switch3sector,0.25,0.25);
+		SetSectorLight(switch4sector,0.25,0.25);
+		switch1on=0;
+		switch2on=0;
+		switch3on=0;
+		switch4on=0;
+		return;
+	}	
+	if((GetSenderID()==2)&&(switch1on==1)&&(switch2on==0))	//activating switch2
+	{
+		SetWallCel(switch2,1);
+		PlaySoundPos(forcefieldon01,SurfaceCenter(switch2),1,-1,-1,0);
+		SetSectorLight(switch2sector,1,0.25);
+		switch2on=1;
+		return;
+	}
+	if((GetSenderID()==2)&&(switch2on==1))				//deactivating switch2
+	{
+		SetWallCel(switch1,0);
+		SetWallCel(switch2,0);
+		SetWallCel(switch3,0);
+		SetWallCel(switch4,0);
+		PlaySoundPos(forcefieldoff01,SurfaceCenter(switch2),1,-1,-1,0);
+		SetSectorLight(switch1sector,0.25,0.25);
+		SetSectorLight(switch2sector,0.25,0.25);
+		SetSectorLight(switch3sector,0.25,0.25);
+		SetSectorLight(switch4sector,0.25,0.25);
+		switch1on=0;
+		switch2on=0;
+		switch3on=0;
+		switch4on=0;
+		return;
+	}
+	if((GetSenderID()==3)&&(switch2on==0))				//switch 3 fails if switch 2 is off
+	{
+		SetWallCel(switch1,0);
+		SetWallCel(switch2,0);
+		SetWallCel(switch3,0);
+		SetWallCel(switch4,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(switch3),1,-1,-1,0);
+		SetSectorLight(switch1sector,0.25,0.25);
+		SetSectorLight(switch2sector,0.25,0.25);
+		SetSectorLight(switch3sector,0.25,0.25);
+		SetSectorLight(switch4sector,0.25,0.25);
+		switch1on=0;
+		switch2on=0;
+		switch3on=0;
+		switch4on=0;
+		return;
+	}
+	if((GetSenderID()==3)&&(switch2on==1)&&(switch3on==0))	//activating switch3
+	{
+		SetWallCel(switch3,1);
+		PlaySoundPos(forcefieldon01,SurfaceCenter(switch3),1,-1,-1,0);
+		SetSectorLight(switch3sector,1,0.25);
+		switch3on=1;
+		return;
+	}
+	if((GetSenderID()==3)&&(switch3on==1))				//deactivating switch3
+	{
+		SetWallCel(switch1,0);
+		SetWallCel(switch2,0);
+		SetWallCel(switch3,0);
+		SetWallCel(switch4,0);
+		PlaySoundPos(forcefieldoff01,SurfaceCenter(switch3),1,-1,-1,0);
+		SetSectorLight(switch1sector,0.25,0.25);
+		SetSectorLight(switch2sector,0.25,0.25);
+		SetSectorLight(switch3sector,0.25,0.25);
+		SetSectorLight(switch4sector,0.25,0.25);
+		switch1on=0;
+		switch2on=0;
+		switch3on=0;
+		switch4on=0;
+		return;
+	}
+	if((GetSenderID()==4)&&(switch3on==0))				//switch 4 fails if switch 3 is off
+	{
+		SetWallCel(switch1,0);
+		SetWallCel(switch2,0);
+		SetWallCel(switch3,0);
+		SetWallCel(switch4,0);
+		PlaySoundPos(lgclick1,SurfaceCenter(switch4),1,-1,-1,0);
+		SetSectorLight(switch1sector,0.25,0.25);
+		SetSectorLight(switch2sector,0.25,0.25);
+		SetSectorLight(switch3sector,0.25,0.25);
+		SetSectorLight(switch4sector,0.25,0.25);
+		switch1on=0;
+		switch2on=0;
+		switch3on=0;
+		switch4on=0;
+		return;
+	}
+	if((GetSenderID()==4)&&(switch3on==1)&&(switch4on==0))	//activating switch4
+	{
+		SetWallCel(switch4,1);
+		PlaySoundPos(forcefieldon01,SurfaceCenter(switch4),1,-1,-1,0);
+		SetSectorLight(switch4sector,1,0.25);
+		switch4on=1;
+		Sleep(1);
+		SetSectorLight(switch1sector,0.25,0.1);
+		SetSectorLight(switch2sector,0.25,0.1);
+		SetSectorLight(switch3sector,0.25,0.1);
+		SetSectorLight(switch4sector,0.25,0.1);
+		Sleep(0.25);
+		SetSectorLight(switch1sector,1,0.1);
+		SetSectorLight(switch2sector,1,0.1);
+		SetSectorLight(switch3sector,1,0.1);
+		SetSectorLight(switch4sector,1,0.1);
+		Sleep(0.5);
+		SetSectorLight(switch1sector,0.25,0.1);
+		SetSectorLight(switch2sector,0.25,0.1);
+		SetSectorLight(switch3sector,0.25,0.1);
+		SetSectorLight(switch4sector,0.25,0.1);
+		Sleep(0.25);
+		SetSectorLight(switch1sector,1,0.1);
+		SetSectorLight(switch2sector,1,0.1);
+		SetSectorLight(switch3sector,1,0.1);
+		SetSectorLight(switch4sector,1,0.1);
+		Sleep(0.5);
+		SetSectorLight(switch1sector,0.25,0.1);
+		SetSectorLight(switch2sector,0.25,0.1);
+		SetSectorLight(switch3sector,0.25,0.1);
+		SetSectorLight(switch4sector,0.25,0.1);
+		Sleep(0.25);
+		SetSectorLight(switch1sector,1,0.1);
+		SetSectorLight(switch2sector,1,0.1);
+		SetSectorLight(switch3sector,1,0.1);
+		SetSectorLight(switch4sector,1,0.1);
+		Sleep(0.5);
+		MoveToFrame(securitydoor,1,1);
+		return;
+	}
+	return;
+
+arrived:
+	if(IsThingMoving(securitydoor)==1) return;
+	if(GetCurFrame(securitydoor)==1)
+	{
+		MoveToFrame(securitydoor,0,1);
+		return;
+	}
+	if(GetCurFrame(securitydoor)==0)
+	{
+		SetWallCel(switch1,0);
+		SetWallCel(switch2,0);
+		SetWallCel(switch3,0);
+		SetWallCel(switch4,0);
+		SetSectorLight(switch1sector,0.25,0.25);
+		SetSectorLight(switch2sector,0.25,0.25);
+		SetSectorLight(switch3sector,0.25,0.25);
+		SetSectorLight(switch4sector,0.25,0.25);
+		switch1on=0;
+		switch2on=0;
+		switch3on=0;
+		switch4on=0;
+		return;
+	}
+	return;
+end
+
+
+
+

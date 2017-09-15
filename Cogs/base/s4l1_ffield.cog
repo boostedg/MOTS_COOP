@@ -1,0 +1,76 @@
+# ForceFieldSwitch
+# Jedi Knight Cog Script
+#
+# S1L2_FFieldSwitch.cog
+#
+# this script activates a forcefield that damages a player on touch.
+# also sets this surface to be nomove and translucent.
+# Adapted from Steve's level 18 script
+#
+# [DB] (with Tim Longo on Bass, SH)
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+message     startup
+message     damaged
+message     touched
+message	entered
+message     timer
+
+surface     damsurf                       mask=0x488
+surface     damsurf2                      mask=0x488
+surface     damsurf3                      mask=0x488
+
+flex        maxdamage=10.0
+flex        mindamage=5.0
+flex        damage=0.0                    local
+
+sound       wav1=ForceFieldHit01.wav      local
+
+
+int         garbage=0                     local
+
+thing       victim                        local
+
+end
+
+
+code
+startup:
+   	ClearAdjoinFlags(damsurf,10);          	//no move
+   	ClearAdjoinFlags(damsurf2,10);
+   	ClearAdjoinFlags(damsurf3,10);
+   	SetFaceGeoMode(damsurf,0);          	//translucent
+  	SetFaceGeoMode(damsurf2,0);
+  	SetFaceGeoMode(damsurf3,0);
+   	SetSurfaceFlags(damsurf,16384);       	//magsealed
+	SetSurfaceFlags(damsurf2,16384);
+	SetSurfaceFlags(damsurf3,16384);
+   	return;
+entered:
+touched:
+   	if ((GetSenderRef()==damsurf)||(GetSenderRef()==damsurf2)||(GetSenderRef()==damsurf3))
+      	{
+      		victim = GetSourceRef();
+      		damage = (Rand()*(maxdamage - mindamage))+mindamage;
+      		garbage = DamageThing(victim, damage, 0x4, victim);
+     			PlaySoundPos(wav1, GetSurfaceCenter(damsurf), 0.5, 1, 10, 0);    
+     		}
+damaged:
+fieldflash:
+      	SetFaceGeoMode(damsurf,4);
+      	SetFaceGeoMode(damsurf2,4);
+      	SetFaceGeoMode(damsurf3,4);
+		KillTimerEx(1);
+     		SetTimerEx(0.5, 1, 0, 0);
+     		return;
+timer:
+   	SetFaceGeoMode(damsurf,0);
+   	SetFaceGeoMode(damsurf2,0);
+   	SetFaceGeoMode(damsurf3,0);
+   	Return;
+
+end

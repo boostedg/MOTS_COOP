@@ -1,0 +1,419 @@
+# Jedi Knight Cog Script
+#
+# S1L4_CriticalPath.cog
+#
+# Controls critical-path elements for S1L4_AstDestruct.jkl.
+#
+# Random explosion stuff by Jacob Stephens.
+#
+# [CK/JS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+message  damaged
+message  startup
+message  timer
+message  pulse
+message  user7
+
+surface  killsurface01                 linkid=1
+surface  killsurface02                 linkid=2
+surface  killsurface03                 linkid=3
+surface  killsurface04                 linkid=4
+surface  killsurface05                 linkid=5
+sector   killsector01
+sector   killsector02
+sector   killsector03
+sector   killsector04
+sector   killsector05
+sector   floodgatesector		   local
+sector   airintakedoorsector		   local			
+thing    floodgate			   mask=0x405 	
+thing    airintakedoor			   mask=0x405
+thing    fan
+int      TimerStop=1                   local
+int      HowManyOfFour=0               local
+int      isunit01dead=0                local
+int      isunit02dead=0                local
+int      isunit03dead=0                local
+int      isunit04dead=0                local
+int      isunit05dead=0                local
+int      SoundNumber                   local
+int      VoiceNumber                   local
+int      curSector                     local
+int      NoExplosions=1                local
+int      OkayNowIAmReady=0             local
+flex     expChance=0.7                 local
+flex     pulseRate=2.0                 local
+sound    KK61401=KK61401.wav           local
+sound    KK61402=KK61402.wav           local
+sound    KK61403=KK61403.wav           local
+sound    CP61404=CP61404.wav           local
+sound    CP61405=CP61405.wav           local
+sound    CP61406=CP61406.wav           local
+sound    CP61407=CP61407.wav           local
+sound    CP61408=CP61408.wav           local
+sound    CP61409=CP61409.wav           local
+sound    CP61410=CP61410.wav           local
+sound    CP61411=CP61411.wav           local
+sound    CP61412=CP61412.wav           local
+sound    CP61413=CP61413.wav           local
+sound    CP61414=CP61414.wav           local
+sound    CP61415=CP61415.wav           local
+sound    KK61416=KK61416.wav           local
+sound    AlarmSound=00alarmloop01.wav  local
+sound    wav28
+sound    wav29
+sound    wav30
+sound    bigfan01=bigfan01.wav         local
+template explosion_tpl=16_exp          local
+vector   posOffset                     local
+vector   angOffset                     local
+
+int      goal1=0                       local
+
+end
+
+code
+startup:
+   SetPulse(pulseRate); 
+   SetWallCel(killsurface01,0);           //initializes wall cels
+   SetWallCel(killsurface02,0);
+   SetWallCel(killsurface03,0);
+   SetWallCel(killsurface04,0);
+   SetWallCel(killsurface05,0);
+   SetSectorLight(killsector01,1,0.1);    //initializes sector lighting
+   SetSectorLight(killsector02,1,0.1);
+   SetSectorLight(killsector03,1,0.1);
+   SetSectorLight(killsector04,1,0.1);
+   SetSectorLight(killsector05,1,0.1);
+   floodgatesector=GetThingSector(floodgate);
+   airintakedoorsector=GetThingSector(airintakedoor);
+   SetSectorAdjoins(floodgatesector,0);
+   SetSectorAdjoins(airintakedoorsector,0);
+   return;
+
+damaged:
+   if(IAmSleeping==1) return;
+   if((GetSenderID()==1)&&(GetWallCel(killsurface01)==0))      //killing unit01
+   {
+      IAmSleeping=1;
+      SetWallCel(killsurface01,1);
+      SetSectorLight(killsector01,0.25,0.25);
+      isunit01dead=1;
+      if(isunit01dead==1)
+      {  
+         if(IsThingMoving(airintakedoor)==1) return;
+         if(GetCurFrame(airintakedoor)==1) return;
+	   SetSectorAdjoins(airintakedoorsector,1);
+         MoveToFrame(airintakedoor,1,0.25);
+      }
+      Sleep(1);
+      JKPrintUniString(-1,61404);
+      VoiceNumber=PlayVoiceLocal(CP61404,1.0,0.0,0);
+      Sleep(GetSoundLen(CP61404));
+      IAmSleeping=0;
+      return;
+   }
+   if((GetSenderID()==2)&&(GetWallCel(killsurface02)==0))      //killing unit02
+   {
+      IAmSleeping=1;
+      SetWallCel(killsurface02,1);
+      SetSectorLight(killsector02,0.25,0.25);
+      isunit02dead=1;
+      if((isunit02dead==1)&&(isunit03dead==1)&&(isunit04dead==1)&&(isunit05dead==1))
+      {  
+         if(IsThingMoving(floodgate)==1) return;
+         if(GetCurFrame(floodgate)==1) return;
+	   SetSectorAdjoins(floodgatesector,1);
+         MoveToFrame(floodgate,1,0.25);
+      }
+      HowManyOfFour=(HowManyOfFour+1);
+      if(HowManyOfFour==2)
+      {
+         Sleep(1);
+         JKPrintUniString(-1,61405);
+         VoiceNumber=PlayVoiceLocal(CP61405,1.0,0.0,0);
+      }
+      if(HowManyOfFour==4)
+      {
+         SendMessageEx(GetMasterCOG(),user0,0,0,0,0);
+         Sleep(1);
+         SoundNumber=PlaySoundLocal(AlarmSound,1.0,0.0,1);
+         Sleep(1);
+         JKPrintUniString(-1,61406);
+         VoiceNumber=PlayVoiceLocal(CP61406,1.0,0.0,0);
+         SetTimer(35-(GetDifficulty()*10));
+      }
+      IAmSleeping=0;
+      return;
+   }
+   if((GetSenderID()==3)&&(GetWallCel(killsurface03)==0))      //killing unit03
+   {
+      IAmSleeping=1;
+      SetWallCel(killsurface03,1);
+      SetSectorLight(killsector03,0.25,0.25);
+      isunit03dead=1;
+      if((isunit02dead==1)&&(isunit03dead==1)&&(isunit04dead==1)&&(isunit05dead==1))
+      {  
+         if(IsThingMoving(floodgate)==1) return;
+         if(GetCurFrame(floodgate)==1) return;
+	   SetSectorAdjoins(floodgatesector,1);
+         MoveToFrame(floodgate,1,0.25);
+      }
+      HowManyOfFour=(HowManyOfFour+1);
+      if(HowManyOfFour==2)
+      {
+         Sleep(1);
+         JKPrintUniString(-1,61405);
+         VoiceNumber=PlayVoiceLocal(CP61405,1.0,0.0,0);
+      }
+      if(HowManyOfFour==4)
+      {
+         SendMessageEx(GetMasterCOG(),user0,0,0,0,0);
+         Sleep(1);
+         SoundNumber=PlaySoundLocal(AlarmSound,1.0,0.0,1);
+         Sleep(1);
+         JKPrintUniString(-1,61406);
+         VoiceNumber=PlayVoiceLocal(CP61406,1.0,0.0,0);
+         SetTimer(35-(GetDifficulty()*10));
+      }
+      IAmSleeping=0;
+      return;
+   }
+   if((GetSenderID()==4)&&(GetWallCel(killsurface04)==0))      //killing unit04
+   {
+      IAmSleeping=1;
+      SetWallCel(killsurface04,1);
+      SetSectorLight(killsector04,0.25,0.25);
+      isunit04dead=1;
+      if((isunit02dead==1)&&(isunit03dead==1)&&(isunit04dead==1)&&(isunit05dead==1))
+      {  
+         if(IsThingMoving(floodgate)==1) return;
+         if(GetCurFrame(floodgate)==1) return;
+	   SetSectorAdjoins(floodgatesector,1);
+         MoveToFrame(floodgate,1,0.25);
+      }
+      HowManyOfFour=(HowManyOfFour+1);
+      if(HowManyOfFour==2)
+      {
+         Sleep(1);
+         JKPrintUniString(-1,61405);
+         VoiceNumber=PlayVoiceLocal(CP61405,1.0,0.0,0);
+      }
+      if(HowManyOfFour==4)
+      {
+         SendMessageEx(GetMasterCOG(),user0,0,0,0,0);
+         Sleep(1);
+         SoundNumber=PlaySoundLocal(AlarmSound,1.0,0.0,1);
+         Sleep(1);
+         JKPrintUniString(-1,61406);
+         VoiceNumber=PlayVoiceLocal(CP61406,1.0,0.0,0);
+         SetTimer(35-(GetDifficulty()*10));
+      }
+      IAmSleeping=0;
+      return;
+   }
+   if((GetSenderID()==5)&&(GetWallCel(killsurface05)==0))      //killing unit05
+   {
+      IAmSleeping=1;
+      SetWallCel(killsurface05,1);
+      SetSectorLight(killsector05,0.25,0.25);
+      isunit05dead=1;
+      if((isunit02dead==1)&&(isunit03dead==1)&&(isunit04dead==1)&&(isunit05dead==1))
+      {  
+         if(IsThingMoving(floodgate)==1) return;
+         if(GetCurFrame(floodgate)==1) return;
+	   SetSectorAdjoins(floodgatesector,1);
+         MoveToFrame(floodgate,1,0.25);
+      }
+      HowManyOfFour=(HowManyOfFour+1);
+      if(HowManyOfFour==2)
+      {
+         Sleep(1);
+         JKPrintUniString(-1,61405);
+         VoiceNumber=PlayVoiceLocal(CP61405,1.0,0.0,0);
+      }
+      if(HowManyOfFour==4)
+      {
+         SendMessageEx(GetMasterCOG(),user0,0,0,0,0);
+         Sleep(1);
+         SoundNumber=PlaySoundLocal(AlarmSound,1.0,0.0,1);
+         Sleep(1);
+         JKPrintUniString(-1,61406);
+         VoiceNumber=PlayVoiceLocal(CP61406,1.0,0.0,0);
+         SetTimer(35-(GetDifficulty()*10));
+      }
+      IAmSleeping=0;
+      return;
+   }
+   return;
+
+timer:
+   if(IAmSleeping==1) return;
+   if(TimerStop==1)
+   {
+      IAmSleeping=1;
+      JKPrintUniString(-1,61407);
+      // Warning, cooling system failure core approaching
+      VoiceNumber=PlayVoiceLocal(CP61407,1.0,0.0,0);
+      Sleep(GetSoundLen(CP61407));
+      TimerStop=2;
+      SetTimer(10);
+      IAmSleeping=0;
+      return;
+   }
+   if(TimerStop==2)
+   {
+      IAmSleeping=1;
+      JKPrintUniString(-1,61408);
+      // Warning, cooling system failure core temp crit
+      VoiceNumber=PlayVoiceLocal(CP61408,1.0,0.0,0);
+      Sleep(GetSoundLen(CP61408));
+      TimerStop=3;
+      SetTimer(10);
+      IAmSleeping=0;
+      return;
+   }
+   if(TimerStop==3)
+   {
+      IAmSleeping=1;
+      NoExplosions=0;
+      JKPrintUniString(-1,61409);
+      // Evacuate immediate
+      VoiceNumber=PlayVoiceLocal(CP61409,1.0,0.0,0);
+      Sleep(GetSoundLen(CP61409));
+      TimerStop=4;
+      SetTimer(10);
+      IAmSleeping=0;
+      return;
+   }
+   if(TimerStop==4)
+   {
+      IAmSleeping=1;
+      JKPrintUniString(-1,61410);
+      // core overload imminent
+      VoiceNumber=PlayVoiceLocal(CP61410,1.0,0.0,0);
+      Sleep(GetSoundLen(CP61410));
+      TimerStop=5;
+      SetTimer(10);
+      IAmSleeping=0;
+      return;
+   }
+   if(TimerStop==5)
+   {
+      IAmSleeping=1;
+      JKPrintUniString(-1,61411);
+      // core overload in 60 sec
+      VoiceNumber=PlayVoiceLocal(CP61411,1.0,0.0,0);
+      Sleep(GetSoundLen(CP61411));
+      TimerStop=6;
+      SetTimer(30);
+      IAmSleeping=0;
+      return;
+   }
+   if(TimerStop==6)
+   {
+      IAmSleeping=1;
+      JKPrintUniString(-1,61412);
+      // core overload in 30 sec
+      VoiceNumber=PlayVoiceLocal(CP61412,1.0,0.0,0);
+      Sleep(GetSoundLen(CP61412));
+      TimerStop=7;
+      SetTimer(20);
+      IAmSleeping=0;
+      return;
+   }
+   if(TimerStop==7)
+   {
+      IAmSleeping=1;
+      JKPrintUniString(-1,61413);
+      // core overload in 10 sec
+      VoiceNumber=PlayVoiceLocal(CP61413,1.0,0.0,0);
+      Sleep(GetSoundLen(CP61413));
+      TimerStop=8;
+      SetTimer(5);
+      IAmSleeping=0;
+      return;
+   }
+   if(TimerStop==8)
+   {
+      IAmSleeping=1;
+      // if the player is dead, don't end the level...
+      if(GetThingHealth(GetLocalPlayerThing())<=0)
+      {
+         IAmSleeping=0;
+         return;
+      }
+      JKPrintUniString(-1,61414);
+      // core overload in 5, 4, 3,...
+      VoiceNumber=PlayVoiceLocal(CP61414,1.0,0.0,0);
+      Sleep(GetSoundLen(CP61414));
+
+      if(goal1)
+      {
+         IAmSleeping=0;
+         return;
+      }
+
+      blindingEffectHandle=newColorEffect(0,0,0,0,0,0,232,250,232,1.0);
+      PlaySoundLocal(wav28,1.5,0.0,0);
+      PlaySoundLocal(wav29,1.5,0.0,0);
+      PlaySoundLocal(wav30,1.5,0.0,0);
+      DamageThing(GetLocalPlayerThing(),0x1,1000,-1);
+      Sleep(1);
+      JKEndLevel(0);
+      IAmSleeping=0;
+      return;
+   }
+   return;
+   
+pulse:
+   if(NoExplosions==1) return;
+   if(IAmSleeping==1) return;
+   curSector=GetThingSector(jkGetLocalPLayer());
+   if(rand()>expChance) return;
+   CreateThingAtPos(explosion_tpl,curSector,GetSectorVertexPos(curSector,(Rand()*GetNumSectorVertices(curSector))),'0.0 0.0 0.0');
+
+   posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+   angOffset=VectorSet(Rand(),Rand(),Rand());
+   SetPOVShake(posOffset,angOffset,.5,80.0);
+   Sleep(0.1);
+   posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+   angOffset=VectorSet(Rand(),Rand(),Rand());
+   SetPOVShake(posOffset,angOffset,.5,80.0);
+   Sleep(0.1);
+   posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+   angOffset=VectorSet(Rand(),Rand(),Rand());
+   SetPOVShake(posOffset,angOffset,.5,80.0);
+   Sleep(0.1);
+   posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+   angOffset=VectorSet(Rand(),Rand(),Rand());
+   SetPOVShake(posOffset,angOffset,.5,80.0);
+   Sleep(0.1);
+   posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+   angOffset=VectorSet(Rand(),Rand(),Rand());
+   SetPOVShake(posOffset,angOffset,.5,80.0);
+   Sleep(0.1);
+   posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+   angOffset=VectorSet(Rand(),Rand(),Rand());
+   SetPOVShake(posOffset,angOffset,.5,80.0);
+   Sleep(0.1);
+   posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+   angOffset=VectorSet(Rand(),Rand(),Rand());
+   SetPOVShake(posOffset,angOffset,.5,80.0);
+   Sleep(0.1);
+   posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+   angOffset=VectorSet(Rand(),Rand(),Rand());
+   SetPOVShake(posOffset,angOffset,.5,80.0);
+   return;
+
+user7:
+   goal1=1;
+   return;
+end
+
+

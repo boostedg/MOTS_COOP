@@ -1,0 +1,77 @@
+# Jedi Knight Cog Script
+#
+# S2L2b_ENDLEVEL.COG
+#
+# Endlevel cog for level S2L2b
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# ========================================================================================
+
+symbols
+
+message         startup
+message         user0
+message     shutdown
+
+sound           dialogue
+
+int             player           local
+sound           goalsnd=Accomplish1.wav   local
+end
+
+# ========================================================================================
+
+## Code Section
+code
+
+startup:
+   // This is the master COG, so register it.
+   SetMasterCOG(GetSelfCOG());
+
+   player = GetLocalPlayerThing();
+
+   // Setup the goals first string in cogStrings.uni so the UI knows about it.
+   SetInv(player, 99, 23000);
+
+   // Setup all the goals as displayed at start
+   SetGoalFlags(player, 0, 1);
+
+   // When player starts, give him fists, and a bryar.
+   //SetInv(player, 1, 1.0);
+   //SetInv(player, 2, 1.0);
+   //if(GetInv(player, 11) < 50) SetInv(player, 11, 50.0);
+
+   Sleep(0.05);
+
+   // Initialize weapon.
+   SetFireWait(player, -1);
+   SetMountWait(player, 0);
+   SetCurInvWeapon(player, 0);
+   SelectWeapon(player, GetWeaponBin(AutoSelectWeapon(player, 1)));
+
+   Return;
+
+# ........................................................................................
+
+user0:
+   jkPrintUNIString(player, 350);
+
+   if(GetParam(0) == 0)
+   {
+      PlaySoundThing(goalsnd, player, 1.0, -1, -1, 0);
+      SetGoalFlags(player, 0, 2);
+      Return;
+   }
+   Return;
+# ........................................................................................
+shutdown:
+   ChangeInv(player, 16, 2);
+      // Give a force star if the player finds all the secrets
+      if((GetInv(player, 71) != 0) && (GetInv(player, 70) == GetInv(player, 71)))
+         ChangeInv(player, 16, 1);
+
+   Return;
+
+end

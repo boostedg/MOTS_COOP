@@ -1,0 +1,431 @@
+##S1L3_CriticalPath.cog
+
+symbols
+message	startup
+message	activate
+message	entered
+message	damaged
+message	arrived
+surface	powerswitch	 				linkid=2
+surface	targetswitch				linkid=3
+surface	firingswitch				linkid=4
+surface	powerscreen1
+surface	powerscreen2
+surface	powerscreen3
+surface	targetscreen1
+surface	targetscreen2
+surface	targetscreen3
+surface	BlastDoorSwitch				linkid=1
+surface	powertoswitch2	
+surface	powertoswitch				linkid=6
+sector	reset1					linkid=5
+sector	reset2					linkid=5
+int 		VoiceNumber					local
+int		power=0					local
+int		target=0					local
+int		falsefire=0					local
+int		defeated=0					local
+int		powertoswitchchk=0			local
+int		IAmSleeping=0				local
+int		SayItOnce=1					local
+int		IAmDoneHere=0				local
+int		BlastDoorSpeed=8				local
+sound		activate02=activate02.wav		local
+sound		deactivate02=deactivate02.wav		local
+sound		forcefieldon01=forcefieldon01.wav	local
+sound		forcefieldoff01=forcefieldoff01.wav	local
+sound		lgclick1=lgclick1.wav			local
+sound		expl_01=LaserCannonTail.wav		local
+sound		expl_04=LaserCannonTail.wav		local
+sound		KK61301=KK61301.wav			local
+sound		KK61302=KK61302.wav			local
+sound		KK61303=KK61303.wav			local
+sound		CP61304=CP61304.wav			local
+sound		CP61305=CP61305.wav			local
+sound		KK61306=KK61306.wav			local
+sound		CP61307=CP61307.wav			local
+sound		CP61308=CP61308.wav			local
+sound		CP61309=CP61309.wav			local
+sound		CP61310=CP61310.wav			local
+sound		CP61311=CP61311.wav			local
+sound		KK61312=KK61312.wav			local
+sound		KK61313=KK61313.wav			local
+sound		KK61314=KK61314.wav			local
+sound		KK61315=KK61315.wav			local
+sound		KK61316=KK61316.wav			local
+sound		CP61317=CP61317.wav			local
+sound		CP61318=CP61318.wav			local
+sector	SafetyDoorSector
+sector	BlastDoorSector	
+sector	SayItNowSector				linkid=7
+thing		SafetyDoor					linkid=8	mask=0x405
+thing		BlastDoor					mask=0x405
+vector	posOffset					local
+vector	angOffset					local
+
+end
+
+code
+startup:
+	SetWallCel(BlastDoorSwitch,0);	
+	SetWallCel(powerswitch,0);
+	SetWallCel(targetswitch,1);
+	SetWallCel(firingswitch,0);
+	SetWallCel(powerscreen1,0);
+	SetWallCel(powerscreen2,0);
+	SetWallCel(powerscreen3,0);
+	SetWallCel(targetscreen1,0);
+	SetWallCel(targetscreen2,0);
+	SetWallCel(targetscreen3,0);
+	SetWallCel(powertoswitch,0);
+	SetWallCel(powertoswitch2,0);
+	SetSurfaceLight(powerswitch2,1,0.1);
+	SetSurfaceLight(targetswitch,1,0.1);
+	SetSurfaceLight(firingswitch,1,0.1);
+	SetSurfaceLight(powertoswitch2,1,0.1);		
+	SafetyDoorSector=GetThingSector(SafetyDoor);
+	BlastDoorSector=GetThingSector(BlastDoor);
+	SetSectorAdjoins(SafetyDoorSector,0);
+	SetSectorAdjoins(BlastDoorSector,0);						
+	return;			
+activate:
+	if(IAmSleeping==1) return;
+	if((GetSenderID()==1)&&(GetWallCel(BlastDoorSwitch)==0)&&(defeated==0))	//opens blast door normally
+	{
+		if(IsThingMoving(BlastDoor)==1) return;
+		if(GetCurFrame(BlastDoor)==1) return;
+		IAmSleeping=1;
+		SetWallCel(BlastDoorSwitch,1);
+		PlaySoundPos(activate02,SurfaceCenter(BlastDoorSwitch),1,-1,-1,0);
+		SetSectorAdjoins(BlastDoorSector,1);
+		MoveToFrame(BlastDoor,1,BlastDoorSpeed);
+		IAmSleeping=0;
+		return;
+	}
+	if((GetSenderID()==1)&&(GetWallCel(BlastDoorSwitch)==1)&&(defeated==0))	//closes blast door normally
+	{
+		if(IsThingMoving(BlastDoor)==1) return;
+		if(GetCurFrame(BlastDoor)==0) return;
+		IAmSleeping=1;
+		SetWallCel(BlastDoorSwitch,0);
+		PlaySoundPos(activate02,SurfaceCenter(BlastDoorSwitch),1,-1,-1,0);
+		MoveToFrame(BlastDoor,0,BlastDoorSpeed);
+		IAmSleeping=0;
+		return;
+	}			
+	if((GetSenderID()==2)&&(GetWallCel(powerswitch)==0)&&(IAmDoneHere==0))	//increases weapon power to full
+	{
+		IAmSleeping=1;
+		SetWallCel(powerswitch,1);
+		PlaySoundPos(forcefieldon01,SurfaceCenter(powerswitch),1,-1,-1,0);
+		SetWallCel(powerscreen1,1);
+		SetWallCel(powerscreen2,1);
+		SetWallCel(powerscreen3,1);
+		power=1;
+		Sleep(1);
+		SendMessageEx(GetMasterCOG(),user0,1,0,0,0);
+		Sleep(1);
+		JKPrintUniString(-1,61307);		
+		VoiceNumber=PlayVoiceLocal(CP61307,1.0,0.0,0);
+		Sleep(GetSoundLen(CP61307));
+		IAmDoneHere=1;
+		IAmSleeping=0;
+		return;
+	}
+	if((GetSenderID()==3)&&(GetWallCel(targetswitch)==1))	//targets the remote asteroid
+	{
+		IAmSleeping=1;
+		SetWallCel(targetswitch,0);
+		PlaySoundPos(activate02,SurfaceCenter(targetswitch),1,-1,-1,0);
+		SetWallCel(targetscreen1,1);
+		SetWallCel(targetscreen2,1);
+		SetWallCel(targetscreen3,1);
+		target=1;
+		Sleep(0.25);
+		JKPrintUniString(-1,61309);		
+		VoiceNumber=PlayVoiceLocal(CP61309,1.0,0.0,0);
+		Sleep(GetSoundLen(CP61309));
+		IAmSleeping=0;
+		return;
+	}
+	if((GetSenderID()==3)&&(GetWallCel(targetswitch)==0))	//targets the rebel base
+	{
+		IAmSleeping=1;
+		SetWallCel(targetswitch,1);
+		PlaySoundPos(activate02,SurfaceCenter(targetswitch),1,-1,-1,0);
+		SetWallCel(targetscreen1,0);
+		SetWallCel(targetscreen2,0);
+		SetWallCel(targetscreen3,0);
+		target=0;
+		Sleep(0.25);
+		JKPrintUniString(-1,61309);		
+		VoiceNumber=PlayVoiceLocal(CP61309,1.0,0.0,0);
+		Sleep(GetSoundLen(CP61309));
+		IAmSleeping=0;
+		return;
+	}
+	if((GetSenderID()==4)&&(GetWallCel(firingswitch)==0)&&(power==0)&&(target==0))	//base normal pwr
+	{
+		IAmSleeping=1;
+		SetWallCel(firingswitch,1);
+		PlaySoundPos(expl_01,SurfaceCenter(firingswitch),1,-1,-1,0);
+		posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+		angOffset=VectorSet(Rand(),Rand(),Rand());
+		SetPOVShake(posOffset,angOffset,.5,80.0);
+		Sleep(0.1);
+		posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+		angOffset=VectorSet(Rand(),Rand(),Rand());
+		SetPOVShake(posOffset,angOffset,.5,80.0);
+		Sleep(0.1);
+		posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+		angOffset=VectorSet(Rand(),Rand(),Rand());
+		SetPOVShake(posOffset,angOffset,.5,80.0);
+		Sleep(1);
+		SetWallCel(firingswitch,0);
+		JKPrintUniString(-1,61310);		
+		VoiceNumber=PlayVoiceLocal(CP61310,1.0,0.0,0);
+		Sleep(GetSoundLen(CP61310));
+		Sleep(0.25);
+		JKPrintUniString(-1,61312);		
+		VoiceNumber=PlayVoiceLocal(KK61312,1.0,0.0,0);
+		Sleep(GetSoundLen(KK61312));
+		IAmSleeping=0;
+		return;
+	}
+	if((GetSenderID()==4)&&(GetWallCel(firingswitch)==0)&&(power==1)&&(target==0))	//base full pwr
+	{
+		falsefire=(falsefire+1);
+		if(falsefire==1)
+		{
+			IAmSleeping=1;
+			SetWallCel(firingswitch,1);
+			PlaySoundPos(expl_04,SurfaceCenter(firingswitch),1,-1,-1,0);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(0.1);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(0.1);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(0.1);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(0.1);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(0.1);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(0.1);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(0.1);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(1);
+			SetWallCel(firingswitch,0);
+			JKPrintUniString(-1,61311);		
+			VoiceNumber=PlayVoiceLocal(CP61311,1.0,0.0,0);
+			Sleep(GetSoundLen(CP61311));
+			Sleep(0.25);
+			JKPrintUniString(-1,61312);		
+			VoiceNumber=PlayVoiceLocal(KK61312,1.0,0.0,0);
+			Sleep(GetSoundLen(KK61312));
+			IAmSleeping=0;
+			return;
+		}
+		if(falsefire==2)
+		{
+			IAmSleeping=1;
+         // do the fire effect
+			SetActorFlags(GetLocalPplayerThing(),0xa000);
+			SetWallCel(firingswitch,1);
+			PlaySoundPos(expl_04,SurfaceCenter(firingswitch),1,-1,-1,0);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(0.1);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(0.1);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(0.1);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(0.1);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(0.1);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(0.1);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(0.1);
+			posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+			angOffset=VectorSet(Rand(),Rand(),Rand());
+			SetPOVShake(posOffset,angOffset,.5,80.0);
+			Sleep(1);
+			SetWallCel(firingswitch,0);
+			JKPrintUniString(-1,61311);		
+			VoiceNumber=PlayVoiceLocal(CP61311,1.0,0.0,0);
+			Sleep(GetSoundLen(CP61311));
+			Sleep(0.25);
+
+         // Destroid the base!!!!
+         // remove player control...
+         SetActorFlags (GetLocalPlayerThing(), 0xa00000);
+
+         // what have i done???
+			JKPrintUniString(-1,61313);		
+			VoiceNumber=PlayVoiceLocal(KK61313,1.0,0.0,0);
+			Sleep(GetSoundLen(KK61313));
+         // Mission objective failed...
+			JKPrintUniString(-1,40000);		
+         		Sleep (3);
+			IAmSleeping=0;
+			JKEndLevel (0);
+			return;
+		}
+		return;
+	}
+	if((GetSenderID()==4)&&(GetWallCel(firingswitch)==0)&&(power==0)&&(target==1))	//asteroid normal pwr
+	{
+		IAmSleeping=1;
+		SetWallCel(firingswitch,1);
+		PlaySoundPos(expl_01,SurfaceCenter(firingswitch),1,-1,-1,0);
+		posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+		angOffset=VectorSet(Rand(),Rand(),Rand());
+		SetPOVShake(posOffset,angOffset,.5,80.0);
+		Sleep(0.1);
+		posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+		angOffset=VectorSet(Rand(),Rand(),Rand());
+		SetPOVShake(posOffset,angOffset,.5,80.0);
+		Sleep(0.1);
+		posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+		angOffset=VectorSet(Rand(),Rand(),Rand());
+		SetPOVShake(posOffset,angOffset,.5,80.0);
+		Sleep(1);
+		SetWallCel(firingswitch,0);
+		JKPrintUniString(-1,61310);		
+		VoiceNumber=PlayVoiceLocal(CP61310,1.0,0.0,0);
+		Sleep(GetSoundLen(CP61310));
+		Sleep(0.25);
+		JKPrintUniString(-1,61303);		
+		VoiceNumber=PlayVoiceLocal(KK61303,1.0,0.0,0);
+		Sleep(GetSoundLen(KK61303));
+		IAmSleeping=0;
+		return;
+	}
+	if((GetSenderID()==4)&&(GetWallCel(firingswitch)==0)&&(power==1)&&(target==1))	//asteroid full pwr	
+	{
+		IAmSleeping=1;
+		SetActorFlags(GetLocalPlayerThing(),0xa000);
+		SetWallCel(firingswitch,1);
+		PlaySoundPos(expl_04,SurfaceCenter(firingswitch),1,-1,-1,0);
+		posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+		angOffset=VectorSet(Rand(),Rand(),Rand());
+		SetPOVShake(posOffset,angOffset,.5,80.0);
+		Sleep(0.1);
+		posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+		angOffset=VectorSet(Rand(),Rand(),Rand());
+		SetPOVShake(posOffset,angOffset,.5,80.0);
+		Sleep(0.1);
+		posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+		angOffset=VectorSet(Rand(),Rand(),Rand());
+		SetPOVShake(posOffset,angOffset,.5,80.0);
+		Sleep(0.1);
+		posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+		angOffset=VectorSet(Rand(),Rand(),Rand());
+		SetPOVShake(posOffset,angOffset,.5,80.0);
+		Sleep(0.1);
+		posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+		angOffset=VectorSet(Rand(),Rand(),Rand());
+		SetPOVShake(posOffset,angOffset,.5,80.0);
+		Sleep(0.1);
+		posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+		angOffset=VectorSet(Rand(),Rand(),Rand());
+		SetPOVShake(posOffset,angOffset,.5,80.0);
+		Sleep(0.1);
+		posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+		angOffset=VectorSet(Rand(),Rand(),Rand());
+		SetPOVShake(posOffset,angOffset,.5,80.0);
+		Sleep(0.1);
+		posOffset=VectorSet(Rand()*0.01,Rand()*0.01,Rand()*0.01);
+		angOffset=VectorSet(Rand(),Rand(),Rand());
+		SetPOVShake(posOffset,angOffset,.5,80.0);
+		Sleep(1);
+		IAmSleeping=0;
+		SendMessageEx(GetMasterCOG(),user0,2,0,0,0);
+		return;
+	}
+	if(GetSenderID()==8)				//safety door
+	{
+		IAmSleeping=1;	
+		JKPrintUniString(-1,61317);		
+		VoiceNumber=PlayVoiceLocal(CP61317,1.0,0.0,0);
+		Sleep(GetSoundLen(CP61317));
+		IAmSleeping=0;
+		return;
+	}		
+	return;
+entered:	
+	if(IAmSleeping==1) return;
+	if((GetSenderID()==5)&&(defeated==0))	//imperials close the blast door
+	{
+		if(IsThingMoving(BlastDoor)==1) return;
+		if(GetCurFrame(BlastDoor)==0) return;
+		IAmSleeping=1;
+		SetWallCel(BlastDoorSwitch,0);
+		MoveToFrame(BlastDoor,0,BlastDoorSpeed);
+		Sleep(1);
+		JKPrintUniString(-1,61301);		
+		VoiceNumber=PlayVoiceLocal(KK61301,1.0,0.0,0);
+		Sleep(GetSoundLen(KK61301));
+		IAmSleeping=0;
+		return;
+	}
+	return;
+damaged:
+	if(IAmSleeping==1) return;
+	if((GetSenderID()==6)&&(GetWallCel(powertoswitch)==0)&&(defeated==0))	//main control defeated
+	{
+		IAmSleeping=1;
+		SetWallCel(powertoswitch,1);
+		SetWallCel(powertoswitch2,1);
+		SetWallCel(BlastDoorSwitch,1);
+		defeated=1;
+		SetSectorAdjoins(BlastDoorSector,1);
+		MoveToFrame(BlastDoor,1,BlastDoorSpeed);
+		SendMessageEx(GetMasterCOG(),user0,0,0,0,0);
+		IAmSleeping=0;
+		return;
+	}
+	return;
+arrived:
+	if(IsThingMoving(BlastDoor)==1) return;
+	if(GetCurFrame(BlastDoor)==1) return;
+	if(GetCurFrame(BlastDoor)==0)
+		{
+			SetSectorAdjoins(BlastDoorSector,0);
+			return;
+		}
+	return;
+end
+	

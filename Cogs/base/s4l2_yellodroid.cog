@@ -1,0 +1,35 @@
+# Jedi Knight Cog Script
+#
+# S4l2_yellodroid.cog
+#
+# collect the yellow wrench when you kill a droid
+#
+# [DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+message		killed
+
+thing			droid		      mask=0xfff 
+thing			yellowwrench	nolink
+
+#template		YWK_tpl=YellowWrenchKey 	local
+
+end
+
+
+code
+
+           	
+killed:
+
+   TeleportThing(yellowWrench, droid);
+
+   SetPhysicsFlags(yellowWrench, 1);
+
+   Return;
+
+end

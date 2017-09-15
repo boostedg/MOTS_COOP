@@ -1,0 +1,45 @@
+# S1L3_BlastDoor.cog
+
+symbols
+message		activated
+message		startup
+message		arrived
+thing			BlastDoor	mask=0x405
+surface		switch	linkid=1
+sector		BlastDoorSector
+end
+
+code
+startup:
+SetWallCel(switch,0);
+BlastDoorSector=GetThingSector(BlastDoor);
+SetSectorAdjoins(BlastDoorSector,0);
+return;
+
+activated:
+if(IsThingMoving(BlastDoor)==1) return;
+if(GetCurFrame(BlastDoor)==1) return;
+if((GetSenderID()==1)&&(IAmSleeping==0))
+	{
+		IAmSleeping=1;
+		SetWallCel(switch,1);
+		SetSectorAdjoins(BlastDoorSector,1);
+		MoveToFrame(BlastDoor,1,8);
+		Sleep(0.25);
+		SetWallCel(switch,0);
+		Sleep(2);
+		MoveToFrame(BlastDoor,0,8);
+		IAmSleeping=0;
+		return;
+	}
+	return;
+arrived:
+	if(IsThingMoving(BlastDoor)==1) return;
+	if(GetCurFrame(BlastDoor)==1) return;
+	if(GetCurFrame(BlastDoor)==0)
+		{
+			SetSectorAdjoins(BlastDoorSector,0);
+			return;
+		}
+	return;
+end

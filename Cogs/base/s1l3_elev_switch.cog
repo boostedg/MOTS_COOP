@@ -1,0 +1,66 @@
+## S1L3_elev_switch.cog
+## A Basic elevator Cog
+## This elevator will go up to frame one, sleep, then come back down to frame 0 when
+## entered from the bottom.  When entered from the top, it should stay at the bottom.
+## The button surface is a call switch you can put at the top to call the thing up there.
+
+## Modified 11/13/96 D.Shannon  (added third adjoin)
+## Modified 12/14/96 by RKD (changed to new COG format)
+## Modified 4/6/97 by Ingar (Fixed bug with repeatedly hitting switch)
+## Modified 4/29/97 by RKD (changed to work with 00_sendmessage.cog -- see commented out line below)
+## Modified 4/30/97 by Ingar (Changed from sleep to timer)
+## Modified 8/10/97 by Tim L. (added one more adjoin for access from all 4 sides.) --also renamed for Jkm.
+## Modified 8/14/97 by Chris K (copied M8_elev_switch.cog, and renamed it for use in JK Missions' S1L3) 
+symbols
+	message	crossed
+	message	activate
+	message	arrived
+	message	timer
+
+	surface	lower_adjoin0	linkid=1
+	surface	lower_adjoin1	linkid=1
+	surface	lower_adjoin2	linkid=1
+	surface lower_adjoin3   linkid=1
+
+	surface	button			linkid=1
+
+	thing		elevator			linkid=2
+
+	float		start_wait=0.25	desc=pause_before_moving_up
+	float		sleeptime=2.0
+	float		speed=4.0
+	sound		wav0=Activate02.wav
+end
+
+## Code Section
+code
+crossed:						// If player crosses adjoin(s)
+	Sleep(start_wait);				// pause before moving up
+	// fall through
+
+activate:						// If player presses button
+	if (GetSenderId() == 2) return;	// message came from elevator
+	if (GetWallCel(button) == 1) return;
+
+	SetWallCel(button, 1);
+	PlaySoundPos(wav0, SurfaceCenter(button), 1, -1, -1, 0);
+	
+	MoveToFrame(elevator, 1, speed);
+	return;
+	
+arrived:
+	if (GetCurFrame(elevator) == 0) {
+		SetWallCel(button, 0);
+		PlaySoundPos(wav0, SurfaceCenter(button), 1, -1, -1, 0);
+	} else {
+		// Set sleep time at top
+		SetTimer(sleeptime);
+	}
+	return;
+
+timer:
+	// Send elevator down
+	MoveToFrame(elevator, 0, speed);
+	return;
+end	
+

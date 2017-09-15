@@ -1,0 +1,27 @@
+# Jedi Knight Cog Script
+#
+#
+# [SXC]
+#
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+thing		lightthing	
+flex		period=2.0	
+flex		maxLight=1.0	
+flex		minLight=0.0	
+message		user0		
+end
+
+## Code Section
+
+code
+
+//-------------------------------------------------------------------------------------------------
+
+user0:
+	ThingLightAnim(lightthing, minlight, maxlight, period);
+	return;
+end
+

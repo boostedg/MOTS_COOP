@@ -1,0 +1,68 @@
+# Jedi Knight Cog Script
+#
+# S1L1_EXPLOdeWALL.COG
+#
+# Shootable wall cog for level S1L1
+#
+# [DB & KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+message		entered
+
+sector 		entersector
+
+thing       	wall                          mask=0xfff
+
+thing		ghost0
+thing		ghost1
+thing		ghost2
+thing		ghost3
+
+template	explosion_tpl=+raildet_exp			local
+template    	explodedwall_tpl
+
+int         	done=0                        		local
+
+sound		rm61110=rm61110.wav			local
+
+end
+
+
+code
+  
+entered:
+
+ if (done) Return;  
+
+	Sleep(1);
+
+ if(GetParam(1)!=1)
+  	{
+     	done=1;
+     	CreateThing(explosion_tpl, ghost0);
+     	Sleep(0.05);
+
+     	CreateThing(explodedwall_tpl, wall);
+     	DestroyThing(wall);
+
+     	CreateThing(explosion_tpl, ghost0);
+     	Sleep(0.05);
+     	CreateThing(explosion_tpl, ghost1);
+     	Sleep(0.05);
+     	CreateThing(explosion_tpl, ghost2);
+     	Sleep(0.05);
+     	CreateThing(explosion_tpl, ghost2);
+
+	Sleep(2);
+
+	JKPrintUniString(-1, 61110);
+	PlayVoiceLocal(rm61110, 1.0, 0.0, 0);
+	}
+
+     Return;
+
+end
+

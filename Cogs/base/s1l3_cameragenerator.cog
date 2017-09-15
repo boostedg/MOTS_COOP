@@ -1,0 +1,33 @@
+# S1L3_CameraGenerator.cog
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+thing			generator_pos	desc=generator_ghost
+template		enemy_tpl		desc=enemy_to_generate
+int			enemy			local
+int			enemycreated=0	local
+int			CameraNumber=1
+int			UseThisNumber	local
+message		startup
+message		trigger
+end
+
+code
+startup:
+	if(CameraNumber<1) CameraNumber=0;
+	if(CameraNumber>11) CameraNumber=0;
+	if(CameraNumber==0) return;
+	UseThisNumber=(10000+CameraNumber);		
+	if (generator_pos==-1) return;	//dumps out if generator_pos doesn't appear
+	return;
+trigger:
+	if(GetSourceRef()!=UseThisNumber) return;	//looks for the camera's trigger reference
+	if(enemycreated==1) return;	  	 	//dumps out if the enemy has already been created
+	if(!HasLOS(player, generator_pos))		//creates enemy if player can't see generator_pos
+	{
+		enemy = CreateThing(enemy_tpl,generator_pos);
+		enemycreated=1;
+		CaptureThing(enemy);
+	}
+	return;
+end

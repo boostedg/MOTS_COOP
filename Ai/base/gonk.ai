@@ -1,0 +1,20 @@
+# Jedi Knight AI File
+#
+# GONK.AI
+#
+# Droid AI
+# Flee only when damaged
+# All difficulty levels
+#
+# [CR]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+alignment=0.0, rank=0.5, fov=210, maxstep=0.0, sightdist=6.0, heardist=0.5
+
+#instinct			args
+#################################
+
+SenseDanger     	100.0, 0.00
+Flee            	10.0, 10000.0, 10.0
+OpenDoors

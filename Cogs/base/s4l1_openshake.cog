@@ -1,0 +1,48 @@
+# Jedi Knight Missions Cog Script
+# S4L1_OpenShake.cog
+# We're being attacked!
+# [KS,SH]
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved		
+
+symbols
+   message		startup
+   message		timer
+   sound		hands=rm64103.wav		local
+   sound		shields=rm64109.wav	local
+   sound		reactor=cp64118.wav	local
+   sound		explode=expl_02.wav	local
+   vector		posOffset			local
+   vector		angOffset			local
+end
+
+code
+startup:
+   Sleep(1);
+   PlaySoundLocal(hands, 1.0, 0.0, 0x100);
+   jkPrintUNIString(-1, 64103);
+   Sleep(2);
+
+   PlaySoundLocal(explode, 1.0, 0.0, 0);
+   SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .5, 80.0);
+   SetTimer(0.1);
+
+   Sleep(1);
+
+   PlaySoundLocal(shields, 1.0, 0.0, 0x100);
+   jkPrintUNIString(-1, 64109);
+
+   Sleep(2);
+
+   PlaySoundLocal(explode, 1.0, 0.0, 0);
+   SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .5, 80.0);
+   SetTimer(0.1);
+   PlaySoundLocal(reactor, 1.0, 0.0, 0x100);
+   jkPrintUNIString(-1, 64118);
+   return;
+timer:
+   posOffset = VectorSet(Rand()*0.01, Rand()*0.01, Rand()*0.01);
+   angOffset = VectorSet(Rand(), Rand(), Rand());
+   SetPOVShake(posOffset, angOffset, .5, 80.0);	
+   return;
+end
+

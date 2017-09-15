@@ -1,0 +1,29 @@
+# Jedi Knight AI File
+#
+# Pr_def.AI
+#
+# Pirate Raider AI
+# Medium difficulty
+#
+# [SRS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+alignment=-1.0, rank=0.5, fov=200, maxstep=0.6, sightdist=5.0, heardist=2.0, accuracy=0.25
+
+#instinct			args
+###############################################
+	
+LookForTarget		500.0, 50000.0
+Listen          	1.00, 3.0
+PrimaryFire			1000.0, 0.8, 3.0, 0.20, 0.0, 200.0, 0.50, 0.00, 0.0, 0.0
+BlindFire       	2000.0, 0.50, 0, 0.8, 0.0, 0.10
+Follow	        	0.5, 2.0
+Retreat         	0.50, 0.25, 1000.0, 1.0
+Flee            	1.5, 10000.0, 1.0
+OpenDoors
+ReturnHome
+Talk            	10000.0, 0.10
+Dodge           	0.1, 0.1
+

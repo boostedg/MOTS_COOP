@@ -1,0 +1,213 @@
+# Jedi Knight Cog Script
+#
+# 00_DOORSWITCH.COG/ modified
+#
+# Doors handled by switch
+#
+# [CYW & YB]  / [DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+thing       door0                            linkid=1
+thing       door1                            linkid=1
+
+surface     switch0                          linkid=2
+
+flex        movespeed=5.0
+flex        sleeptime=5.0
+flex        lightvalue=1.0
+
+sound       onSound=set_hi2.wav                             local
+sound       offSound=lgclick1.wav                           local
+sound       locksound=df_door2-3.wav                        local
+sound       shiprumble=09freighter.wav                    local
+
+int         doorsector                                      local
+int         numdoors=0                                      local
+int         doorstatus=0                                    local
+int         movestatus=0                                    local
+int         garbage=-1                                      local
+int         dummy=0                                         local
+
+message     startup
+message     activated
+message     arrived
+message     blocked
+message     timer
+
+sector      thrust1
+sector      thrust2
+sector      thrust3
+
+vector      vec0
+
+#thing       light1
+#thing       light2
+
+flex        ltvalue1=1.0
+flex        ltvalue2=0.1
+flex        ltvalue3=0.0
+
+sector      hotone
+sector      hottwo
+  
+end
+
+# ========================================================================================
+
+code
+startup:
+   if(door0 >= 0) numdoors = numdoors + 1;
+   if(door1 >= 0) numdoors = numdoors + 1;
+
+   doorsector = GetThingSector(door0);
+   SectorAdjoins(doorsector, 0);
+   SectorLight(doorsector, lightvalue, 0.0); // add some light to door sector
+   return;
+
+# ........................................................................................
+
+activated:
+   if (GetSenderId() == 1)
+      {
+      dummy=PlaySoundLocal(locksound, 1, 0, 0);
+      }
+   else if (GetSenderId() == 2)
+      {
+        call checkstatus;
+        if (movestatus) return;
+        if (doorstatus == 0)                      // all pieces are at frame 0
+           {
+            garbage = PlaySoundThing(onSound, door0, 0.6, -1, -1, 0);      // play activate sound
+            garbage = setwallcel(switch0, 1);
+            //if (switch1 >= 0) garbage = setwallcel(switch1, 1);
+            sectoradjoins(doorsector, 1);
+            call open_doors;
+           }
+      }
+    return;
+
+# ........................................................................................
+
+arrived:
+   call checkstatus;
+   if(movestatus) return;
+   if(doorstatus == numdoors)
+   {                                         // all pieces are at frame 1
+      
+      call start_effects;
+
+      SetTimerEx(sleeptime, 1, 0, 0);
+
+      for (i=0; i<10; i=i+1)
+         {
+         posOffset = VectorSet(Rand()*0.01, Rand()*0.01, Rand()*0.01);
+	      angOffset = VectorSet(Rand(), Rand(), Rand());
+	      SetPOVShake(posOffset, angOffset, .5, 80.0);
+         Sleep(0.5);
+         }
+
+      //big light flaring
+      //sectorthrust out the door.....
+
+
+
+   }
+   else if(doorstatus == 0)
+   {                                         // all pieces are at frame 0
+      garbage = PlaySoundThing(offSound, door0, 0.6, -1, -1, 0);   // play deactivate sound
+      garbage = setwallcel(switch0, 0);
+      //if(switch1 >= 0) garbage = setwallcel(switch1, 0);
+      sectoradjoins(doorsector, 0);
+   }
+   return;
+
+# ........................................................................................
+
+blocked:
+   call open_doors;
+   return;
+
+# ........................................................................................
+
+open_doors:
+   movetoframe(door0, 1, movespeed);
+   if (door1 >= 0) movetoframe(door1, 1, movespeed);
+   return;
+
+close_doors:
+
+   Sleep(1.0);
+
+   movetoframe(door0, 0, movespeed);
+   if (door1 >= 0) movetoframe(door1, 0, movespeed);
+   return;
+
+checkstatus:
+   movestatus = ismoving(door0);
+   if (door1 >= 0) movestatus = movestatus + ismoving(door1);
+
+
+   doorstatus = getcurframe(door0);
+   if (door1 >= 0) doorstatus = doorstatus + getcurframe(door1);
+   return;
+
+start_effects:
+
+   channel=playsoundlocal(shiprumble, sleeptime, 0, 257);
+
+   SetSectorLight(hotone, ltvalue1, 4.0);
+	SetSectorLight(hottwo, ltvalue1, 4.0);
+
+   //SetThingLight(light1, ltvalue1, 3.0);
+	//SetThingLight(light2, ltvalue1, 3.0);
+
+   SectorThrust(thrust1, vec0, 20.0);
+   SectorThrust(thrust2, vec0, 10.0);
+   SectorThrust(thrust3, vec0, 10.0);
+
+   //Sleep(3.0);
+
+   SetSectorLight(hotone, ltvalue2, 2.0);
+	SetSectorLight(hottwo, ltvalue2, 2.0);
+
+   //SetThingLight(light1, ltvalue2, 2.0);
+   //SetThingLight(light2, ltvalue2, 2.0);
+
+   Sleep(1.0);
+
+   return;
+
+stop_effects:
+
+   StopSound(channel, 1.00);
+
+   SectorThrust(thrust1, vec0, 0.0);
+   SectorThrust(thrust2, vec0, 0.0);
+   SectorThrust(thrust3, vec0, 0.0);
+
+   //SetThingLight(light1, ltvalue3, 1.0);
+   //SetThingLight(light2, ltvalue3, 1.0);
+
+   SetSectorLight(hotone, ltvalue3, 0.0);
+   SetSectorLight(hottwo, ltvalue3, 0.0);
+
+
+   return;
+
+timer:
+   if (GetSenderId()==1)
+      {
+      call close_doors;
+      
+      call stop_effects;
+      }
+   return;
+
+
+end
+
+

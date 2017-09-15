@@ -1,0 +1,70 @@
+# Jedi Knight Cog Script
+#
+# S1L1_Wrench.cog
+#
+#  Opens a wrench controled door. 
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved		
+# ========================================================================================
+
+symbols
+
+message	startup
+message	activate
+message	arrived
+message	timer
+
+thing		door0	
+thing		player				local
+
+cog		wrench				
+
+sector 		doorsector
+surface		socket0				
+
+int		hapnin=0			local	 
+
+sound		needtool=kk60019.wav		local
+sound		klaxon=00AlarmLoop03.wav	local
+
+flex		doorspeed=1.0
+
+end
+
+# ========================================================================================
+code
+startup:
+	SetWallCel(socket0, 1);
+        SectorAdjoins(doorsector0, 0);
+	return;
+
+# ........................................................................................
+activate:
+	player = GetSourceRef(); 
+
+	 // yellow switch
+		if (GetWallCel(switch1) == 1) return;
+		if (GetInv(player, 50) == 0) 
+		{	// no yellow key
+			if (dialogueSaid1) return;
+			dialogueSaid1=1;
+			PlaySoundLocal (needtool, 1, 0, 132);
+         		jkPrintUNIString(-1, 1005);	//"No Luck! I must need a special tool of some kind!"
+			SendMessage(wrench, user0);
+         		
+		} else {
+			PlaySoundPos(klaxon, SurfaceCenter(GetSenderRef()), 1, -1, -1, 0);	  
+	  		SetWallCel(socket0, 0);	
+			SectorAdjoins(doorsector0, 1);
+			MoveToFrame(door0, 1, doorspeed); 
+		}
+	return;
+# ........................................................................................
+timer:
+	hapnin = 0;
+	return;
+
+end
+

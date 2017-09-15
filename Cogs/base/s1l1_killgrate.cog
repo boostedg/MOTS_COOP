@@ -1,0 +1,29 @@
+# Jedi Knight Cog Script
+#
+# S1L1_KillGrate.COG
+#
+# Endlevel cog for level S1L1
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# ========================================================================================
+
+symbols
+
+message 	startup
+
+thing		ghost1
+thing		ghost2
+
+template	explosion_tpl=+raildet_exp	local
+
+end
+# ========================================================================================
+code
+startup:
+	CreateThing(explosion_tpl, ghost1);
+   	CreateThing(explosion_tpl, ghost2);
+
+   Return;
+end

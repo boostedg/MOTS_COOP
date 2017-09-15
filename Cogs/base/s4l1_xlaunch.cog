@@ -1,0 +1,110 @@
+#  Jedi Knight Missions Cog Script
+#  S4L1_xlaunch.cog
+#  brings xwing down, takes off through doors, give platform and door control.
+#  [SH]
+#  (c) 1997 LucasArts  Enterainment Co. All Right Reserved 
+
+symbols
+   message		startup
+   message		entered
+   message		user0
+   message		user3
+   sector		trigsect
+   thing		plat0
+   thing		plat1
+   thing		xwing0
+   thing		xwing1
+   thing		xwing2
+   thing		ghost0
+   thing		ghost1
+   flex		taxispeed=4.0
+   flex		platspeed=2.0
+   flex		flyspeed=6.0
+   int		prep=0			local
+   int		done=0 			local
+   int		channel0			local
+   int		channel1			local
+   int		channel2			local
+   cog		doorcog
+   cog		platcog
+   cog		platbackup			local
+   sound		wav0=xwstdy.wav		local
+   sound		wav1=xwtakeoff.wav	local
+   template		explosion=+xwing_exp 	local
+end
+code
+startup:
+   AttachThingToThing(plat1,plat0);
+   SendMessage(doorcog,user2);
+
+   return;
+entered:
+   If (prep)return;
+   prep=1;	
+   channel0=PlaySoundThing(wav0,xwing0,1.0,5,20,129);
+   channel1=PlaySoundThing(wav0,xwing1,1.0,5,20,129);
+   channel2=PlaySoundThing(wav0,xwing2,1.0,5,20,129);	
+   MoveToFrame(xwing0,1,taxispeed);
+   WaitForStop(xwing0);
+   MoveToFrame(plat0,1,platspeed + 2);
+   MoveToFrame(xwing0,2,platspeed + 2);
+   WaitForStop(xwing0);
+   MoveToFrame(xwing0,3,taxispeed);
+   return;
+user0:
+   if (done)return;
+   done=1;
+   Sleep(2.0);
+   PlaySoundThing(wav1,xwing0,1,5,20,0);	
+   MoveToFrame(xwing0,4,flyspeed/2);//hover
+   WaitForStop(xwing0);
+   MoveToFrame(xwing0,5,flyspeed);//thrudoor 
+   WaitForStop(xwing0);
+   MoveToFrame(plat0,0,platspeed);
+   MoveToFrame(xwing0,6, 1.5 * flyspeed);//rollright
+   WaitForStop(xwing0);
+   MoveToFrame(xwing0,7 ,2.5 * flyspeed);//farright
+   WaitForStop(xwing0);
+   DestroyThing(xwing0);
+   StopSound(channel0,0);
+
+
+   MoveToFrame(xwing1,1,flyspeed/2);//hover
+   WaitForStop(xwing1); 
+   MoveToFrame(xwing2,1,taxispeed);//toplat
+   PlaySoundThing(wav1,xwing1,1,5,20,0);
+   MoveToFrame(xwing1,2,flyspeed);//thrudoor
+   WaitForStop(xwing1);
+   MoveToFrame(xwing1,3,1.5*flyspeed);//rollleft
+   WaitForStop(xwing1);
+   MoveToFrame(xwing1,4,2.5*flyspeed);//farleft
+   WaitForStop(xwing1);
+   DestroyThing(xwing1);
+   StopSound(channel1,0);
+
+   WaitForStop(xwing2);
+   MoveToFrame(plat0,1,platspeed);
+   MoveToFrame(xwing2,2,platspeed);
+   WaitForStop(xwing2);
+   MoveToFrame(xwing2,3,taxispeed);
+   WaitForStop(xwing2);
+
+   PlaySoundThing(wav1,xwing2,1,5,20,0);
+   MoveToFrame(xwing2,4,flyspeed/2);//hover
+   WaitForStop(xwing2);
+   MoveToFrame(xwing2,5,flyspeed);//thrudoor
+   WaitForStop(xwing2);
+   MoveToFrame(xwing2,6,1.5*flyspeed);//startbank
+   WaitForStop(xwing2);
+   CreateThing(explosion,ghost0);
+   CreateThing(explosion,ghost1);
+   DestroyThing(xwing2);
+   StopSound(channel2,0);
+
+   SendMessage(platcog,user1);
+   SendMessage(platbackup,user1);
+   return;
+user3:
+   platbackup=GetSenderRef();
+   return;
+end

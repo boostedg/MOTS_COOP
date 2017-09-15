@@ -1,0 +1,114 @@
+# Jedi Knight Missions Cog Script
+#
+# s1l1bomb.cog
+#
+# Generates (up to 6) explosions when a sector is entered.
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved		
+
+symbols
+
+message		startup
+message		timer
+message 	entered
+message 	pulse
+
+sound		wav0
+sound		wav1
+sound		wav2
+
+thing		ghost0				desc=a_ghost_thing_in_leia
+thing		ghost1				desc=a_ghost_thing_in_leia
+thing		ghost2				desc=a_ghost_thing_in_leia
+thing		ghost3				desc=a_ghost_thing_in_leia
+thing		ghost4				desc=a_ghost_thing_in_leia
+thing		ghost5				desc=a_ghost_thing_in_leia
+
+
+int		bnosound=0			local
+int		explosion			local
+int		done=0				local
+int		soundnum			local
+
+template	explosion_tpl=+grenade_exp	local
+
+sector		entersector
+
+end
+
+# ========================================================================================
+
+code
+
+startup:
+	bnosound=0;
+	return;
+
+# ........................................................................................
+
+entered:
+	if (done) return;
+	done=1;
+      SetTimerEx(0.15, 1, 0, 0);
+      SetTimerEx(0.30, 2, 0, 0);
+      SetTimerEx(0.20, 3, 0, 0);
+      SetTimerEx(0.25, 4, 0, 0);
+      SetTimerEx(0.25, 5, 0, 0);
+
+   return;
+
+# ........................................................................................
+
+timer:	
+
+	if (GetSenderId() == 1)
+	{
+		SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .5, 80.0);
+		SetPulse(0.1);
+		SetPOVShake(posOffset, angOffset, .5, 80.0);
+		PlaySoundLocal(wav0, 1.0, 0.0, 0);
+		explosion = CreateThing(explosion_tpl, ghost0);
+	}	
+	else
+	if (GetSenderId() == 2)
+	{
+		PlaySoundLocal(wav1, 1.0, 0.0, 0);
+		explosion = CreateThing(explosion_tpl, ghost1);
+	}	
+	else
+	if (GetSenderId() == 3)
+	{
+		PlaySoundLocal(wav0, 1.0, 0.0, 0);
+		explosion = CreateThing(explosion_tpl, ghost2);
+	}	
+	else
+	if (GetSenderId() == 4)
+	{
+		PlaySoundLocal(wav1, 1.0, 0.0, 0);
+		explosion = CreateThing(explosion_tpl, ghost3);
+	}	
+	else
+	if (GetSenderId() == 5)
+	{
+		PlaySoundLocal(wav0, 1.0, 0.0, 0);
+		explosion = CreateThing(explosion_tpl, ghost4);
+	}	
+	
+	return;
+
+pulse:
+	posOffset = VectorSet(Rand()*0.01, Rand()*0.01, Rand()*0.01);
+	angOffset = VectorSet(Rand(), Rand(), Rand());
+	SetPOVShake(posOffset, angOffset, .5, 80.0);
+	// SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .1, 80.0);
+	SetPulse(0);
+	
+	return;
+
+
+
+end
+
+

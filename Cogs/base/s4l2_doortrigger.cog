@@ -1,0 +1,82 @@
+# Jedi Knight Cog Script
+#
+# S4L2_DOORTRIGGER.COG
+#
+# Door Trigger cog for level S4L2
+#
+# [DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+
+message		entered
+message     crossed
+
+surface     floor
+surface     adjoin
+
+thing		door01	mask=-1
+thing		door02	mask=-1
+
+thing    ghost
+
+thing    pirate0
+thing    pirate1
+thing    pirate2
+thing    pirate3
+thing    pirate4
+thing    pirate5
+
+flex		movespeed=8.0
+flex     sleeptime=2.0
+
+
+int		open=0	local
+int      i=0      local
+
+int      bnosound=0       local
+
+sound    dialogue=MJ61022.wav
+
+end
+
+
+code
+  
+entered:
+
+	if (open) return;
+	open=1;
+
+	movetoframe(door01, 1, movespeed);
+   movetoframe(door02, 1, movespeed);
+
+
+   for (i=0; i<6; i=i+1)
+      {
+         AISetMoveThing(pirate0[i], ghost);
+      }
+
+   return;
+
+crossed:
+
+    movetoframe(door02, 0, movespeed);
+     
+    Sleep(0.25);
+    
+    if (bnosound==0)
+        {
+        bnosound=1;
+        playvoicelocal(dialogue, 1, 0, 132); // "There must be a way out of here."
+        jkPrintUNIString(-1, 61022);
+        sleep(3);
+        }
+           
+    return;
+
+
+end
+

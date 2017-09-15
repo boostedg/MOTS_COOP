@@ -1,0 +1,135 @@
+# Jedi Knight Cog Script
+#
+# S2L2_ST.cog
+#
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# Trey T. & Ryan K.
+# This handles the entire ST population of Katraasii.  Sheesh.
+
+
+symbols
+message	startup
+message	damaged
+message	entered
+message	crossed
+
+sector	startMofo
+surface	startST
+surface	adjoin1
+surface	adjoin2
+surface	adjoin3
+surface	adjoin4
+surface	adjoin5
+surface	adjoin6
+surface	adjoin7
+
+thing		badmofo1	mask=-1
+thing		badmofo2	mask=-1
+thing		badmofo3	mask=-1
+thing		badmofo4	mask=-1
+thing		badmofo5	mask=-1
+thing		badmofo6	mask=-1
+thing		badmofo7	mask=-1
+thing		badmofo8	mask=-1
+thing		badmofo9	mask=-1
+thing		badmofo10	mask=-1
+thing		badmofo11	mask=-1
+thing		badmofo12	mask=-1
+thing		badmofo13	mask=-1
+thing		badmofo14	mask=-1
+thing		badmofo15	mask=-1
+thing		badmofo16	mask=-1
+thing		badmofo17	mask=-1
+thing		badmofo18	mask=-1
+thing		badmofo19	mask=-1
+thing		badmofo20	mask=-1
+
+int		awake=0		local
+end
+
+code
+startup:
+	AISetMode(badmofo1, 0x2000);
+	AISetMode(badmofo2, 0x2000);
+	AISetMode(badmofo3, 0x2000);
+	AISetMode(badmofo4, 0x2000);
+	AISetMode(badmofo5, 0x2000);
+	AISetMode(badmofo6, 0x2000);
+	AISetMode(badmofo7, 0x2000);
+	AISetMode(badmofo8, 0x2000);
+	AISetMode(badmofo9, 0x2000);
+	AISetMode(badmofo10, 0x2000);
+	AISetMode(badmofo11, 0x2000);
+	AISetMode(badmofo12, 0x2000);
+	AISetMode(badmofo13, 0x2000);
+	AISetMode(badmofo14, 0x2000);
+	AISetMode(badmofo15, 0x2000);
+	AISetMode(badmofo16, 0x2000);
+	AISetMode(badmofo17, 0x2000);
+	AISetMode(badmofo18, 0x2000);
+	AISetMode(badmofo19, 0x2000);
+	AISetMode(badmofo20, 0x2000);
+	return;
+
+damaged:
+	if (awake) return;
+
+	awake = 1;
+
+	AIClearMode(badmofo1, 0x2000);
+	AISetMode(badmofo1, 0x4);
+	AIClearMode(badmofo2, 0x2000);
+	AISetMode(badmofo2, 0x4);
+	AIClearMode(badmofo3, 0x2000);
+	AISetMode(badmofo3, 0x4);
+	AIClearMode(badmofo4, 0x2000);
+	AISetMode(badmofo4, 0x4);
+	AIClearMode(badmofo5, 0x2000);
+	AISetMode(badmofo5, 0x4);
+	AIClearMode(badmofo6, 0x2000);
+	AISetMode(badmofo6, 0x4);
+	AIClearMode(badmofo7, 0x2000);
+	AISetMode(badmofo7, 0x4);
+	AIClearMode(badmofo8, 0x2000);
+	AISetMode(badmofo8, 0x4);
+	AIClearMode(badmofo9, 0x2000);
+	AISetMode(badmofo9, 0x4);
+	AIClearMode(badmofo10, 0x2000);
+	AISetMode(badmofo10, 0x4);
+	AIClearMode(badmofo11, 0x2000);
+	AISetMode(badmofo11, 0x4);
+	AIClearMode(badmofo12, 0x2000);
+	AISetMode(badmofo12, 0x4);
+	AIClearMode(badmofo13, 0x2000);
+	AISetMode(badmofo13, 0x4);
+	AIClearMode(badmofo14, 0x2000);
+	AISetMode(badmofo14, 0x4);
+	AIClearMode(badmofo15, 0x2000);
+	AISetMode(badmofo15, 0x4);
+	AIClearMode(badmofo16, 0x2000);
+	AISetMode(badmofo16, 0x4);
+	AIClearMode(badmofo17, 0x2000);
+	AISetMode(badmofo17, 0x4);
+	AIClearMode(badmofo18, 0x2000);
+	AISetMode(badmofo18, 0x4);
+	AIClearMode(badmofo19, 0x2000);
+	AISetMode(badmofo19, 0x4);
+	AIClearMode(badmofo20, 0x2000);
+	AISetMode(badmofo20, 0x4);
+	return;
+
+entered:
+	
+	call damaged;
+	return;
+
+crossed:
+	call damaged;
+	return;
+
+end
+
+
+
+

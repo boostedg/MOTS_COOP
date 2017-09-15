@@ -1,0 +1,49 @@
+# Jedi Knight Cog Script
+#
+# S4L2_billboard.cog
+#
+# Script that changes a surface texture on a timer.
+#
+# 
+#
+# [DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+message		startup
+message     pulse
+message     timer
+
+surface     bigsign
+
+flex		   pulserate=2.0
+
+int         flipflop=0     local
+
+material    texture1
+material    texture2
+
+end
+
+# COG Section
+code
+startup:
+	SetPulse(pulserate);
+   return;
+
+pulse:
+	if (flipflop == 0)
+      SetSurfaceMat(bigsign, texture1);
+   else
+      SetSurfaceMat(bigsign, texture2);
+
+   flipflop = 1 - flipflop;
+
+	return;
+
+   
+end
+

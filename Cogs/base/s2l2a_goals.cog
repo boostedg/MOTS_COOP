@@ -1,0 +1,33 @@
+# Jedi Knight Cog Script
+#
+# S2L2a_Goals.COG
+#
+# Endlevel cog for level S2L2a
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# ========================================================================================
+
+symbols
+
+sector		goal1
+
+message		entered
+
+int		done1=0			local
+
+end
+# ========================================================================================
+code
+
+entered:
+
+   if((!done1) && (GetSenderRef() == goal1))
+   {
+      //SendMessageEx(GetMasterCOG(), user0, 1, 0, 0, 0);
+      //done1 = 1;
+      Return;
+   }
+   Return;
+end

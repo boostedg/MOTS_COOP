@@ -1,0 +1,61 @@
+# Jedi Knight Cog Script
+#
+# S4L2_flight2.cog
+#
+# modified 01_TieBomber.cog
+#
+# Controls triggering and animation of a Ship.
+#
+# [IS] / [DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved		
+
+symbols
+	message	startup
+	message	entered
+	message	timer
+
+	thing		ship
+
+	sound		wav0=CrowEngineWhine02.wav	local
+
+   flex		movespeed
+
+   int		moved=0							local
+	int		channel0							local
+
+   sector   trigsector
+
+end
+
+code
+startup:
+	ThingLight(ship, 0.4, 0.0);
+	return;
+
+entered:
+	if (moved) return;
+	moved = 1;
+	
+	Sleep(1.0);
+	
+   MoveToFrame(ship, 5, movespeed);
+ 
+	PlaySoundThing(wav0, ship, 1.0, -1, 300.0, 0x0);
+
+	SetTimerEx(4.0, 1, 0, 0);	// play engine whine
+	SetTimerEx(9, 2, 0, 0);	// destroy bomber
+	return;
+
+timer:
+	if (GetSenderId() == 1)
+	{
+		channel0 = PlaySoundThing(wav0, ship, 1.0, -1, 300.0, 0x1);
+	}
+	else if (GetSenderId() == 2)
+	{
+		StopSound(channel0, 5.0);
+	}
+	return;
+	
+end

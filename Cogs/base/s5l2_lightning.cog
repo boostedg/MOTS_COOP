@@ -1,0 +1,68 @@
+# Jedi Knight Cog Script
+#
+# S5L2_lightning.cog
+#
+# More force-power puzzles.
+#
+# [JS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# ========================================================================================
+
+symbols
+message	startup		
+message	crossed
+message	pulse
+
+thing		ghost0
+thing		ghost1
+surface	thresh1		linkid=1
+surface	thresh2		linkid=2
+surface	thresh3		linkid=2
+flex		autoAimXFOV=60						local
+flex		autoAimZFOV=60						local
+template	lightning=+force_lightning		local
+sound		fireSound=LTSaberHit05.wav		local
+int		player					local
+
+end
+
+# ========================================================================================
+
+code
+
+crossed:
+	player = GetLocalPlayerThing();
+	
+	if(GetSenderId() == 1)
+	{
+		SetPulse(0.5);	
+	}
+	else
+	{
+	SetPulse(0);
+	}
+	return;
+	
+# ........................................................................................
+
+pulse:
+	if(IsInvActivated(player, 26))	// is Persuasion active ?
+	{
+	   SetPulse(0);
+	}
+	else
+	{
+		call trick;	// activate lightning
+	}
+	return;
+	
+# ........................................................................................
+
+trick:
+	FireProjectile(ghost0, lightning, fireSound, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+	FireProjectile(ghost1, lightning, fireSound, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+	return;
+	
+end
+

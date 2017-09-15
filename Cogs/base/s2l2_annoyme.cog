@@ -1,0 +1,80 @@
+# Jedi Knight Cog Script
+#
+# S2L2_annoyme.cog
+#
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# Trey T. & Ryan K.
+# This is the bar fight COG.  Any badmofo will wake up when you damage 
+# any other bad mofo.
+
+
+symbols
+message	startup
+message	timer
+message	damaged
+message	entered
+
+sector	startreeyee
+
+thing		badmofo1	mask=-1
+thing		badmofo2	mask=-1
+thing		badmofo3	mask=-1
+thing		badmofo4	mask=-1
+thing		badmofo5	mask=-1
+thing		badmofo6	mask=-1
+thing		badmofo7	mask=-1
+thing		badmofo8	mask=-1
+
+sound		burble1=ReeYee02.wav		local
+sound		burble2=ReeYee03.wav		local
+
+int		awake=0		local
+end
+
+code
+startup:
+	AISetMode(badmofo1, 0x2000);
+	AISetMode(badmofo2, 0x2000);
+	AISetMode(badmofo3, 0x2000);
+	AISetMode(badmofo4, 0x2000);
+	AISetMode(badmofo5, 0x2000);
+	AISetMode(badmofo6, 0x2000);
+	AISetMode(badmofo7, 0x2000);
+	AISetMode(badmofo8, 0x2000);
+	return;
+
+damaged:
+	if (awake) return;
+
+	awake = 1;
+
+	AIClearMode(badmofo1, 0x2000);
+	AISetMode(badmofo1, 0x4);
+	AIClearMode(badmofo2, 0x2000);
+	AISetMode(badmofo2, 0x4);
+//	AISetFireTarget(badmofo2, GetLocalPlayerThing());
+	AIClearMode(badmofo3, 0x2000);
+	AISetMode(badmofo3, 0x4);
+	AIClearMode(badmofo4, 0x2000);
+	AISetMode(badmofo4, 0x4);
+	AIClearMode(badmofo5, 0x2000);
+	AISetMode(badmofo5, 0x4);
+	AIClearMode(badmofo6, 0x2000);
+	AISetMode(badmofo6, 0x4);
+	AIClearMode(badmofo7, 0x2000);
+	AISetMode(badmofo7, 0x4);
+	AIClearMode(badmofo8, 0x2000);
+	AISetMode(badmofo8, 0x4);
+	return;
+
+entered:
+	
+	call damaged;
+	return;
+
+end
+
+
+
+

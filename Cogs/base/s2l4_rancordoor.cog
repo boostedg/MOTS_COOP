@@ -1,0 +1,71 @@
+# Jedi Knight Cog Script
+#
+# S2L4_rancordoor.cog
+#
+# [DS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+#
+
+symbols
+	message     	startup    
+      	message		killed	
+
+	thing		door0
+      	thing       	rancor				
+	thing		keeperspot			# ghost
+	thing		keeperspot2			# ghost
+      	thing       	slushghost
+      	sound       	onsound=16metalcreak02.wav   	local
+	sound       	slush=gurgle2.wav    		local
+      	float		moveSpeed=2.0
+
+	int		doorStatus			local
+	int		moveStatus			local
+	int		keeper				local
+	template	keeper_tpl
+end
+
+# ========================================================================================
+
+code
+startup:
+      playsoundthing(slush, slushghost, 1, 5, 20, 0x1); 
+      return;
+
+killed:
+	call CheckStatus;
+	if (moveStatus) return;
+	if (doorStatus == 0)
+      		{				
+          	garbage = PlaySoundThing(onSound, door0, 1, 5, 20, 0); 
+          	call OpenDoors;
+		keeper= CreateThing(keeper_tpl, keeperspot);
+		CaptureThing(keeper);
+		AISetMoveSpeed(keeper, 2.0);
+		AISetLookPos(keeper, GetThingPos(keeperspot2));
+          	AISetMovePos(keeper, GetThingPos(keeperspot2));
+      		SendMessageEx(GetMasterCOG(), user2, 1, 0, 0, 0);      
+		}
+	return;
+
+# ........................................................................................
+
+OpenDoors:
+      MoveToFrame(door0, 1, moveSpeed);
+	return;
+
+# ........................................................................................
+
+CheckStatus:
+	moveStatus = 0;
+	doorStatus = 0;
+	if (door0 >= 0) {
+			moveStatus = moveStatus + IsThingMoving(door0);
+			doorStatus = doorStatus + GetCurFrame(door0);
+		}
+	return;
+
+end
+
+ 

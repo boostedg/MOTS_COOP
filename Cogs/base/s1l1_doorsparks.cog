@@ -1,0 +1,57 @@
+# Jedi Knight Missions Cog Script
+#
+#  S1L1_DoorSparks.cog
+#
+# [RF]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+message		timer
+message		user2
+
+cog		explode
+
+template	sparkTemplate=+sparks		local
+
+thing    	sparkSpot
+
+flex		minimumDelay=2.5		local
+flex		maximumDelay=7.0		local
+	
+sound    	sparksound=00electrexplo3.wav	local
+
+int		type           	 		local
+flex     	nextSpark       		local
+int      	sparkingNow=0   		local
+
+end
+
+## COG code section
+code
+user2:
+	SetTimer(minimumDelay);
+	return;
+
+timer:
+		// Make spark sound and thing
+	PlaySoundThing(sparksound, sparkSpot, 1, -1, -1, 0);
+	CreateThing(sparkTemplate, sparkSpot);
+
+		// Set an appointment for next time.
+	nextSpark = minimumDelay + (Rand() * (maximumDelay - minimumDelay));
+	SetTimer(nextSpark);
+	return;
+
+StartSparking:
+		// Don't reenter!
+	if (!sparkingNow)
+	{
+		sparkingNow = 1;
+		SetTimer(minimumDelay);
+	}
+	return;
+end
+
+ 

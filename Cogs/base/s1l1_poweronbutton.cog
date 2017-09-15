@@ -1,0 +1,44 @@
+# Jedi Knight Cog Script
+#
+# S1L1_PowerOnButton.cog
+#
+# Reroute power to turn on lights and open a few doors
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+message 	startup
+message		activate
+
+cog		poweron
+	
+surface		switch0
+
+sound		activate=activate02.wav		local
+
+int		done=0				local
+
+end
+#-----------------------------------
+code
+
+startup:
+	SetWallCel(switch0, 0);
+	return;
+#-----------------------------------
+activate:
+	If (done) return;
+	done=1;
+	SetWallCel(switch0,1);
+	PlaySoundPos(activate, SurfaceCenter(switch0),1,-1,-1,0);
+	Sleep(1);
+	SendMessage(poweron, user3);
+	return;
+
+end
+
+
+	

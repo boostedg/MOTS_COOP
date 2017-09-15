@@ -1,0 +1,46 @@
+#  Jedi Knight Missions Cog Script
+#  S4L1_hangcont.cog
+#  Controls hanger control room lightning and explosions.
+#  [SH]
+#  (c) 1997 LucasArts  Enterainment Co. All Right Reserved 
+
+symbols
+   message		entered
+   sector		hanger
+   thing		zap0
+   thing		zap1
+   thing		exp0
+   thing		exp1
+   thing		door0
+   int		dummy					local
+   int		maindone=0				local
+   int		hangdone=0				local
+   flex		sleeptime=2.0
+   sound		wav0=00electrexplo01.wav
+   sound		wav1=16metalgroan01.wav
+   sound		wav2=16metalcreak02.wav
+   sound		wav3=18airburst01.wav
+   template		lightning=+force_lightning	local
+   template		explosion=+grenade_exp		local
+end
+
+code
+entered:
+	if (hangdone) return;
+	hangdone=1;
+	MoveToFrame(door0,1,4.0);	//close the hanger control doors
+	SetSectorAdjoins(GetThingSector(door0),0);
+	for(j=0;j<=3;j=j+1)
+	   {
+	   Sleep(sleeptime/2);
+	   PlaySoundPos(wav0[j],GetThingPos(exp0),1.0,-1,-1,0);	//play the wavs
+	   }
+	for(i=0;i<=1;i=i+1)
+	   {
+	   Sleep(sleeptime/4);
+	   PlaySoundPos(wav0,GetThingPos(exp0[i]),1.0,-1,-1,2); //2 explosions
+	   dummy=CreateThing(explosion, exp0[i]);
+         dummy=CreateThing(lightning,zap0[i]); //lighting at the 2 zap ghost obj
+	   }
+   return;
+end

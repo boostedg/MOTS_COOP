@@ -1,0 +1,46 @@
+# Jedi Knight Cog Script
+#
+# S1L1_TroopShip2.cog
+#
+# Troop Transport flys away.
+#
+# This cog generates the tiebomber and its bombs.
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+message     entered
+
+sound       takeoff=ShuttleTakeOff.WAV		local
+
+thing       transport
+             
+sector      gonow
+   
+int         done=0                              local
+
+end
+
+# ========================================================================================
+
+code
+entered:
+	if (done) return;
+	done=1;
+	PlaySoundThing(takeoff, transport, 1.0, -1, 175, 128);
+	MoveToFrame(transport, 1, 9);
+	WaitForStop(transport);
+	MoveToFrame(transport, 2, 45);
+	WaitForStop(transport);
+	DestroyThing(transport);
+	return;
+
+end
+
+
+
+
+

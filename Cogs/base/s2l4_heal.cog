@@ -1,0 +1,40 @@
+# Jedi Knight Cog Script
+#
+## S2L4_heal.cog
+#
+#  A bacta chamber.
+#
+# [DS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+symbols
+
+sector      bactatank
+
+int         player                           local
+flex        health                           local
+sound       healSnd=MedDroidHeal01.wav       local
+message     entered
+
+end
+
+# ========================================================================================
+
+code
+
+entered:
+      player = GetSourceRef();
+      health = GetThingHealth(player);
+
+      if (health > 0.0 && health < 100.0)
+   {
+         PlaySoundlocal(healSnd, 1.0, 0, 0);
+         AddDynamicTint(player, 0.0, 0.0, 0.2);
+         HealThing(player, 100.0);
+   }
+
+   Return;
+end
+
+
+ 

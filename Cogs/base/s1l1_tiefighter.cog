@@ -1,0 +1,74 @@
+# Jedi Knight Cog Script
+#
+# S1L1_tiefightr2.cog
+#
+# Tiebomber cog for level 04
+#
+# Modified cog for x TieFighters flying in formation
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved 
+
+
+symbols
+message 	arrived
+message		crossed
+message		user2
+
+template        bombertemplate
+
+sound           tieenginewhine
+
+thing           bomberdummy0
+thing           bomberdummy1
+thing           vtiebomber1              	local
+thing           vtiebomber2             	local
+
+surface		adjoin	
+ 
+int 		done=0				local
+int		randsleep			local
+
+cog		tie2
+
+end
+
+code
+#------------------------------------------------------------------------
+movebomber:
+        vtiebomber1=creatething(bombertemplate, bomberdummy0);
+	vtiebomber2=creatething(bombertemplate, bomberdummy1);
+	capturething(vtiebomber1);
+	capturething(vtiebomber2);
+        playsoundthing(tieenginewhine, vtiebomber1, 1.0, -1, 175, 129);
+        playsoundthing(tieenginewhine, vtiebomber2, 1.0, -1, 175, 129);
+        movetoframe(vtiebomber1, 3, 65);
+	movetoframe(vtiebomber2, 3, 65);
+        return;
+#------------------------------------------------------------------------
+crossed:
+	if (done) return;
+	done=1;
+        sleep(20);
+        call movebomber;
+        return;
+#------------------------------------------------------------------------
+arrived:
+	destroything(vtiebomber1);
+        destroything(vtiebomber2);
+	randsleep=(rand()*10)+10;
+	Sleep(randsleep);
+	SendMessage(tie2, user2);
+        return;
+#------------------------------------------------------------------------  
+user2:
+	call movebomber;
+	return;
+#------------------------------------------------------------------------               
+end
+
+
+
+
+

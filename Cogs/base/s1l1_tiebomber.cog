@@ -1,0 +1,141 @@
+# Jedi Knight Cog Script
+#
+# 08_tiebomber.cog
+#
+# Tiebomber cog for level 04
+#
+# This cog generates the tiebomber and its bombs.
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+message     pulse
+message     entered
+message     exited
+message     activated
+
+template    thermaltemplate
+
+sound       tieenginewhine
+sound       expl04
+
+thing       bomber0
+thing       bomber1              
+
+sector      drophere                            mask=0xfff
+   
+surface     switch1     
+
+vector      vtiebombpos0                        local
+vector      newtiebombpos0                      local
+vector      vtiebombpos1                        local
+vector      newtiebombpos1                      local
+
+int         done=0                              local
+int	    shipnum=0				local
+
+sector		killbomber
+int	 	bomber=0			local
+
+end
+
+# ========================================================================================
+
+code
+
+activated:
+   if (done) Return;
+
+   done=1;
+
+   sleep(4.8);
+
+   call movebomber;
+
+   Return;
+
+# ........................................................................................
+
+movebomber:
+	shipnum=1;
+   PlaySoundThing(tieenginewhine, bomber0, 1.0, -1, 175, 129);
+   MoveToFrame(bomber0, 4, 65);
+   WaitForStop(bomber0);
+   DestroyThing(bomber0);
+	Sleep(2);
+	call bombrun;
+
+   Return;
+
+# ........................................................................................
+
+bombrun:
+	shipnum=2;
+   PlaySoundThing(tieenginewhine, bomber1, 1.0, -1, 175, 129);
+   MoveToFrame(bomber1, 3, 65);
+   WaitForStop(bomber1);
+   DestroyThing(bomber1);
+   Return;
+
+# ........................................................................................
+
+entered:
+   if(GetSenderRef()==killbomber)
+   {
+   if (bomber) return;
+   bomber=1;
+   DestroyThing(bomber1);
+   }
+
+   if((GetSenderRef()==drophere)&&(GetSourceRef()==bomber0))
+   {
+      SetPulse(0.1);
+   }
+
+   if((GetSenderRef()==drophere)&&(GetSourceRef()==bomber1))
+   {
+      SetPulse(0.1);
+   }
+
+   Return;
+
+# ........................................................................................
+
+pulse:
+	if (shipnum==1)
+	{
+   vtiebombpos0   = GetThingPos(bomber0);
+   newtiebombpos0 = VectorAdd(vtiebombpos0, VectorSet(0.0, 0.0, -0.305));
+   CreateThingAtPos(thermaltemplate, drophere, newtiebombpos0, '0.0, 0.0, 0.0');
+	}
+	if (shipnum==2)
+	{
+   vtiebombpos1   = GetThingPos(bomber1);
+   newtiebombpos1 = Vectoradd(vtiebombpos1, VectorSet(0.0, 0.0, -0.305));
+   CreateThingAtPos(thermaltemplate, drophere, newtiebombpos1, '0.0, 0.0, 0.0');
+	}
+   Return;
+
+# ........................................................................................
+
+exited:
+   if ((GetSenderRef()==drophere)&&(GetSourceRef()==bomber0))
+   {
+      setpulse(0);
+   }
+
+   if ((GetSenderRef()==drophere)&&(GetSourceRef()==bomber1))
+   {
+      setpulse(0);
+   }
+   Return;
+
+end
+
+
+
+
+

@@ -1,0 +1,160 @@
+# Jedi Knight Missions Cog Script
+#
+# s1l1explode.cog
+#
+# Closes bay doors with a shake and explosion
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved		
+
+symbols
+
+message		startup
+message		timer
+message 	activated
+message		pulse
+
+sound		wav0
+sound		wav1
+sound		wav2
+sound		wav3=16metalgroan04.wav		local
+sound		voice=rm61102.wav
+
+thing		ghost0				desc=a_ghost_thing_in_leia
+thing		ghost1				desc=a_ghost_thing_in_leia
+thing		ghost2				desc=a_ghost_thing_in_leia
+thing		ghost3				desc=a_ghost_thing_in_leia
+thing		ghost4				desc=a_ghost_thing_in_leia
+thing		door0
+
+int		bnosound=0			local
+int		explosion			local
+int		done=0				local
+int		soundnum			local
+vector		posOffset			local
+vector		angOffset			local
+
+float		movespeed=0.8
+template	explosion_tpl=+raildet_exp	local
+
+surface     	switch1			linkid=1
+
+cog		sparks1
+cog		sparks2		
+cog		messagecog	
+cog		generator1
+cog		generator2
+
+end
+
+# ========================================================================================
+
+code
+
+startup:
+	bnosound=0;
+	SetWallCel(switch1, 0);
+	return;
+
+# ........................................................................................
+
+activated:
+	if (GetSenderID()==1)
+
+	{ 
+	if (done) return;
+	done=1;
+	SendMessage(messagecog, user3);
+	SendMessage(generator1, user2);
+	SendMessage(generator2, user2);
+	PlaySoundThing(onSound, door0, 0.6, -1, -1, 0);      // play activate sound
+	SetWallCel(switch1, 1);
+      SetTimerEx(0.25, 0, 0, 0);
+      SetTimerEx(0.5, 6, 0, 0);
+      SetTimerEx(9.5, 1, 0, 0);
+      SetTimerEx(9.7, 2, 0, 0);
+      SetTimerEx(9.3, 3, 0, 0);
+      SetTimerEx(10, 4, 0, 0);
+      SetTimerEx(10.35, 5, 0, 0);
+	Sleep(12.5);
+	jkPrintUNIString(-1, 61102);
+	PlayVoiceLocal(voice, 1.0, 0.0, 0);
+	
+	}
+   return;
+
+# ........................................................................................
+
+timer:	
+	if (GetSenderId() == 0)
+	{
+		soundnum = PlaySoundLocal(wav0, 1.0, 0.0, 1);
+		MoveToFrame(door0, 1, 0.8);
+		bnosound=1;
+	}	
+	else
+	if (GetSenderId() == 6)
+	{
+		PlaySoundLocal(wav3, 1.0, 0.0, 0);
+	}
+	else
+	if (GetSenderId() == 1)
+	{
+		PlaySoundLocal(wav1, 1.0, 0.0, 0);
+		StopSound(soundnum,0.0);
+		explosion = CreateThing(explosion_tpl, ghost0);
+		SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .5, 80.0);
+		SetPulse(0.1);
+	}	
+	else
+	if (GetSenderId() == 2)
+	{
+		PlaySoundLocal(wav1, 1.0, 0.0, 0);
+		explosion = CreateThing(explosion_tpl, ghost1);
+		SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .5, 80.0);
+		SetPulse(0.1);
+	}	
+	else
+	if (GetSenderId() == 3)
+	{
+		PlaySoundLocal(wav1, 1.0, 0.0, 0);
+		explosion = CreateThing(explosion_tpl, ghost2);
+		SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .5, 80.0);
+		SetPulse(0.1);
+	}	
+	else
+	if (GetSenderId() == 4)
+	{
+		PlaySoundLocal(wav1, 1.0, 0.0, 0);
+		explosion = CreateThing(explosion_tpl, ghost3);
+		SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .5, 80.0);
+		SetPulse(0.1);
+	}	
+	else
+	if (GetSenderId() == 5)
+	{
+		PlaySoundLocal(wav1, 1.0, 0.0, 0);
+		explosion = CreateThing(explosion_tpl, ghost4);
+		SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .5, 80.0);
+		SetPulse(0.1);
+		SendMessage(sparks1, user2);
+		SendMessage(sparks2, user2);
+	}	
+	
+return;
+
+pulse:
+	posOffset = VectorSet(Rand()*0.01, Rand()*0.01, Rand()*0.01);
+	angOffset = VectorSet(Rand(), Rand(), Rand());
+	SetPOVShake(posOffset, angOffset, .5, 80.0);
+	// SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .1, 80.0);
+	SetPulse(0);
+	
+	return;
+
+
+
+end
+
+

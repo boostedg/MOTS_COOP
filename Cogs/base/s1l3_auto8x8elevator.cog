@@ -1,0 +1,70 @@
+# S1L3_Auto8x8Elevator
+
+symbols
+message		entered
+message		arrived		
+message		activated
+message		startup
+thing		elevator		linkid=1
+thing		strut1
+thing		strut2
+surface	switch		linkid=2
+int		speed=2
+int		sleeptime=5
+int		IAmSleeping=0	local
+end
+
+code
+startup:
+	SetWallCel(switch,0);
+	return;
+entered:
+	if(IsThingMoving(elevator)==1) return;
+	if((GetSenderID()==1)&&(GetCurFrame(elevator)==0)&&(IAmSleeping==0))
+	{
+		IAmSleeping=1;
+		SetWallCel(switch,1);
+		MoveToFrame(elevator,1,speed);
+		MoveToFrame(strut1,1,speed);
+		MoveToFrame(strut2,1,speed);
+		IAmSleeping=0;
+		return;
+	}
+	return;
+arrived:
+	if(IsThingMoving(elevator)==1) return;
+	if((GetSenderID()==1)&&(GetCurFrame(elevator)==1)&&(IAmSleeping==0))
+	{
+		IAmSleeping=1;
+		Sleep(sleeptime);
+		MoveToFrame(elevator,0,speed);
+		MoveToFrame(strut1,0,speed);
+		MoveToFrame(strut2,0,speed);
+		IAmSleeping=0;
+		return;		
+	}
+	if((GetSenderID()==1)&&(GetCurFrame(elevator)==0)&&(IAmSleeping==0))
+	{
+		IAmSleeping=1;
+		SetWallCel(switch,0);
+		IAmSleeping=0;
+		return;
+	}
+	return;
+activated:
+	if(IsThingMoving(elevator)==1) return;
+	if((GetSenderID()==2)&&(GetCurFrame(elevator)==0)&&(IAmSleeping==0))
+	{
+		IAmSleeping=1;
+		SetWallCel(switch,1);
+		MoveToFrame(elevator,1,speed);
+		MoveToFrame(strut1,1,speed);
+		MoveToFrame(strut2,1,speed);
+		IAmSleeping=0;
+		return;
+	}
+	return;
+end
+
+
+	

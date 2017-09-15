@@ -1,0 +1,94 @@
+# S1L3_ViewCamera3Only.cog
+
+symbols
+message	activated
+message	startup
+message	trigger
+message	timer
+thing		DisabledGhostCam
+thing		GhostCamera03
+int		CameraColorEffect=-1			local
+int		player					local
+int		TimerLength=3				local
+int		SwitchSoundNum				local
+int		Available03=1				local
+int		Checked=0					local
+surface	ViewSwitch					linkid=1
+surface	ScreenTrigger				linkid=1				
+sound		SwitchOnSound=activate02.wav		local
+sound		SwitchOffSound=deactivate02.wav	local
+end
+
+code
+startup:
+player=GetLocalPlayerThing();
+SetWallCel(ViewSwitch,0);
+return;
+
+activated:
+if((GetSenderID()==1)&&(Available03==1)&&(Visited==0))
+{
+	SetActorFlags(GetLocalPlayerThing(),0x80000000);
+	Visited=3;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,GhostCamera03);
+	return;
+}
+if((GetSenderID()==1)&&(Available03==0)&&(Visited==0))
+{
+	SetActorFlags(GetLocalPlayerThing(),0x80000000);
+	Visited=3;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,DisabledGhostCam);
+	return;
+}
+if((GetSenderID()==1)&&(Visited==3))
+{
+	ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+	Visited=0;
+	SetTimer(0.00);
+	SetWallCel(ViewSwitch,0);
+	SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+	if(CameraColorEffect!=-1)
+	{
+		freeColorEffect(CameraColorEffect);
+		CameraColorEffect=-1;
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,player);
+	return;
+}
+return;
+
+timer:
+ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+Visited=0;
+SetWallCel(ViewSwitch,0);
+SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+if(CameraColorEffect!=-1)
+{
+	freeColorEffect(CameraColorEffect);
+	CameraColorEffect=-1;
+}
+SetCurrentCamera(0);
+SetCameraFocus(0,player);
+return;
+
+trigger:
+if(GetSourceRef()==10025) Available03=0;
+return;
+end

@@ -1,0 +1,52 @@
+# Jedi Knight Missions Cog Script
+#
+# S1L1_FanExplode.cog
+#
+# Generates debris when an object receives a specified amount of damage.
+#
+# [ks]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved		
+
+symbols
+
+message		damaged
+
+thing		fan				
+
+sound		explode
+
+thing		ghost0
+thing		ghost1
+
+template	explosion_tpl=+raildet_exp		local
+
+flex        	curdamage=0                  		local
+flex		maxdamage
+
+cog		fancog
+
+end
+
+code
+#---------------------------------------------------------------------------------------  
+damaged:
+
+   curdamage=curdamage + GetParam(0);
+
+   if (curdamage<maxdamage) Return;
+
+	DestroyThing(fan);
+	playsoundpos(explode, getthingpos(fan), 1.0, -1, -1, 0);
+
+	// make 3 ghost objects explode with raildet explosion
+	CreateThing(explosion_tpl, ghost0);
+	Sleep(0.05);
+   	CreateThing(explosion_tpl, ghost1);
+	SendMessage(fancog, user3);
+
+	return;
+
+end
+
+

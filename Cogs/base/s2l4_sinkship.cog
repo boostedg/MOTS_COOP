@@ -1,0 +1,62 @@
+# Jedi Knight Missions Cog Script
+#
+# S2L4_SinkShip.cog
+#
+# Transport go under.
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved		
+
+symbols
+
+message		damaged
+
+thing		ship				mask=-1
+thing		ghost1				desc=a_ghost_thing_in_leia
+thing		ghost2				desc=a_ghost_thing_in_leia
+thing		ghost3
+
+int		done=0				local
+
+template	explosion_tpl=+nothing_exp	local
+template	debris=+raildet_exp		local
+flex        	curdamage=0                  	local
+flex		maxdamage
+sound		splash=splash1.wav		local
+
+end
+
+# ========================================================================================
+
+code
+damaged:
+	//("damaging");
+  	curdamage=curdamage + GetParam(0);
+
+   	if (curdamage<maxdamage) Return;
+	if (done) return;
+	done=1;
+
+	// make 3 ghost objects explode with raildet explosion
+	CreateThing(debris, ghost1);
+	CreateThing(explosion_tpl, ghost1);
+	Sleep(0.05);
+   	//CreateThing(debris, ghost2);
+   	CreateThing(explosion_tpl, ghost2);
+	Sleep(0.05);
+   	//CreateThing(debris, ghost2);
+   	CreateThing(explosion_tpl, ghost2);
+	MoveToFrame(ship, 1, 8);
+	PlaySoundLocal(splash, 1.0, 0.0, 0);
+	WaitForStop(ship);
+	Sleep(1);
+	MoveToFrame(ship, 2, 0.5);
+	WaitForStop(ship);
+	MoveToFrame(ship, 3, 1.0);
+
+	return;
+
+end
+
+

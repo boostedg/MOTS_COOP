@@ -1,0 +1,58 @@
+# Jedi Knight MissionsCog Script
+#
+# S2L2_garagedoor.COG
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+symbols
+# Door Script
+
+symbols
+message	startup		
+message	entered	
+message	timer		
+
+thing		door		nolink
+
+surface	opentrigger
+surface	closetrigger
+
+sector	doorsector=-1
+
+int		dooropen=0	local
+int		done=0	local
+end
+
+## Code Section
+code
+
+startup:
+	sectoradjoins(doorsector, 0);
+	sectorlight(doorsector, .5, 0.0);	
+	return;
+
+entered:
+
+	if (dooropen == 1)
+	{
+		if (GetSenderRef() == closetrigger)
+		{
+			if (done) return;
+			done = 1;
+			MoveToFrame(door, 0, 2);
+			SetTimer(10);
+			return;
+		}
+		return;
+	}
+
+	dooropen = 1; 
+	sectoradjoins(doorsector, 1);
+	MoveToFrame(door, 1, 2);
+	return;
+
+timer:
+	SectorAdjoins(doorsector, 0);
+	return;
+	
+end
+

@@ -1,0 +1,61 @@
+# Jedi Knight Cog Script
+#
+# S1L1_getout.COG
+#
+# Reroute power to turn on lights and open a few doors
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+message		user1		local
+
+cog		poweron
+
+sound		mj61107=mj61107.wav		local
+sound		mj61108=mj61108.wav		local
+sound		mj61127=mj61127.wav		local
+sound		mj61128=mj61128.wav		local
+sound		mj61129=mj61129.wav		local
+sound		mj61130=mj61130.wav		local	
+
+end
+
+code
+
+user1:
+	Sleep(2);
+
+   	jkPrintUNIString(-1, 61107);
+	PlayVoiceLocal(mj61107, 1.0, 0.0, 0);
+
+	Sleep(GetSoundLen(mj61107));
+
+   	jkPrintUNIString(-1, 61108);
+	PlayVoiceLocal(mj61108, 1.0, 0.0, 0);
+
+	Sleep(GetSoundLen(mj61108));
+
+   	jkPrintUNIString(-1, 61127);
+	PlayVoiceLocal(mj61127, 1.0, 0.0, 0);
+
+	Sleep(GetSoundLen(mj61127));
+
+   	jkPrintUNIString(-1, 61128);
+	PlayVoiceLocal(mj61128, 1.0, 0.0, 0);
+
+	Sleep(GetSoundLen(mj61128));
+
+   	jkPrintUNIString(-1, 61129);
+	PlayVoiceLocal(mj61129, 1.0, 0.0, 0);
+
+	Sleep(GetSoundLen(mj61129));
+
+   	jkPrintUNIString(-1, 61130);
+	PlayVoiceLocal(mj61130, 1.0, 0.0, 0);
+
+	return;
+
+end

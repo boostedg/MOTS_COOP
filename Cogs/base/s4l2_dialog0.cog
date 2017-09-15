@@ -1,0 +1,37 @@
+# Jedi Knight Cog Script
+#
+# S4L2_DIALOG0.COG
+#
+# Script to attach different lines of dialogue too
+#
+# [DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+message         entered
+message         startup
+int             bnosound=0       local
+sector          triggersector
+sound           dialogue=
+end
+
+code
+startup:
+        bnosound=0;
+        return;
+
+entered:
+        if (bnosound==0)
+        {
+        bnosound=1;
+        PlayVoiceLocal(dialogue, 1, 0, 132);
+        jkPrintUNIString(-1, 61025);
+        sleep(3);
+        }
+        return;
+
+end
+
+
+

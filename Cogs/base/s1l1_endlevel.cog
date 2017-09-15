@@ -1,0 +1,143 @@
+# Jedi Knight Cog Script
+#
+# S1L1_ENDLEVEL.COG
+#
+# Endlevel cog for level S1L1
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# ========================================================================================
+
+symbols
+
+message         startup
+message         user0
+message     	shutdown
+message        	timer
+
+sound           dialogue
+
+int             player           local
+sound           goalsnd=Accomplish1.wav   local
+
+thing		enemy1
+thing		enemy2
+
+end
+
+# ========================================================================================
+
+## Code Section
+code
+
+startup:
+   // This is the master COG, so register it.
+   SetMasterCOG(GetSelfCOG());
+
+   player = GetLocalPlayerThing();
+
+   // Setup the goals first string in cogStrings.uni so the UI knows about it.
+   SetInv(player, 99, 1000);
+
+   // Setup all the goals as displayed at start
+   SetGoalFlags(player, 0, 1);
+   SetGoalFlags(player, 1, 1);
+   SetGoalFlags(player, 2, 1);
+
+   // Play the movie
+   jkStartupCutscene ("s1l1ocs.san");
+
+   // This is the first level; initialize Kyle's default force powers
+   SetTimer (0.25);
+
+   Sleep(0.05);
+
+   // Initialize weapon.
+   SetFireWait(player, -1);
+   SetMountWait(player, 0);
+   SetCurInvWeapon(player, 0);
+   SelectWeapon(player, GetWeaponBin(AutoSelectWeapon(player, 1)));
+
+	AISetMode(enemy1, 0x2000);
+	AISetMode(enemy2, 0x2000);
+
+   Return;
+
+# ........................................................................................
+
+timer:
+
+   // Rank 4
+   SetInv(player, 20, 4.0);
+   SetInv(player, 14, 4*50);
+   // Force Jump, level 2
+   SetInv(player, 21, 2.0);
+   SetInvAvailable(player, 21, 1);
+   // Force Seeing, level 2
+   SetInv(player, 23, 2.0);
+   SetInvAvailable(player, 23, 1);
+   // Force Speed, level 1
+   SetInv(player, 22, 1.0);
+   SetInvAvailable(player, 22, 1);
+   // Force Pull, level 2
+   SetInv(player, 24, 2.0);
+   SetInvAvailable(player, 24, 1);
+   // Extra stars here
+   SetInv(player, 17, 5.0);
+
+   // Resync the force powers!
+   jkSyncForcePowers();
+
+   // Initialize weapon.
+   SetFireWait(player, -1);
+   SetMountWait(player, 0);
+   SetCurInvWeapon(player, 0);
+   SelectWeapon(player, GetWeaponBin(2));
+
+   return;
+
+# ........................................................................................
+
+user0:
+   jkPrintUNIString(player, 350);
+
+   if(GetParam(0) == 0)
+   {
+      PlaySoundThing(goalsnd, player, 1.0, -1, -1, 0);
+      SetGoalFlags(player, 0, 2);
+      Return;
+   }
+
+   if(GetParam(0) == 1)
+   {
+      PlaySoundThing(goalsnd, player, 1.0, -1, -1, 0);
+      SetGoalFlags(player, 1, 2);
+      Return;
+   }
+
+   if(GetParam(0) == 2)
+   {
+	SetActorFlags(player, 0x8);
+      SetGoalFlags(player, 2, 2);
+      PlaySoundThing(goalsnd, player, 1.0, -1, -1, 0);
+
+      // Wait a bit before level ends
+      Sleep(1.0);
+      jkEndLevel(1);
+      ClearActorFlags(player, 0x8);
+      Return;
+   }
+
+   Return;
+
+# ........................................................................................
+shutdown:
+   ChangeInv(player, 16, 2);
+      // Give a force star if the player finds all the secrets
+      if((GetInv(player, 71) != 0) && (GetInv(player, 70) == GetInv(player, 71)))
+         ChangeInv(player, 16, 1);
+
+   Return;
+
+end

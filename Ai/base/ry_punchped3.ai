@@ -1,0 +1,58 @@
+# Jedi Knight AI File
+#
+# RY_PUNCHPED3.AI
+#
+# Ree Yees with Fists Pedestrian AI
+# All difficulty levels
+#
+# [CR, SRS, TT]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+alignment=0.0, rank=0.5, fov=200, maxstep=0.5, sightdist=5.0, heardist=2.0, accuracy=1.00
+
+#instinct			args
+########################################
+
+
+CircleStrafe	10000.0, 30.0, 0.75, 1000.0, 1.0
+#p0 - Freq of Straf Check (msec)
+#p1 - %Yaw change on move (30-45 typical)
+#p2 - Max Dist to attempt Strafe
+#p3 - Update interval (typically 1000msec)
+#p4 - 0 single dir strafe, 1 random strafe
+
+Follow          	0.0, 0.05, 0.0, 1.0
+#p0 - Min Distance to allow
+#p1 - Max Dist to allow
+#p2 - Max Melee dist (rifle/punch combo)
+#p3 - Set to 1 to disable LOS checking (enemy doesn't need to see)
+
+Jump					2000.0, 0.2, 0.2
+#p0 - Time between jump checks
+#p1 - Max jump height (Ai Thinks not Actual)
+#p2 - Max jump dist (Ai Thinks not Actual)
+
+LookForTarget   	500.0, 10000.0
+#p0 - interval look (msec)
+#p1 - Time to sleep before check again (msec)
+
+Listen          	0.7, 2.0
+#p0 - Investigate % (0 never, 1 always)
+#p1 - Distance to move from danger?
+
+PrimaryFire     	1500.0, 0.6, 0.10, 0.00, 0.0, 200.0, 0.0, 1.0, 0.00, 0.00
+#p0 - Ave Time between shots (msec)
+#p1 - Min Fire dot (1.0 - facing, 0 - 180deg, -1.0 360deg)
+#p2 - Max Dist (wont fire if further)
+#p3 - Error (Error in aim 0-1)
+#p4 - Min Dist (Wont fire if closer)
+#p5 - Ready Time (between wake & first shot in msec)
+#p6 - Lead % (0 -1)
+#p7 - Use Secondary % (1.0 always)
+#p8 - Burst Count (#-1, 0 never)
+#p9 - Burst Interval (time between shots, msec)
+
+OpenDoors
+
+Talk            	10000.0, 0.10

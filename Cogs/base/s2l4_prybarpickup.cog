@@ -1,0 +1,44 @@
+# Jedi Knight Cog Script
+#
+# S2L4_PrybarPickup.cog
+#
+# Notifies player when they have pickuped prybar and plays line
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+thing	prybar                            
+
+sound	mj61018=mj61018.wav	local
+sound	mj62406=mj62406.wav	local
+                  
+message	touched
+message	user1
+
+int	getbar=0			local
+
+cog	sewerdoor
+
+end
+
+code
+touched:
+	if (getbar==0)
+      	{
+        jkPrintUNIString(-1, 61018);
+	PlayVoiceLocal(mj61018, 1.0, 0.0, 0);
+      	}
+	else if (getbar==1)
+      	{
+     	jkPrintUNIString(-1, 62406);
+	PlayVoiceLocal(mj62406, 1.0, 0.0, 0);
+	}
+    return;
+// ========================================================================================
+user1:
+	getbar=1;
+	return;
+end

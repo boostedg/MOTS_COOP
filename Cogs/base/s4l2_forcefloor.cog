@@ -1,0 +1,101 @@
+# Jedi Knight Cog Script
+#
+# 00_Forcefield.cog modified
+#
+# inflicts damage when player touches a surface (can be used on nomove adjoins)
+# Surface has to be marked with either Transluscency or Always Draw if it's an adjoin
+# damage amount is random between minDamage and maxDamage
+#
+# [IS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+message     touched
+message     damaged
+message     startup
+message     pulse
+
+surface     surf0                               mask=0x40c
+int         victim=-1                           local
+int         player=-1                           local
+int         damaging=1                          local
+
+flex        maxDamage=40
+flex        minDamage=20
+flex        interval=0.25
+
+flex        minLight=0.2
+flex        maxLight=1.0
+flex        period=0.5
+
+sound       wav0=ForceFieldHum01.wav            local
+sound       wav1=ForceFieldHit01.wav            local
+
+template    sparks=+heavysmoke                  local
+
+message     entered
+
+end
+
+# ========================================================================================
+
+code
+
+startup:
+   SetSurfaceFlags(surf0,16384);                //magsealed
+   SurfaceLightAnim(surf0, minLight, maxLight, period);
+   PlaySoundPos(wav0, GetSurfaceCenter(surf0), 1.5, 2.0, 10.0, 0x1);
+   return;
+
+# ........................................................................................
+
+entered:
+touched:
+
+   SetPulse(1.0);
+   
+   return;
+
+# ........................................................................................
+
+damaged:
+   if(GetParam(1) == 1)
+   {
+      player=GetThingParent(GetSourceRef());
+      if(GetThingType(player) != 10) Return;
+
+      damage = (Rand()*(maxdamage - mindamage)) + mindamage;
+      DamageThing(player, damage, 0x01, player);
+   }
+   return;
+
+# ........................................................................................
+
+pulse:
+
+      foundavictim=0;
+
+      victim=FirstThingInSector(GetSurfaceSector(surf0));
+
+      while (victim!=-1)
+         {
+         foundavictim=1;
+         if (GetAttachFlags(victim) & 1)
+            {
+               PlaySoundPos(wav1, GetSurfaceCenter(surf0), 0.5, 1, 10, 0);
+               CreateThing(sparks, victim);
+               garbage=DamageThing(victim, 40, 0x2, victim);
+            }
+
+         victim=NextThingInSector(victim);
+         }
+
+      if (!foundavictim) SetPulse(0);
+
+
+
+end
+

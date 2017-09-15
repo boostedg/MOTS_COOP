@@ -1,0 +1,110 @@
+# Jedi Knight Cog Script
+#
+## S2L4_Guardpatrol.cog
+##  From 00_AIFramePatrol.cog
+#
+# [DS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+message	startup
+message	activate
+message	entered
+message	arrived
+message	timer
+message     touched
+
+sector	gosector	   linkid=1
+thing		patroller      mask=-1
+thing       jailkey
+
+float		patrolspeed=1.0
+float		framepause=1.0
+float		routestyle=0.0
+float		numframes=1.0
+float		maxpause=10.0
+
+int		curframe=1		local
+int		framenum=0		local
+int		direction=1		local		// control forward or backward through frames
+int		begun=0		local
+int		testnum=0		local
+int         awake=0           local
+end
+
+code
+startup:
+	  if (jailkey != -1)
+		  AttachthingtothingEx(jailkey, patroller, 0x10);    
+     AISetMode(patroller, 0x2000);
+     call beginpatrol;
+	  return;
+
+entered:
+	if (GetSenderID() != 1) return;
+      AIClearMode(patroller, 0x2000);
+      AISetMode(patroller, 0x200);
+	call beginpatrol;
+	return;
+	
+beginpatrol:
+	if (begun) return;
+	begun = 1;
+	
+	AISetMoveSpeed(patroller, patrolspeed);
+	
+	SetTimer(.1);
+	return;
+
+arrived:
+	curframe = curframe + direction;
+	if (curframe > numframes)			// end of patrol
+	{
+		if (routestyle == 1)
+		{
+			direction = -1;			// if linear, reverse frame directional
+			curframe = numframes - 1;
+		}
+		else
+		{
+			curframe = 0;			// if circular, go to frame 0
+		}
+	}
+
+	if ((curframe == -1) && (routestyle == 1))	// if linear and returned to initial frame
+	{
+		direction = 1;					// restore forward frame directional
+		curframe = 0;
+	}
+
+	if (routestyle == 2)
+	{
+		curframe = (Rand() * numframes) + 1;
+	}
+
+	if (framepause > 0)
+	{
+		SetTimer(framepause);
+	}
+	else
+	{
+		SetTimer((Rand() * (maxpause - 1)) + 2);
+	}
+	return;
+
+timer:
+	AISetLookFrame(patroller, curframe);
+	AISetMoveFrame(patroller, curframe);
+	return;
+
+touched:
+      AIClearMode(patroller, 0x2000);
+      AIClearMode(patroller, 0x200);
+	AISetMode(patroller, 0x4);
+	return;
+
+
+
+
+end 

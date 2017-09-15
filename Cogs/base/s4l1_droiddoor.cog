@@ -1,0 +1,54 @@
+# Jedi Knight Cog Script
+# S4L1_droiddoor.cog
+# when either droid touches door or enters elevator, it goes to frame 1.
+# [SH]
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+   message		startup
+   message		touched
+   message		activated
+   surface		switch
+   thing		movething	mask=0x004	
+   thing		r2		mask=0x004	
+   thing		gonk		mask=0x004		
+   int		begun=0		local
+   flex		movespeed=4.0
+   flex		startwait=0.5
+   flex		sleeptime=0.5
+
+end
+
+code
+startup:
+   SetWallCel(switch,0);
+   SetSectorAdjoins(GetThingSector(movething),0);
+   return;
+activated:
+   if ((GetSenderRef()!=switch)||(GetWallCel(switch)==1)) return;
+   SetWallCel(switch,1);
+   Sleep(startwait);
+   SetSectorAdjoins(GetThingSector(movething),1);
+   MoveToFrame(movething,1,movespeed);
+   WaitForStop(movething);
+   Sleep(sleeptime);
+   MoveToFrame(movething,0,movespeed);
+   WaitForStop(movething);
+   SetSectorAdjoins(GetThingSector(movething),0);
+   SetWallCel(switch,0);
+   return;
+touched:
+   if (GetSenderRef()!=movething) return;
+   if (GetWallCel(switch)==1) return;
+   SetWallCel(switch,1);
+   Sleep(startwait);
+   SetSectorAdjoins(GetThingSector(movething),1);
+   MoveToFrame(movething,1,movespeed);
+   WaitForStop(movething);
+   Sleep(sleeptime);
+   MoveToFrame(movething,0,movespeed);
+   WaitForStop(movething);
+   SetSectorAdjoins(GetThingSector(movething),0);
+   SetWallCel(switch,0);
+   return;
+end

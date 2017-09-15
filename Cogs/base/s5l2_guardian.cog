@@ -1,0 +1,148 @@
+# Jedi Knight Cog Script
+#
+# S5L2_guardian.cog
+#
+# A Force force-field.
+#
+# [JS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# ========================================================================================
+
+symbols
+message	startup		
+message	entered	
+message	damaged	
+message	touched	
+message	crossed		
+message	pulse		
+message	timer		
+
+surface	field						linkid=1			mask=0x448
+surface	fieldback
+thing		eye_pos0					desc=generator_ghost
+thing		eye_pos1					desc=generator_ghost
+template	eye_tpl					desc=object_to_generate
+sound		wav0						desc=force_drain
+sound		wav1						desc=success_alert
+sector	alert_sector				desc=alert_sector
+
+flex		interval=0.25			local
+
+int		player					local
+int		trickdone=0				local
+int		n=50						desc=amount_of_mana_drained
+int		eye0=-1					local
+int		eye1=-1					local
+	
+end
+
+# ========================================================================================
+
+code
+
+startup:
+	player = GetLocalPlayerThing();
+   ClearAdjoinFlags(field, 2);				//no move
+   ClearAdjoinFlags(fieldback, 2);
+   SetFaceGeoMode(field, 0);					//translucent
+   SetFaceGeoMode(fieldback, 0);
+   SetSurfaceFlags(field, 16384);			//magsealed
+   SetSurfaceFlags(fieldback, 16384);
+	return;
+
+# ........................................................................................
+
+entered:
+	if(trickdone) return;
+	call trick;
+	return;
+
+# ........................................................................................
+
+damaged:
+	if(GetSenderId(GetSenderRef()) !=1) return;
+	
+	call trick;
+	if(GetCurWeapon(player) == 1)
+	{
+		// do the eyes effects and everything (the player enters the area)...
+		ChangeInv(player, 14, -n);
+	}
+	return;
+
+# ........................................................................................
+
+touched:
+	if(GetSenderId(GetSenderRef()) !=1) return;
+	
+	ChangeInv(player, 14, -n);
+	call trick;
+	return;
+
+# ........................................................................................
+
+trick:
+	
+	// do the eyes effects and everything (the player enters the area)...
+	if(eye0 == -1)
+	{
+		eye0=CreateThing(eye_tpl, eye_pos0); 
+		eye1=CreateThing(eye_tpl, eye_pos1); 
+		PlaySoundPos(wav0, SurfaceCenter(field), 1.0, -1, -1, 0 );
+		SetFaceGeoMode(field,3);
+		SetFaceGeoMode(fieldback,3);
+	}
+	KillTimerEx(1);
+	SetTimerEx(0.5, 1, 0, 0);
+	SetPulse(0.5);
+	
+	return;
+	
+# ........................................................................................
+
+crossed:
+	if(GetSenderId(GetSenderRef()) !=1) return;
+
+	// remove eyes effects if you want to (the player leaves the area but DID not succeed)...
+	DestroyThing(eye0);
+	DestroyThing(eye1);
+
+	return;
+
+# ........................................................................................
+
+pulse:
+	if(IsInvActivated(player, 26))	// is Persuasion active ?
+	{
+	   trickdone = 1;
+	   
+		// remove the eyes, open the doors, whatever you want to do next...
+      SetAdjoinFlags(field, 2);             //move
+      SetAdjoinFlags(fieldback, 2);
+	}
+	else
+	{
+	   // booh the player or whatever... :-)
+		ClearAdjoinFlags(field, 2);				//no move
+		//ClearAdjoinFlags(fieldback, 2);
+		SetFaceGeoMode(field, 0);					//translucent
+		//SetFaceGeoMode(fieldback, 0);
+		SetSurfaceFlags(field, 16384);			//magsealed
+		//SetSurfaceFlags(fieldback, 16384);
+	}
+	return;
+
+# ........................................................................................
+
+timer:
+	SetFaceGeoMode(field, 0);
+	SetFaceGeoMode(fieldback, 0);
+	DestroyThing(eye0);
+	DestroyThing(eye1);
+	eye0=-1;
+	eye1=-1;
+	return;
+
+end
+

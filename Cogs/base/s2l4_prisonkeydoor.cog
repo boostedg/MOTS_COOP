@@ -1,0 +1,64 @@
+# Jedi Knight Cog Script
+#
+# S2L4_prisonkeydoor.cog
+#
+# [DS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+#
+#
+
+symbols
+	message	activated	
+
+	thing		door0       
+      sound       onsound=16metalcreak02.wav
+      sound       locked_snd=19Cweightstop.wav
+	float		moveSpeed=0.5
+	int         player      local
+      int		doorStatus	local
+	int		moveStatus	local
+      int         key=43
+end
+
+# ========================================================================================
+
+code
+
+activated:
+   player = jkGetLocalPlayer();
+   if (GetInv(player, 43) == 1.0)
+   {             
+      call checkstatus;
+      if(movestatus) return;
+      if(doorstatus == 0)
+      {
+      garbage = PlaySoundThing(onSound, door0, 0.6, -1, -1, 0);
+      call opendoors; 
+   }
+   }
+   else
+   {
+       PlaySoundThing(locked_snd, player, 1.0, -1, -1, 0);
+   }
+
+   Return;
+
+# ........................................................................................
+
+OpenDoors:
+      MoveToFrame(door0, 1, moveSpeed);
+	return;
+
+# ........................................................................................
+
+CheckStatus:
+	moveStatus = 0;
+	doorStatus = 0;
+	if (door0 >= 0) {
+			moveStatus = moveStatus + IsThingMoving(door0);
+			doorStatus = doorStatus + GetCurFrame(door0);
+		}
+	return;
+
+end 

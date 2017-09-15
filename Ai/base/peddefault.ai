@@ -1,0 +1,21 @@
+# Jedi Knight AI File
+#
+# PEDDEFAULT.AI
+#
+# Barons Hed Pedestrian AI
+# All difficulty levels
+# Flee of sight of combat
+#
+# [CR]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+alignment=-1.0, rank=0.5, fov=165, maxstep=0.1, sightdist=7.0, heardist=1.5
+
+#instinct			args
+############################
+
+SenseDanger     	0.10, 0.0
+Flee            	10.0, 10000.0, 10.0
+OpenDoors
+

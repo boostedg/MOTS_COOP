@@ -1,0 +1,78 @@
+# Jedi Knight Cog Script
+# S4L1_crateclose.cog
+# surface triggers voice and unistring
+# [SH]
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+   message		entered
+   message		arrived
+   sector		cratesector
+   thing		crate0
+   thing		crate1
+   thing		crate2
+   thing		crate3
+   thing		crate4
+   thing		crate5
+   thing		crate6
+   thing		crate7
+   thing		crate8
+   thing		crate9
+   thing		lid
+   thing		lastcrate
+   sector		trigger0
+   sector		trigger1
+   int		done=0	local
+   int		closed=0	local
+   int		begun=0	local
+   flex		cratespeed=4.0
+   sound		wav0=
+end
+
+code
+entered:
+   if ((GetSenderRef()==cratesector)&&(!closed))
+	{
+	done=1;
+	SendMessageEx(GetMasterCOG(), user0, 3, 0, 0, 0);
+	}
+   if (begun) return;
+   begun=1;
+   for (i=0;i<=10;i=i+1)
+      {
+	if (!done) MoveToFrame(crate0[i],1,cratespeed);	
+	PlaySoundThing(wav0,crate0[i],1,3,5,0x100);
+	if (crate0[i]==lid)
+	   {
+	   WaitForStop(lid);
+	   closed=1;
+	   AttachThingToThing(lid,lastcrate);
+	   Sleep(6.0);
+	   MoveToFrame(lastcrate,1,cratespeed);
+	   }	   
+	Sleep(rand()+6.0);
+	}
+   return;
+arrived:
+   if ((GetSenderRef()==lid)&&(GetCurFrame(lid)==1)&&(GetThingSector(GetLocalPlayerThing())==cratesector))
+	{
+	done=1;
+	SendMessageEx(GetMasterCOG(), user0, 3, 0, 0, 0);
+	}
+   else if ((GetSenderRef()==lastcrate)&&(GetCurFrame(lastcrate)==2)&&(!done))
+	{
+	MoveToFrame(lastcrate,3,cratespeed);
+	SetActorFlags(GetLocalPlayerThing(), 0x8);
+      SetActorFlags(GetLocalPlayerThing(), 0xa00000);
+	StopThing(GetLocalPlayerThing());
+	jkPrintUNIString(-1, 40000);
+	Sleep(3.0);
+      jkEndLevel(0);
+      ClearActorFlags(GetLocalPlayerThing(), 0x8);
+	}
+   else if (GetSenderRef()==lid)return;
+   else if ((GetCurFrame(GetSenderRef())==2))DestroyThing(GetSenderRef());
+   else  MoveToFrame(GetSenderRef(),1+GetCurFrame(GetSenderRef()),cratespeed);	
+   return;
+end
+

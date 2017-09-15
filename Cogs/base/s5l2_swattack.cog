@@ -1,0 +1,41 @@
+# Jedi Knight Cog Script
+#
+# S5L2_swattack.cog
+#
+# Entered message creates swampa at pos.
+#
+# [JS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# ========================================================================================
+
+symbols
+message	startup		
+message	entered		
+sector	trigger
+thing		pos0		 			desc=ghost_location
+template	swampa_tpl			desc=object_to_generate
+int		bevent=1				local
+
+end
+
+# ========================================================================================
+
+code
+
+startup:
+	bevent=1;
+	return;
+	
+entered:
+	if (bevent == 0) return;
+	else
+	if(!HasLOS(GetLocalPlayerThing(), pos0))
+	{
+		CreateThing(swampa_tpl, pos0);
+		bevent=0;
+	}
+	return;
+	 
+end
+

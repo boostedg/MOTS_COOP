@@ -1,0 +1,27 @@
+# Jedi Knight Cog Script
+#
+# S5L2_carpet.cog
+#
+# Death of Mara doppelganger allows player to exit the Dark Tree. 
+#
+# [JS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# ========================================================================================
+
+symbols
+message	killed
+thing		darkmara	mask=0xfff
+thing		carpet
+end
+
+# ========================================================================================
+
+code
+
+killed:
+	MoveToFrame(carpet, 1, movespeed);
+	return;
+
+end
+

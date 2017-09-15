@@ -1,0 +1,71 @@
+# Jedi Knight Cog Script
+# S4L1_cratelift.cog
+# lifts the crates in upper cargo
+# [SH]
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+   message		entered
+   message		crossed
+   message		arrived
+   message		pulse
+   thing		crate00
+   thing		crate01
+   thing		crate02
+   thing		crate03
+   thing		crate04
+   thing		crate05
+   thing		crate06
+   thing		crate07
+   thing		crate08
+   thing		crate09
+   thing		cratea		linkid=1
+   thing		crateb		linkid=1
+   surface		trigger0
+   surface		trigger1
+   int		begun=0		local
+   int		crate			local
+   int		count=0		local
+   flex		cratespeed=1.0
+   flex		pulsetime=0.5
+   sound		wav0=16MetalGroan01.wav
+end
+
+code
+crossed:
+   begun=1;
+   return;
+entered:
+   if (!begun) return;
+   if (GetSenderId()==1) return;
+   if ((GetCurFrame(GetSenderRef())==0)&&(!IsMoving(GetSenderRef())))
+	{
+	MoveToFrame(GetSenderRef(),1,cratespeed);
+	count=count+1;
+	if (count==1) SetPulse(pulsetime);
+	}
+   return;
+pulse:
+   crate=rand()*9.99;
+   if((!IsMoving(crate00[crate]))&&(GetCurFrame(crate00[crate])==0))
+	{
+	MoveToFrame(crate00[crate],1,cratespeed);
+	count=count+1;
+	PlaySoundThing(wav0,crate00[crate],1,3,5,0);
+	}
+   if (count>=10)
+	{
+	SetPulse(0);
+	Sleep(4.0);
+	MoveToFrame(cratea,1,cratespeed);
+	PlaySoundThing(wav0,cratea,1,3,5,0);
+	Sleep(rand()+2.0);
+	MoveToFrame(crateb,1,cratespeed);
+	PlaySoundThing(wav0,crateb,1,3,5,0);
+	}
+   return;
+arrived:
+   if ((GetCurFrame(GetSenderRef())==2))DestroyThing(GetSenderRef());
+   else MoveToFrame(GetSenderRef(),1+GetCurFrame(GetSenderRef()),cratespeed);	
+   return;
+end

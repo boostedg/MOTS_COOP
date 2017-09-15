@@ -1,0 +1,158 @@
+# Jedi Knight Cog Script
+# S4L1_coolrod.cog
+# reactor cooling rods are lowered into water and make a quenching sound
+# once all6 are cooled, door access is permitted.
+# [SH]
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+   message		startup
+   message		activated
+   message		crossed
+   message		pulse
+   message		touched
+   message		timer
+   surface		enter
+   surface		exit
+   surface		surf0
+   surface		surf1
+   surface		surf2
+   surface		surf3
+   surface		surf4
+   surface		surf5
+   thing		door0
+   thing		door1
+   thing		rod00		
+   thing		rod10
+   thing		rod20
+   thing		rod30
+   thing		rod40
+   thing		rod50
+   thing		ghost0
+   thing		ghost1
+   thing		ghost2
+   thing		ghost3
+   thing		ghost4
+   thing		ghost5
+   flex		rodspeed=4.0
+   flex		rodwait=2.0
+   flex		doorspeed=8.0
+   flex		doorwait=2.0
+   flex		pulsetime=1.0
+   int		cooled=0
+   int		i	local
+   int		j	local
+   int		k	local
+   int		n	local
+   int		m 	local
+   int		p 	local
+   int		istalking=0	local
+   sound		wav0=quench.wav
+   sound		wav1=hiss.wav
+   sound		wav2=cp64145.wav
+   template		steam=+heavysmoke	local
+   thing		rod01
+   thing		rod02
+   thing		rod03
+   thing		rod11
+   thing		rod12
+   thing		rod13
+   thing		rod21
+   thing		rod22
+   thing		rod23
+   thing		rod31
+   thing		rod32
+   thing		rod33
+   thing		rod41
+   thing		rod42
+   thing		rod43
+   thing		rod51
+   thing		rod52
+   thing		rod53
+   int		soundnum0=0		local
+   int		soundnum1=0		local
+   int		soundnum2=0		local
+   int		soundnum3=0		local
+   int		soundnum4=0		local
+   int		soundnum5=0		local
+end
+
+code
+startup:
+   SetSectorAdjoins(GetThingSector(door0),0);
+   SetSectorAdjoins(GetThingSector(door1),0);
+   for (i=0;i<=5;i=i+1)
+	{
+	for(j=0;j<=2;j=j+1)
+	   {
+	   AttachThingToThing(rod01[j+(i*3)],rod00[i]);
+ 	   }
+	SetWallCel(surf0[i],0);
+	}
+   return;
+crossed:
+   if (GetSenderRef()==enter) SetPulse(pulsetime);
+   if (GetSenderRef()==exit)
+	{
+	SetPulse(0);
+	for (m=0;m<=5;m=m+1)
+	   {
+	   StopSound(soundnum0[m],0);
+	   }
+	}
+   return;
+activated:
+   if (istalking) return;
+   if (((GetSenderRef()==door0)||(GetSenderRef()==door1))&&(GetCurFrame(door0)==0))
+	{
+	istalking=1;
+	PlayVoiceThing(wav2,GetSenderRef(),1.0,-1,-1,0);
+	Sleep(GetSoundLen(wav2));
+	istalking=0;
+	return;
+	}	
+   if ((GetSenderType()==3)) return;
+   pos=GetWallCel(GetSenderRef());
+   for (k=0;k<=5;k=k+1)
+	{
+	if (GetSenderRef()==surf0[k])
+	   {
+	   if (IsMoving(rod00[k]))return;
+	   SetWallCel(surf0[k],1-pos);
+	   MoveToFrame(rod00[k],1-pos,rodspeed);
+	   SetTimerEx(rodwait,-1,k,0);
+	   }
+	}		
+   return;
+timer:
+   p=GetParam(0);
+   PlaySoundThing(wav0,ghost0[p],1.0,-1,-1,0);
+   soundnum0[p]=PlaySoundThing(wav1,ghost0[p],1.0,-1,-1,1);
+   return;
+pulse:
+   cooled=0;
+   for (n=0;n<=5;n=n+1)
+   	{
+	if (GetCurFrame(rod00[n])==1) CreateThing(steam,ghost0[n]);
+	if (GetWallCel(surf0[n])==1) cooled=cooled+1;
+	}
+   if ((cooled==6)&&(GetCurFrame(door0)==0))
+	{
+	SetSectorAdjoins(GetThingSector(door0),1);
+	SetSectorAdjoins(GetThingSector(door1),1);
+	MoveToFrame(door0,1,doorspeed);
+	MoveToFrame(door1,1,doorspeed);
+	}
+   else if ((cooled<6)&&(GetCurFrame(door0)==1))
+	{
+	MoveToFrame(door0,0,doorspeed);
+	MoveToFrame(door1,0,doorspeed);
+	SetSectorAdjoins(GetThingSector(door0),0);
+	SetSectorAdjoins(GetThingSector(door1),0);
+	}   
+   return;
+touched:
+   if((GetSenderRef()==door0)||(GetSenderRef()==door1)||(GetSenderType()!=3))return;
+   DamageThing(GetLocalPlayerThing(), 5, 0x1, -1);
+   return;
+end

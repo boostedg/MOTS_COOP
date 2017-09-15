@@ -1,0 +1,265 @@
+# Jedi Knight Cog Script
+#
+# s2l4_watertrap.cog
+#
+# Pos located alarm sound for asteroid display screens.
+#
+# [DS & KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+#
+
+symbols
+   message  	startup
+   message  	timer
+   message  	activated
+   message  	pulse
+   message  	entered
+
+sector		startlight
+
+#Door Specific
+   message	blocked
+   message	arrived		
+
+#Power Water Trap Stuff
+   thing    	ghost0
+   thing    	ghost1
+   thing    	ghost2
+   thing   	ghost3
+   thing    	ghost4
+   thing    	ghost5
+   thing    	ghost7
+   thing    	ghost8
+   thing    	soundthing
+
+   cog      	targetcog    //message sent to S2L4_Device.cog to turn on/off alarm
+
+# Door Stuff   
+   thing        door0
+   float        sleeptime=2.0				local
+   sector   	doorSector				local
+   int		doorStatus				local
+   int		moveStatus				local
+
+   surface  	switch0                         
+   surface  	switch1
+   surface  	switch2
+                            
+   int      	dummy                            	local
+   int      	timeron                          	local
+   template 	lightning=+force_lightning       	local
+   flex		autoAimXFOV=30			   	local
+   flex     	autoAimZFOV=30                   	local
+   flex		minLight=0.1                    	local
+   flex		maxLight=1.0				local
+   flex		min_interval=0.1                 	local
+   flex		range_interval=4.0               	local
+   flex     	volume=0.5				local
+   sound    	fireSound=forcefieldhit01.wav    	local
+   sound    	cmpltsound=forcefieldoff01.wav   	local
+   sound    	butnsound=Activate04.wav         	local
+   sound    	locksound=lgclick1.wav           	local
+
+   int		done=0					local
+   int		nozap=0					local
+   
+   cog		sectorzap
+end
+
+code
+//-----------------------------------------------------------------------------------------------------------------
+startup:
+
+  timeron=1;
+  settimerEx(min_interval+(rand()*range_interval), 0, 0, 0);
+  setwallcel(switch0, 1);
+  setwallcel(switch1, 1);
+  setwallcel(switch2, 1);
+  doorSector = GetThingSector(door0);
+  SetSectorAdjoins(doorSector, 0);
+  SetSectorLight(doorSector, 0.3, 0.0);		
+  return;
+//-----------------------------------------------------------------------------------------------------------------
+entered:
+	if (done) return;
+	done=1;
+	if (GetSenderRef()==startlight)
+	{
+	  setpulse(0.5);
+	}
+	return;
+//-----------------------------------------------------------------------------------------------------------------
+activated:
+if((GetSenderref()== switch0)&&(GetWallCel(switch0) == 1)&&(GetwallCel(Switch1) == 0)&&(Getwallcel(switch2) == 1))
+      {
+         PlaySoundPos(cmpltsound, SurfaceCenter(switch0), 1, -1, -1, 0);
+         SetWallCel(switch0, 0);
+         timeron=0;
+	 nozap=1;
+         Setpulse(0.0);
+	 SendMessage(sectorzap, user7);
+         return;
+      }
+if((GetSenderref()== switch0)&&(GetWallCel(switch0) == 1)&&(GetwallCel(Switch1) == 1))
+      {
+         PlaySoundPos(butnsound, SurfaceCenter(switch0), 1, -1, -1, 0);
+         SetWallCel(switch0, 0);
+         sleep(1);
+         PlaySoundPos(butnsound, SurfaceCenter(switch0), 1, -1, -1, 0);
+         Setwallcel(switch0, 1);
+         return;
+      }
+if((GetSenderref() == switch0)&&(GetWallCel(switch0) == 0)&&(getwallcel(switch1) == 0))
+      {
+         PlaySoundPos(butnsound, SurfaceCenter(switch0), 1, -1, -1, 0);
+         SetWallCel(switch0, 1);
+         SetWallCel(Switch1, 1);
+         SetWallCel(switch2, 1);
+         SendMessage(targetcog, user1);         
+         timeron=1;
+         settimerEx(min_interval+(rand()*range_interval), 0, 0, 0);
+         setpulse(0.5);
+         return;
+      }
+if((GetSenderref() == switch1)&&(GetWallCel(switch1) == 1))
+      {
+         PlaySoundPos(butnsound, SurfaceCenter(switch1), 1, -1, -1, 0);
+         SetWallCel(switch1, 0);
+         SendMessage(targetcog, user0); 
+         return;
+      }
+if((GetSenderref() == switch1)&&(GetWallCel(switch1) == 0))
+      {
+         PlaySoundPos(butnsound, SurfaceCenter(switch1), 1, -1, -1, 0);
+         SetWallCel(switch1, 1);
+         SetWallCel(switch0, 1);
+         SetWallCel(switch2, 1);
+         SendMessage(targetcog, user1); 
+         timeron=1;
+         settimerEx(min_interval+(rand()*range_interval), 0, 0, 0);
+         setpulse(0.5);
+         return;
+      }
+if((GetSenderref() == switch2)&&(GetWallCel(switch2) == 1))
+      {
+         if (doorStatus == 1) return;
+         PlaySoundPos(locksound, SurfaceCenter(switch2), 1, -1, -1, 0);
+         SetWallCel(switch2, 0);
+         return;
+      }
+if((GetSenderref() == switch2)&&(GetWallCel(switch2) == 0))
+      {
+         PlaySoundPos(butnsound, SurfaceCenter(switch2), 1, -1, -1, 0);
+         SetWallCel(switch0, 1);
+         SetWallCel(switch1, 1);
+         SetWallCel(switch2, 1);
+         timeron=1;
+         settimerEx(min_interval+(rand()*range_interval), 0, 0, 0);
+         setpulse(0.5);
+         SendMessage(targetcog, user0);
+         sleep(0.01); 
+         SendMessage(targetcog, user1); 
+         return;
+      }
+if((GetSenderRef() == door0)&&(GetWallCel(switch2) == 1))
+      {
+         Call Unlocked_Door; 
+         return; 
+       }
+	return;
+
+//--------------------------------------------------------------------------------------------------------------
+pulse:
+	SetPulse(0);
+       	dummy = FireProjectile(ghost0, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+	dummy = FireProjectile(ghost7, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+  	dummy = FireProjectile(ghost8, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+	Sleep(0.5);
+       	dummy = FireProjectile(ghost1, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+	dummy = FireProjectile(ghost7, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+  	dummy = FireProjectile(ghost8, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+	Sleep(0.5);
+	dummy = FireProjectile(ghost2, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+	dummy = FireProjectile(ghost7, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+  	dummy = FireProjectile(ghost8, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+	Sleep(0.5);
+	dummy = FireProjectile(ghost3, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+	dummy = FireProjectile(ghost7, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+  	dummy = FireProjectile(ghost8, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+	Sleep(0.5);
+	dummy = FireProjectile(ghost4, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+	dummy = FireProjectile(ghost7, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+  	dummy = FireProjectile(ghost8, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+	Sleep(0.5);
+	dummy = FireProjectile(ghost5, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+	dummy = FireProjectile(ghost7, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+  	dummy = FireProjectile(ghost8, lightning, -1, 24, '0 0 0', '0 0 0', 1.0, 0x60, autoAimXFOV, autoaimZFOV);
+	call zapmore;
+	//	SetPulse(0.5);
+
+  	return;
+//---------------------------------------------------------------------------------------------------------------
+timer:
+	If (timeron == 1)
+      {
+      If (GetSenderID()==0)
+	{
+	settimerEx(min_interval+(rand()*range_interval), 0, 0, 0);
+	SetThingLight(soundthing, (minLight+rand()*maxLight), 0);
+	PlaySoundThing(firesound, soundthing, volume, -1, 18, 0);
+	settimerEx(0.1, 1, 0, 0);
+	}
+	else
+	If (getsenderid()==1)
+	{
+	SetThingLight(soundthing, minlight, 0);
+	}
+      }
+return;
+//Door Specific----------------------------------------------------------------------------------------------------------
+Unlocked_door:
+	call CheckStatus;
+	if (MoveStatus) return;
+	if (DoorStatus == 0) 
+      	{
+		SetSectorAdjoins(doorSector, 1);
+		MoveToFrame(door0, 1, 2);
+	}
+	return;
+//------------------------------------------------------------------------------------------------------
+arrived:
+	call CheckStatus;
+	if (moveStatus) return;
+	if (doorStatus == 1)
+      	{
+	    sleep(sleepTime);
+            MoveToFrame(door0, 0, 2);
+	}
+       else if (doorStatus == 0)
+      	{			
+		SetSectorAdjoins(doorSector, 0);
+	}
+	return;
+//------------------------------------------------------------------------------------------------------
+blocked:
+	movetoframe(door0, 1, 2);
+	return;
+//------------------------------------------------------------------------------------------------------
+checkstatus:
+   MoveStatus = IsMoving(door0);
+   DoorStatus = GetCurFrame(door0);
+   return;
+//------------------------------------------------------------------------------------------------------
+zapmore:
+	if (nozap) return;
+	SetPulse(0.5);
+	return;
+//------------------------------------------------------------------------------------------------------
+end
+
+
+
+
+
+  

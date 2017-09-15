@@ -1,0 +1,79 @@
+# Jedi Knight Cog Script
+# S4L1_message.cog
+# triggers voice and unistring
+# [SH]
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+   message		startup
+   message		crossed
+   message		activated
+   surface		trig0
+   surface		trig1
+   surface		call0
+   surface		call1
+   surface		call2
+   surface		call3
+   surface		nomove0
+   surface		nomove1
+   thing		elev0
+   thing		elev1
+   thing		door0		linkid=1
+   thing		door1		linkid=1
+   thing		sequence3
+   thing		sequence4	
+   int		done=0	local
+   int		istalking=0	local
+   sound		voice0=mj61027.wav	local
+   sound		wav0=df_door1-3.wav	local
+end
+
+code
+startup:
+   ClearAdjoinFlags(nomove0,2);
+   ClearAdjoinFlags(nomove1,2);
+   SetSectorAdjoins(GetThingSector(door0),0);
+   SetSectorAdjoins(GetThingSector(door1),0);
+   return;
+activated:
+   if (istalking) return;
+   if (GetSenderId()==1)
+	{
+	istalking=1;
+	PlaySoundLocal(wav0, 1, 0.0, 0);
+	PlayVoiceLocal(voice0, 1, 0.0, 0);
+	Sleep(GetSoundLen(voice0));
+	istalking=0;
+	return;
+	}
+   if (GetCurFrame(elev0)!=0) return;
+   SetWallCel(call0,1);
+   SetWallCel(call1,1);
+   SetWallCel(call2,1);
+   SetWallCel(call3,1);
+   MoveToFrame(elev0,1,10);
+   MoveToFrame(elev1,1,10);
+   WaitForStop(elev0);
+   SetSectorAdjoins(GetThingSector(door0),1);
+   SetSectorAdjoins(GetThingSector(door1),1);
+   MoveToFrame(door0,1,4);
+   MoveToFrame(door1,1,4);
+   return;
+crossed:
+   if (done) return;
+   done=1;
+   MoveToFrame(elev0,2,12);
+   MoveToFrame(elev1,2,12);
+   WaitForStop(elev0);
+   DamageThing(sequence3,50,0x1,sequence3);
+   DamageThing(sequence4,50,0x1,sequence4);
+   SetWallCel(call3,2);
+   SetWallCel(call4,2);
+   SetAdjoinFlags(nomove0,2);
+   SetAdjoinFlags(nomove1,2);
+   MoveToFrame(door0,0,4);
+   MoveToFrame(door1,0,4);
+   SetSectorAdjoins(GetThingSector(door0),0);
+   SetSectorAdjoins(GetThingSector(door1),0);
+   return;
+end

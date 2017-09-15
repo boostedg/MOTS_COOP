@@ -1,0 +1,27 @@
+# Jedi Knight Cog Script
+#
+# S2L2b_endcutscene.cog
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+message		entered
+
+cog		CS
+
+sector		start
+
+end
+
+# ========================================================================================
+
+code
+
+entered:
+	SendMessage(CS, user0);
+	return;
+end

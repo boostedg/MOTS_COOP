@@ -1,0 +1,87 @@
+# Jedi Knight Cog Script
+#
+# S2L4_BIGDOOR.COG
+#
+# Opens door from droid access panel
+#
+# [KS & DS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+thing       door0                            
+
+surface     switch0
+
+flex        movespeed=0.5
+flex        lightvalue=0.1
+int         key=55
+
+sound       locked_snd=mousebot1.wav         local
+sound       onSound=16MetalCreak05.wav       local
+sector      doorsector                       local
+int         doorstatus                       local
+int         movestatus                       local
+int         player                           local
+
+message     startup
+message     activated
+message	    timer
+
+sound		mj62408=mj62408.wav		local
+thing		fan
+end
+
+code
+startup:
+   doorsector = GetThingSector(door0);
+   SectorAdjoins(doorsector, 0);
+   SectorLight(doorsector, lightvalue, 0.0); 
+   return;
+
+// ........................................................................................
+
+activated:
+   if (getsenderref() == door0) return;
+   player = GetLocalPlayerThing();
+   if (GetInv(player, 55) == 1.0)  
+   {                                         
+      call checkstatus;
+      if(movestatus) return;
+      if(doorstatus == 0)
+      {                                      
+      garbage = PlaySoundThing(onSound, fan, 1.0, -1, -1, 0);      
+      garbage = setwallcel(switch0, 1);
+      SectorAdjoins(doorsector, 1);
+      SetInvActivated(player, 55, 1);
+	SetTimer(2);
+      call open_doors;
+   }
+   }
+   else
+   {
+      PlaySoundThing(locked_snd, player, 1.0, -1, -1, 0);
+      jkPrintUNIString(-1, 62408);
+	PlayVoiceLocal(mj62408, 1.0, 0.0, 0);
+   }
+
+   Return;
+
+// ........................................................................................
+
+open_doors:
+   movetoframe(door0, 1, movespeed);
+   return;
+// ........................................................................................
+checkstatus:
+   movestatus = ismoving(door0);
+   doorstatus = getcurframe(door0);
+   return;
+// ........................................................................................
+timer:
+	SetInvActivated(player, 55, 0);
+	return;
+
+end
+

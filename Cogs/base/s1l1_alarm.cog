@@ -1,0 +1,39 @@
+# Jedi Knight Cog Script
+#
+# S1L1_alarm.COG
+#
+# Pos located alarm sound for asteroid display screens.
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+                                                         
+symbols
+message    	entered
+
+sector		startsector
+
+thing		soundpoint
+
+flex       	volume=1.0				
+
+sound       	alarm=00AlarmLoop03.WAV        	
+
+int 		done=0			local
+
+end
+
+# ========================================================================================
+
+code
+
+entered:
+	if (done) return;
+	done=1;
+	PlaySoundThing(alarm, soundpoint, volume, 15.0, 35.0, 0x81);
+	return;
+
+end
+
+

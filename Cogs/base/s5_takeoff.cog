@@ -1,0 +1,44 @@
+# Jedi Knight Cog Script
+#
+# S5_Takeoff.cog
+#
+# Plays Key Frame of Jade's Shrike taking off.
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# ========================================================================================
+
+symbols
+
+message	startup
+message	timer	
+
+keyframe	anim1
+thing		shrike
+thing		camera
+flex		movespeed=2
+
+end
+
+# ========================================================================================
+code
+
+startup:
+	ClearActorFlags(player, 0xa00000);
+   	SetCurrentCamera(0);
+   	SetCameraFocus(0, camera);
+	PlayKey(shrike, anim1, 1, 0x4);
+	MoveToFrame(camera, 1, movespeed);
+	SetTimer(7.5);
+	Return;
+
+# ........................................................................................
+
+timer:
+	////("THE END");
+	return;
+
+end
+
+

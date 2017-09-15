@@ -1,0 +1,38 @@
+# Jedi Knight Cog Script
+#
+# S2L2_bed.cog
+#
+# This cog will move stuff around.  It's pretty cool.
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# ===============================================
+
+symbols
+
+message  activate
+
+thing    bed
+
+sound    bedsound=slidestart.wav
+
+end
+
+# ========================================================================
+code
+
+
+activate:
+			MoveToFrame(bed, 1, 2);
+			PlaySoundLocal(bedsound, 1.0, 0.0, 0.0);
+			return;
+
+end
+
+
+
+
+
+
+
+
+

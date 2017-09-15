@@ -1,0 +1,42 @@
+# Jedi Knight Cog Script
+#
+# S2L4_4slashfaces.COG
+#
+# [DS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+message	damaged
+
+surface	grate          mask=0x448
+surface	grateback      mask=0x448
+surface     grate2         mask=0x448
+surface     grateback2     mask=0x448
+sound    cutsound=LtSaberHit12.wav     local
+
+int		type            local
+end
+
+## COG code section
+code
+damaged:
+//	type = GetParam(1);
+//	if (BitTest(type, 16 ))
+	type = GetParam(1);
+	if((type == 16) || (type == 4))
+	{
+      PlaySoundPos(cutsound, SurfaceCenter(grate), 1, -1, -1, 0);
+		setwallcel(grate,1);
+		setwallcel(grateback,1);
+		setadjoinflags(grate,2);
+		setadjoinflags(grateback,2);
+		setwallcel(grate2,1);
+		setwallcel(grateback2,1);
+		setadjoinflags(grate2,2);
+		setadjoinflags(grateback2,2);
+	}
+	return;
+end
+
+ 

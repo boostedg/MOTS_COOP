@@ -1,0 +1,22 @@
+# Jedi Knight AI File
+#
+# STRAILDEFAULT.AI0
+#
+# Fieldtrooper with Railgun AI
+# No Move
+# Easy difficulty
+#
+# [CR]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+alignment=-1.0, rank=0.5, fov=170, maxstep=0.2, sightdist=5.0, heardist=2.0, accuracy=0.15
+
+#instinct			args
+LookForTarget   	500.0, 45000.0
+Listen          	0.00, 0.0
+PrimaryFire     	2500.0, 0.8, 6.0, 0.30, 0.0, 750.0, 0.20, 0.00, 0.00, 0.00
+BlindFire       	4000.0, 0.80, 0, 0.8, 1.0, 0.20
+Talk            	10000.0, 0.10
+
+

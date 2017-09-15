@@ -1,0 +1,36 @@
+# Jedi Knight Cog Script
+#
+#	Changing hall light.
+#
+# [RK]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved     
+# ========================================================================================
+
+symbols
+
+message	entered
+
+sector	hallway
+
+
+
+
+
+end
+
+# ========================================================================================
+
+code
+
+entered:
+	
+	//print ("boo!");
+	SetSectorLight(hallway, 0.0, 2);
+	return;
+	
+# ........................................................................................
+
+
+end
+

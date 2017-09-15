@@ -1,0 +1,128 @@
+#  Jedi Knight Missions Cog Script
+#  S4L1_hangelev.cog
+#  Controls the hanger passanger elevator. Once the elevator
+#  goes to lower hanger, it becomes stuck between the hangers.
+#  [SH]
+#  (c) 1997 LucasArts  Enterainment Co. All Right Reserved 
+symbols
+   message		startup
+   message		arrived
+   message		activated
+   message		crossed
+   message		timer
+   thing		elev
+   thing		door
+   surface		trig0
+   surface		trig1
+   surface		trig2
+   surface		call0 	
+   surface		call1		linkID=1			
+   surface 		call2		linkID=2	
+   surface		elev1dn	linkID=2
+   surface		elev2up	linkID=1
+   surface		elev1up	linkID=2
+   int		bsound=0	local
+   int		switch	local
+   int		istalking=0	local
+   flex		movespeed=4.0
+   flex		startwait=0.25
+   flex		sleeptime=1.0
+   sound		wav0=Activate02.wav
+   sound		wav1=df_Door1-3.wav
+   sound		wav2=df_Elev1-3.wav
+   sound		wav3=lgclick1.wav
+   sound		wav4=00ElectrExplo03.wav
+   sound		voice0=mj61077.wav
+   sound		voice1=mj61027.wav
+	
+end
+
+code
+startup:
+   MoveToFrame(elev,1,movespeed);
+   SetWallCel(elev1up,2);
+   return;
+crossed:
+   done=1;
+   return;
+activated:
+   if (istalking) return;
+   switch=(GetSenderRef());
+   if ((switch==call0)&&(done)) return;
+   if ((switch==elev)||(GetWallCel(call0)==1))return; //elev or moving
+   else if (switch==door)
+	{ 
+	istalking=1;
+	PlaySoundThing(wav1,door,0.5,-1,-1,0);//door stuck
+	Sleep(GetSoundLen(wav1));
+      PlayVoiceLocal(voice1, 1, 0.0, 0);
+      jkPrintUNIString(-1, 61027);
+	Sleep(GetSoundLen(voice1));
+	istalking=0;
+	}
+   else if (GetSenderId(switch)==GetCurFrame(elev)) 
+	{ 
+	PlaySoundPos(wav3, SurfaceCenter(switch), 0.5,-1,-1,0);//click
+ 	if((switch==call1)&&(GetCurFrame(elev)==1))PlaySoundThing(wav2,elev,0.5,-1,-1,0);
+	if((switch==call2)&&(GetCurFrame(elev)==2))PlaySoundThing(wav2,elev,0.5,-1,-1,0);
+	}
+   else if (GetCurFrame(elev)==3)
+	   {
+	   istalking=1;
+	   PlaySoundThing(wav4,elev,0.5,-1,-1,0);
+	   Sleep(GetSoundLen(wav4));
+         PlayVoiceLocal(voice0, 1, 0.0, 0);
+         jkPrintUNIString(-1, 61077);
+	   Sleep(GetSoundLen(voice0));
+	   istalking=0;
+	   }
+   else
+	{
+      for (i=0;i<=4;i=i+1)
+	   {
+	   SetWallCel(call0[i],1);
+	   PlaySoundPos(wav0, SurfaceCenter(call0[i]), 0.5,-1,-1,0);
+	   }
+	Sleep(startwait);
+	if (switch==call0)MoveToFrame(elev,0,movespeed);
+	if (switch==elev1up)
+	   {
+	   istalking=1;
+	   PlaySoundThing(wav4,elev,0.5,-1,-1,0);
+	   Sleep(GetSoundLen(wav4));
+         PlayVoiceLocal(voice0, 1, 0.0, 0);
+         jkPrintUNIString(-1, 61077);
+	   Sleep(GetSoundLen(voice0));
+	   istalking=0;
+	   SetTimer(sleeptime);
+	   }
+	if ((switch==call1)||(switch==elev2up))MoveToFrame(elev,3,movespeed);
+	if ((switch==call2)||(switch==elev1dn))MoveToFrame(elev,2,movespeed);
+   	}
+   return;
+arrived:
+   if(GetSenderRef()==door)return;
+   if(GetCurFrame(elev)==0) 
+	{
+	MoveToFrame(door,1,movespeed);
+	Sleep(sleeptime*2);
+	MoveToFrame(door,0,movespeed);
+	WaitForStop(door);
+	MoveToFrame(elev,1,movespeed);
+	return;
+	}
+   if(GetCurFrame(elev)==3) PlaySoundThing(wav4,elev,1.0,-1,-1,0);//elev stuck
+   SetTimer(sleeptime);
+   return;
+timer:
+   for (j=0;j<=4;j=j+1)
+	{
+	SetWallCel(call0[j],0);
+   	if(bsound)
+	   {
+	   PlaySoundPos(wav0, SurfaceCenter(call0[j]), 0.5,-1,-1,0);
+	   }
+	bsound=1;
+	}
+   return;
+end

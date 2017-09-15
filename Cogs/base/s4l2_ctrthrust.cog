@@ -1,0 +1,101 @@
+# Jedi Knight Cog Script
+#
+# S4L2_ctrthrust.cog
+#
+# Script to stop sector thrust by slashing two switches
+#
+# [DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+message     startup
+message     damaged
+message     activated
+
+sector      sector0
+sector      sector1
+sector      sector2
+
+surface     switch01    mask=0x448  linkid=1
+surface     switch02    mask=0x448  linkid=2
+surface     switch03    mask=0x448  linkid=3
+surface     switch04    mask=0x448  linkid=4
+
+
+sound    explosion=00ElectrExplo03.wav
+sound    thrustsnd=18particlestream01.wav
+
+vector		vec0		desc=thrust_direction
+
+int      channel=-1  local
+
+end
+
+## Code Section
+code
+startup:
+
+   SetWallCel(switch03, 0);
+   SetWallCel(switch04, 0);
+
+   SectorThrust(sector0, vec0, 15.0);
+   SectorThrust(sector1, vec0, 15.0);
+   SectorThrust(sector2, vec0, 15.0);
+
+   channel=PlaySoundPos(thrustsnd, GetSectorCenter(sector1), 1.0, 0.5, 1.5, 1);
+
+   return;
+
+damaged:
+   if(GetWallCel(GetSenderRef()) == 1)
+         return;
+   
+   setwallcel(getsenderref(),1);
+   playsoundpos(explosion, getsurfacecenter(getsenderref()), 1.0, -1, -1, 0);
+
+   if (getsenderid()==1) {
+   setwallcel(switch01, 1);
+   } else {
+   setwallcel(switch02, 1);
+   }
+   if ((getwallcel(switch01)==1) && (getwallcel(switch02)==1))
+      call stop_thrust;
+
+   return;
+
+stop_thrust:
+
+   if(channel!=-1)
+      {
+      StopSound(channel,0.1);
+      channel=-1;
+      }
+
+   SectorThrust(sector0, vec0, 0);
+   SectorThrust(sector1, vec0, 0);
+   SectorThrust(sector2, vec0, 0);
+
+   return;
+
+activated:
+
+   if (GetSenderID()==3) SetWallCel(switch03, 1);
+   if (GetSenderID()==4) SetWallCel(switch04, 1);
+
+   if ((GetWallCel(switch03)==1) && (GetWallCel(switch04)==1))
+
+   {
+   
+   channel=PlaySoundPos(thrustsnd, GetSectorCenter(sector1), 1.0, 0.5, 1.5, 1);
+
+   SectorThrust(sector0, vec0, 0);
+   SectorThrust(sector1, vec0, 7.0);
+   SectorThrust(sector2, vec0, 7.0);
+
+   }
+   return;
+
+end
+

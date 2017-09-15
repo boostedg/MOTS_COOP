@@ -1,0 +1,156 @@
+## S1L3_CameraBlasters.cog
+
+symbols
+int			AlarmTriggered=0	local
+int			IAmSleeping=0	local
+int			AllDoorsClosed=0	local
+int			AllDoorsOpen=0	local
+int			UseThisNumber	local
+int			SoundNumber		local
+int			CameraNumber=1
+int			Door1CloseSpeed
+int			Door2CloseSpeed
+int			Door3CloseSpeed
+int			Door4CloseSpeed
+int			Door1OpenSpeed
+int			Door2OpenSpeed
+int			Door3OpenSpeed
+int			Door4OpenSpeed
+message		activated
+message		arrived
+message		startup
+message		trigger
+sector		AlarmButtonSector
+sector		GunDoor1Sector	local
+sector		GunDoor2Sector	local
+sector		GunDoor3Sector	local
+sector		GunDoor4Sector	local
+sound			AlarmSound=00alarmloop01.wav
+surface		AlarmButton 	linkid=1
+thing			GunDoor1		mask=0x405
+thing			GunDoor2		mask=0x405
+thing			GunDoor3		mask=0x405
+thing			GunDoor4		mask=0x405
+end
+
+code
+startup:
+	if(CameraNumber<1) CameraNumber=0;
+	if(CameraNumber>11) CameraNumber=0;
+	if(CameraNumber==0) return;
+	UseThisNumber=(10000+CameraNumber);		
+	SetWallCel(AlarmButton,0);
+	SetSectorLight(AlarmButtonSector,0.25,0.1);
+	GunDoor1Sector=GetThingSector(GunDoor1);
+	GunDoor2Sector=GetThingSector(GunDoor2);
+	GunDoor3Sector=GetThingSector(GunDoor3);
+	GunDoor4Sector=GetThingSector(GunDoor4);	
+	SetSectorAdjoins(GunDoor1Sector,0);
+	SetSectorAdjoins(GunDoor2Sector,0);
+	SetSectorAdjoins(GunDoor3Sector,0);
+	SetSectorAdjoins(GunDoor4Sector,0);
+	return;
+trigger:
+	if(GetSourceRef()!=UseThisNumber) return;
+	if(IAmSleeping==1) return;
+	if(IsThingMoving(GunDoor1)==1) return;
+	if(IsThingMoving(GunDoor2)==1) return;
+	if(IsThingMoving(GunDoor3)==1) return;
+	if(IsThingMoving(GunDoor4)==1) return;
+	if(GetCurFrame(GunDoor1)==1) return;
+	if(GetCurFrame(GunDoor2)==1) return;
+	if(GetCurFrame(GunDoor3)==1) return;
+	if(GetCurFrame(GunDoor4)==1) return;
+	IAmSleeping=1;
+	AlarmTriggered=1;
+	SetWallCel(AlarmButton,1);
+	SetSectorLight(AlarmButtonSector,1,0.25);
+	SoundNumber=PlaySoundLocal(AlarmSound,1.0,0.0,1);
+	SetSectorAdjoins(GunDoor1Sector,1);
+	SetSectorAdjoins(GunDoor2Sector,1);
+	SetSectorAdjoins(GunDoor3Sector,1);
+	SetSectorAdjoins(GunDoor4Sector,1);
+	MoveToFrame(GunDoor1,1,Door1OpenSpeed);
+	MoveToFrame(GunDoor2,1,Door2OpenSpeed);
+	MoveToFrame(GunDoor3,1,Door3OpenSpeed);
+	MoveToFrame(GunDoor4,1,Door4OpenSpeed);
+	return;
+activated:
+	if((GetSenderID()==1)&&(AlarmTriggered==0)&&(IAmSleeping==0))
+	{
+		IAmSleeping=1;
+		AlarmTriggered=1;
+		SetWallCel(AlarmButton,1);
+		SetSectorLight(AlarmButtonSector,1,0.25);
+		SoundNumber=PlaySoundLocal(AlarmSound,1.0,0.0,1);
+		SetSectorAdjoins(GunDoor1Sector,1);
+		SetSectorAdjoins(GunDoor2Sector,1);
+		SetSectorAdjoins(GunDoor3Sector,1);
+		SetSectorAdjoins(GunDoor4Sector,1);
+		MoveToFrame(GunDoor1,1,Door1OpenSpeed);
+		MoveToFrame(GunDoor2,1,Door2OpenSpeed);
+		MoveToFrame(GunDoor3,1,Door3OpenSpeed);
+		MoveToFrame(GunDoor4,1,Door4OpenSpeed);
+		return;
+	}
+	if((GetSenderID()==1)&&(AlarmTriggered==1)&&(IAmSleeping==0))
+	{
+		IAmSleeping=1;
+		AlarmTriggered=0;
+		SetWallCel(AlarmButton,0);
+		SetSectorLight(AlarmButtonSector,0.25,0.25);
+		StopSound(SoundNumber,0.0);
+		MoveToFrame(GunDoor1,0,Door1CloseSpeed);
+		MoveToFrame(GunDoor2,0,Door2CloseSpeed);
+		MoveToFrame(GunDoor3,0,Door3CloseSpeed);
+		MoveToFrame(GunDoor4,0,Door4CloseSpeed);
+		return;
+	}
+	return;
+arrived:
+	if(IsThingMoving(GunDoor1)==1) return;
+	if(IsThingMoving(GunDoor2)==1) return;
+	if(IsThingMoving(GunDoor3)==1) return;
+	if(IsThingMoving(GunDoor4)==1) return;
+	if(GetCurFrame(GunDoor1)==0)
+	{
+		AllDoorsClosed=(AllDoorsClosed+1);
+		SetSectorAdjoins(GunDoor1Sector,0);
+	}
+	if(GetCurFrame(GunDoor2)==0)
+	{
+		AllDoorsClosed=(AllDoorsClosed+1);
+		SetSectorAdjoins(GunDoor2Sector,0);
+	}
+	if(GetCurFrame(GunDoor3)==0)
+	{
+		AllDoorsClosed=(AllDoorsClosed+1);
+		SetSectorAdjoins(GunDoor3Sector,0);
+	}
+	if(GetCurFrame(GunDoor4)==0)
+	{
+		AllDoorsClosed=(AllDoorsClosed+1);
+		SetSectorAdjoins(GunDoor4Sector,0);
+	}
+	if(AllDoorsClosed==4)
+	{
+		AllDoorsClosed=0;
+		IAmSleeping=0;
+		return;
+	}
+	if(GetCurFrame(GunDoor1)==1) AllDoorsOpen=(AllDoorsOpen+1);
+	if(GetCurFrame(GunDoor2)==1) AllDoorsOpen=(AllDoorsOpen+1);
+	if(GetCurFrame(GunDoor3)==1) AllDoorsOpen=(AllDoorsOpen+1);
+	if(GetCurFrame(GunDoor4)==1) AllDoorsOpen=(AllDoorsOpen+1);
+	if(AllDoorsOpen==4);
+	{
+		AllDoorsOpen=0;
+		IAmSleeping=0;
+		return;
+	}
+	return;
+end
+
+
+
+	

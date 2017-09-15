@@ -1,0 +1,89 @@
+# Jedi Knight Cog Script
+#
+# S4L2_hatchwrnch.COG
+# 
+# 
+# DB 
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+  
+
+symbols
+   message        startup
+   message        activate
+	message        arrived
+
+   surface         switch0         linkid=0
+   
+   thing           hatch           nolink
+	
+	float		hatchSpeed=2.0
+
+	int		hatchSector=-1	nolink      local
+	int		player		               local
+	
+   sound		wav0=Activate02.wav
+
+   int      sender          local
+	int		dialogueSaid0=0	local
+	int		dialogueSaid1=0	local
+
+   message     timer
+
+   sound    dialogue=MJ61020.wav
+end
+
+code
+startup:		  
+	// do that hatch stuff
+   
+   SetWallCel(switch0, 0);
+   return;
+
+activate:
+	sender = GetSenderID();
+	if (sender != 0) return;
+
+	// the player is acting
+	player = GetSourceRef(); 
+
+	// if blue switch activated
+	if(sender == 0)
+	{
+		if (GetWallCel(switch0) == 1) return;
+
+		if (GetInv(GetSourceRef(), 49) == 0)
+
+		{
+			if (dialogueSaid0) return;
+			dialogueSaid0=1;
+			//PlayVoiceLocal(dialogue, 1, 0, 132);
+         //jkPrintUNIString(-1, 61020); //"I need some kind of key."
+		}
+       
+      else 
+      
+      {
+			SetWallCel(GetSenderRef(), 1);
+
+			PlaySoundPos(wav0, SurfaceCenter(GetSenderRef()), 1, -1, -1, 0);	  
+	  
+		   // open the hatch
+         MoveToFrame(hatch, 1, hatchSpeed);
+
+         // when you flash it
+         SetInvActivated(player, 49, 1);
+         SetTimerEx(2, 49, 0, 0);
+      }
+	}
+	return;
+
+   
+timer:
+
+	SetInvActivated(player, GetSenderId(), 0);
+	Return;
+
+   end
+

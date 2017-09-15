@@ -1,0 +1,104 @@
+# Jedi Knight Cog Script
+#
+# S2L2_chattycathy.cog
+#
+# Chatty troopers
+#
+# [RD]
+# [RK]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved		
+# ========================================================================================
+
+symbols
+
+message	entered
+message	damaged
+message	pulse
+
+sector	trigger
+
+thing		Johnny	mask=-1
+thing		Ed		mask=-1
+thing		talkthing	nolink
+
+int		noplay=0	local
+int		triggered=0	local
+
+sound		wav1=ry50044.wav	local
+sound		wav2=bs50063.wav	local
+sound		wav3=ry50049.wav	local
+sound		wav4=bs50056.wav	local
+sound		wav5=ry50037.wav	local
+sound		wav6=bs50056.wav	local
+
+
+end
+
+# ========================================================================================
+
+code
+
+entered:
+	if (triggered) return;
+	if (noplay) return;
+
+	SetPulse(1.0);
+	
+	
+	triggered = 1;
+
+	Sleep(2.0);
+
+	PlaySoundThing(wav1, talkthing, 1, -1, -1, 0);
+	Sleep(GetSoundLen(wav1));
+	
+	if (noplay) return;
+
+	PlaySoundThing(wav2, talkthing, 1, -1, -1, 0);
+	Sleep(GetSoundLen(wav2));
+	
+	if (noplay) return;
+	
+	PlaySoundThing(wav3, talkthing, 1, -1, -1, 0);
+	Sleep(GetSoundLen(wav3));
+	
+	if (noplay) return;
+
+	PlaySoundThing(wav4, talkthing, 1, -1, -1, 0);
+	Sleep(GetSoundLen(wav4));
+	
+	if (noplay) return;
+
+	PlaySoundThing(wav5, talkthing, 1, -1, -1, 0);
+	Sleep(1.0);
+	
+	if (noplay) return;
+
+	PlaySoundThing(wav6, talkthing, 1, -1, -1, 0);
+	
+	if (noplay) return;
+
+
+
+
+	return;
+
+# ........................................................................................
+
+damaged:
+	noplay = 1;
+	return;
+
+pulse:
+	AIGetMode(johnny);
+	if ((AIGetMode(johnny) & 0x02) != 0)
+		{
+		noplay=1;
+		SetPulse(0);
+		}
+		return;
+	
+end
+
+

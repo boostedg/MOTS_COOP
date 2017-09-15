@@ -1,0 +1,50 @@
+# Jedi Knight Cog Script
+#
+# S4L2_thinglight.cog
+#
+# Script that causes the light value attached to a thing to flicker between two values
+#
+# 10_thinglight modified for more lights and random flicker.
+#
+# [IS]/[DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+message		crossed
+message     pulse
+message     timer
+
+thing		light01		
+thing		light02		
+thing		light03		
+thing		light04
+thing		light05		
+thing		light06		
+thing		light07		
+thing		light08
+
+flex     pulserate=0.25
+
+surface  adjoin0
+
+end
+
+# COG Section
+code
+crossed:
+   for (i=0; i<=8; i=i+1)
+      {
+         SetThingTimer(light01[i], rand());
+      }
+   return;
+
+timer:
+   SetThingLight(GetSenderRef(), rand()*2.0, 0.25);
+   SetThingTimer(GetSenderRef(), rand());
+   return;
+
+end
+

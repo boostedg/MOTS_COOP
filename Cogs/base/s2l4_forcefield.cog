@@ -1,0 +1,69 @@
+# Jedi Knight Cog Script
+#
+# S2L4_forcefield.cog
+#
+#
+# [KS & DS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+	message	touched
+   	message	damaged
+	message	startup	
+   	message	timer
+
+	surface		surf0		mask=0x408
+	surface     	surf1       	mask=0x408
+	int		victim=-1			local
+   	int		playerx=1   			local
+   	int		damaging=1			local
+
+	float		maxDamage=10.0
+	float		minDamage=5.0
+  	 float		interval=0.25
+
+ 	sound		wav0=ForceFieldHum01.wav	local
+   	sound		wav1=ForceFieldHit01.wav	local
+end
+
+
+code
+startup:
+   SetSurfaceFlags(surf0, 16384);                //magsealed
+   SetSurfaceFlags(surf1, 16384);
+   SetFaceGeoMode(surf0, 0);
+   SetFaceGeoMode(surf1, 0);
+   PlaySoundPos(wav0, GetSurfaceCenter(surf1), 1.0, 5, 20, 0x1);
+	return;
+
+touched:
+   if (damaging == 0) return;
+	victim = GetSourceRef();
+	damage = (Rand() * (maxDamage - minDamage)) + minDamage;
+	DamageThing(victim, damage, 0x2, victim);		// self-inflicted damage
+   PlaySoundPos(wav1, GetSurfaceCenter(surf1), 0.8, 5, 20, 0);
+   damaging=0;
+   SetTimer(interval);
+//   SetFaceGeoMode(surf0, 4);
+//   SetFaceGeoMode(surf1, 4);
+	return;
+
+damaged:
+   if (GetParam(1) ==1)
+      playerx=GetLocalPlayerThing();
+      {
+         damage = (Rand()*(maxdamage - mindamage)) + mindamage;
+         DamageThing(playerx, damage, 0x01, playerx);
+      }
+   return;
+
+timer:
+   damaging=1;
+//   SetFaceGeoMode(surf0, 0);
+//   SetFaceGeoMode(Surf1, 0);
+   return;
+
+end
+
+ 

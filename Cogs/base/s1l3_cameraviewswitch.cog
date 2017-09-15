@@ -1,0 +1,861 @@
+# S1L3_CameraViewSwitch.cog
+
+symbols
+message	activated
+message	startup
+message	trigger
+message	timer
+thing		DisabledGhostCam
+thing		GhostCamera01
+thing		GhostCamera02
+thing		GhostCamera03
+thing		GhostCamera04
+thing		GhostCamera05
+thing		GhostCamera06
+thing		GhostCamera07
+thing		GhostCamera08
+thing		GhostCamera09
+thing		GhostCamera10
+thing		GhostCamera11
+int		HowManyCameras=11
+int		CameraColorEffect=-1			local
+int		player					local
+int		TimerLength=3				local
+int		SwitchSoundNum				local
+int		Available01=1				local
+int		Available02=1				local
+int		Available03=1				local
+int		Available04=1				local
+int		Available05=1				local
+int		Available06=1				local
+int		Available07=1				local
+int		Available08=1				local
+int		Available09=1				local
+int		Available10=1				local
+int		Available11=1				local
+int		Visited=0					local
+int		Checked=0					local
+int		iOldCamera					local
+surface	ViewSwitch					linkid=1
+surface	ScreenTrigger				linkid=1				
+sound		SwitchOnSound=activate02.wav		local
+sound		SwitchOffSound=deactivate02.wav	local
+end
+
+code
+startup:
+if(HowManyCameras<1) return;
+if(HowManyCameras>11) return;
+player=GetLocalPlayerThing();
+SetWallCel(ViewSwitch,0);
+return;
+
+activated:
+if((GetSenderID()==1)&&(Available01==1)&&(Visited==0))
+{
+	iOldCamera=GetCurrentCamera();
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=1;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);	
+	SetCameraFocus(0,GhostCamera01);
+	SetActorFlags(GetLocalPlayerThing(),0x80000000);	
+	return;
+}
+if((GetSenderID()==1)&&(Available01==0)&&(Visited==0))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=1;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,DisabledGhostCam);
+	SetActorFlags(GetLocalPlayerThing(),0x80000000);	
+	return;
+}
+if((GetSenderID()==1)&&(Available02==1)&&(Visited==1))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=2;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,GhostCamera02);
+	return;
+}
+if((GetSenderID()==1)&&(Available02==0)&&(Visited==1))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=2;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,DisabledGhostCam);
+	return;
+}
+if((GetSenderID()==1)&&(Available03==1)&&(Visited==2))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=3;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,GhostCamera03);
+	return;
+}
+if((GetSenderID()==1)&&(Available03==0)&&(Visited==2))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=3;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,DisabledGhostCam);
+	return;
+}
+if((GetSenderID()==1)&&(Available04==1)&&(Visited==3))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=4;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,GhostCamera04);
+	return;
+}
+if((GetSenderID()==1)&&(Available04==0)&&(Visited==3))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=4;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,DisabledGhostCam);
+	return;
+}
+if((GetSenderID()==1)&&(Available05==1)&&(Visited==4))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=5;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,GhostCamera05);
+	return;
+}
+if((GetSenderID()==1)&&(Available05==0)&&(Visited==4))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=5;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,DisabledGhostCam);
+	return;
+}
+if((GetSenderID()==1)&&(Available06==1)&&(Visited==5))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=6;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,GhostCamera06);
+	return;
+}
+if((GetSenderID()==1)&&(Available06==0)&&(Visited==5))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=6;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,DisabledGhostCam);
+	return;
+}
+if((GetSenderID()==1)&&(Available07==1)&&(Visited==6))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=7;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,GhostCamera07);
+	return;
+}
+if((GetSenderID()==1)&&(Available07==0)&&(Visited==6))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=7;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,DisabledGhostCam);
+	return;
+}
+if((GetSenderID()==1)&&(Available08==1)&&(Visited==7))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=8;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,GhostCamera08);
+	return;
+}
+if((GetSenderID()==1)&&(Available08==0)&&(Visited==7))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=8;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,DisabledGhostCam);
+	return;
+}
+if((GetSenderID()==1)&&(Available09==1)&&(Visited==8))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=9;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,GhostCamera09);
+	return;
+}
+if((GetSenderID()==1)&&(Available09==0)&&(Visited==8))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=9;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,DisabledGhostCam);
+	return;
+}
+if((GetSenderID()==1)&&(Available10==1)&&(Visited==9))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=10;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,GhostCamera10);
+	return;
+}
+if((GetSenderID()==1)&&(Available10==0)&&(Visited==9))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=10;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,DisabledGhostCam);
+	return;
+}
+if((GetSenderID()==1)&&(Available11==1)&&(Visited==10))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=11;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,GhostCamera11);
+	return;
+}
+if((GetSenderID()==1)&&(Available11==0)&&(Visited==10))
+{
+	if(Visited==HowManyCameras)
+	{
+		ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+		Visited=0;
+		SetTimer(0.00);
+		SetWallCel(ViewSwitch,0);
+		SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+		if(CameraColorEffect!=-1)
+		{
+			freeColorEffect(CameraColorEffect);
+			CameraColorEffect=-1;
+		}
+		SetCurrentCamera(iOldCamera);
+		SetCameraFocus(0,player);
+		return;
+	}
+	Visited=11;
+	SetTimer(TimerLength);
+	SetWallCel(ViewSwitch,1);
+	SwitchSoundNum=PlaySoundLocal(SwitchOnSound,1.0,0.0,0);
+	if(CameraColorEffect==-1)
+	{
+		CameraColorEffect=NewColorEffect(0,0,0,0,0,0,0,50,25,1.0);
+	}
+	SetCurrentCamera(0);
+	SetCameraFocus(0,DisabledGhostCam);
+	return;
+}
+if((GetSenderID()==1)&&(Visited==11))
+{
+	ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+	Visited=0;
+	SetTimer(0.00);
+	SetWallCel(ViewSwitch,0);
+	SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+	if(CameraColorEffect!=-1)
+	{
+		freeColorEffect(CameraColorEffect);
+		CameraColorEffect=-1;
+	}
+	SetCurrentCamera(iOldCamera);
+	SetCameraFocus(0,player);
+	return;
+}
+return;
+
+timer:
+ClearActorFlags(GetLocalPlayerThing(),0x80000000);
+Visited=0;
+SetWallCel(ViewSwitch,0);
+SwitchSoundNum=PlaySoundLocal(SwitchOffSound,1.0,0.0,0);
+if(CameraColorEffect!=-1)
+{
+	freeColorEffect(CameraColorEffect);
+	CameraColorEffect=-1;
+}
+SetCurrentCamera(iOldCamera);
+SetCameraFocus(0,player);
+return;
+
+trigger:
+if((GetSourceRef()==10012)&&(Checked==0))
+{
+	Available01=1;
+	Checked=1;
+}
+if((GetSourceRef()==10023)&&(Checked==0))
+{
+	Available01=0;
+	Checked=1;
+}
+if((GetSourceRef()==10013)&&(Checked==1))
+{
+	Available02=1;
+	Checked=2;
+}
+if((GetSourceRef()==10024)&&(Checked==1))
+{
+	Available02=0;
+	Checked=2;
+}
+if((GetSourceRef()==10014)&&(Checked==2))
+{
+	Available03=1;
+	Checked=3;
+}
+if((GetSourceRef()==10025)&&(Checked==2))
+{
+	Available03=0;
+	Checked=3;
+}
+if((GetSourceRef()==10015)&&(Checked==3))
+{
+	Available04=1;
+	Checked=4;
+}
+if((GetSourceRef()==10026)&&(Checked==3))
+{
+	Available04=0;
+	Checked=4;
+}
+if((GetSourceRef()==10016)&&(Checked==4))
+{
+	Available05=1;
+	Checked=5;
+}
+if((GetSourceRef()==10027)&&(Checked==4))
+{
+	Available05=0;
+	Checked=5;
+}
+if((GetSourceRef()==10017)&&(Checked==5))
+{
+	Available06=1;
+	Checked=6;
+}
+if((GetSourceRef()==10028)&&(Checked==5))
+{
+	Available06=0;
+	Checked=6;
+}
+if((GetSourceRef()==10018)&&(Checked==6))
+{
+	Available07=1;
+	Checked=7;
+}
+if((GetSourceRef()==10029)&&(Checked==6))
+{
+	Available07=0;
+	Checked=7;
+}
+if((GetSourceRef()==10019)&&(Checked==7))
+{
+	Available08=1;
+	Checked=8;
+}
+if((GetSourceRef()==10030)&&(Checked==7))
+{
+	Available08=0;
+	Checked=8;
+}
+if((GetSourceRef()==10020)&&(Checked==8))
+{
+	Available09=1;
+	Checked=9;
+}
+if((GetSourceRef()==10031)&&(Checked==8))
+{
+	Available09=0;
+	Checked=9;
+}
+if((GetSourceRef()==10021)&&(Checked==9))
+{
+	Available10=1;
+	Checked=10;
+}
+if((GetSourceRef()==10032)&&(Checked==9))
+{
+	Available10=0;
+	Checked=10;
+}
+if((GetSourceRef()==10022)&&(Checked==10))
+{
+	Available11=1;
+	Checked=0;
+}
+if((GetSourceRef()==10033)&&(Checked==10))
+{
+	Available11=0;
+	Checked=0;
+}
+return;
+end

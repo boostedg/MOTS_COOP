@@ -1,0 +1,191 @@
+# Jedi Knight Missions Cog Script
+#
+# S2L1_DROIDEYE.COG
+#
+# Manipulates the droid eye.  If player is wearing tusken clothes, the door will open.
+# Otherwise, it won't.  At least it did until the testers got a hold of it.
+#
+# [TT]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+message	startup
+message     timer
+message     activated
+message	arrived
+
+thing		eye					   linkid=11
+thing		player				   local
+thing		door0					   linkid=0
+thing		droiddoor
+
+surface     switch0
+surface    	switch1 
+surface	nudgesurface			   linkid=1
+
+flex        eyespeed=7.0
+flex		movespeed=2.0
+flex		doorspeed=6.0
+flex		lightvalue=0.1
+
+int		doorsector					local
+int		player=0					local
+int		done=0					local
+int		line=0					local
+int		played=0					local
+
+sound       onSound=set_hi2.wav              
+sound       offSound=lgclick1.wav			local
+sound       locksound=df_door2-3.wav		local
+sound		voiceline=mj62106.wav			local
+sound		cogstringyes
+sound		cogstringno
+sound		dooropen
+sound		doorclose
+
+end
+
+# ========================================================================================
+
+code
+
+startup:
+	doorsector=GetThingSector(door0);
+	SectorAdjoins(doorsector, 0);
+	SetSectorLight(doorsector, lightvalue, 0.0);
+	Return;
+
+arrived:
+	If(door0 == 1)
+		{
+		done=1;
+		return;
+		}
+	Return;
+	
+activated:
+	if(GetSenderID() == 1)
+		{
+		player = GetSourceRef();
+		if(IsInvActivated(player, 52) == 1)
+			{
+			If(played==0)
+				{
+				if(done) return;
+				done=1;
+				// Print("your tusken clothes are on");
+				Sleep(1);
+				PlaySoundThing(dooropen, droiddoor, 1, -1, -1, 0);
+				MoveToFrame(droiddoor, 1, doorspeed);
+				SetTimerEx(1, 2, 0, 0);
+				SetTimerEx(3, 3, 0, 0);
+				SetTimerEx(5, 4, 0, 0);
+				SetTimerEx(10, 5, 0, 0);
+				SetTimerEx(9, 12, 0, 0);
+				}
+      		}
+   		else
+      		{
+			If(played==0)
+				{
+				if(done) return;
+				done=1;
+				// Print("your tusken clothes are off");
+				Sleep(1);
+				PlaySoundthing(dooropen, droiddoor, 1, -1, -1, 0);
+				MoveToFrame(droiddoor, 1, doorspeed);
+				SetTimerEx(1, 6, 0, 0);
+				SetTimerEx(3, 7, 0, 0);
+				SetTimerEx(7, 8, 0, 0);
+				SetTimerEx(9, 10, 0, 0);
+				SetTimerEx(12, 13, 0, 0);
+				}
+			}
+		}
+	else If(GetSenderID() == 0)
+		{
+		PlaySoundThing(locksound, door0, 1.0, -1, -1, 0);
+		}
+ Return;
+
+# ........................................................................................
+
+timer:
+
+	if(GetSenderID() == 2)
+		{
+		movetoframe(eye, 1, eyespeed);
+		}
+	else
+	If(GetSenderId() == 3)
+		{
+		PlaySoundLocal(cogstringyes, 1.0, 0.0, 0);
+		JKPrintUniString(-1, 62112);
+		// Print("Citizen of the Palace, You are Free to Enter the Inner Chambers");
+		played=1;
+		}
+	else
+	If(GetSenderID() == 4)
+		{
+		movetoframe(eye, 2, eyespeed);
+		}
+	else
+	If(GetSenderID() == 5)
+		{
+		sectoradjoins(doorsector, 1);
+		movetoframe(door0, 1, movespeed);
+		}
+	else
+	If(GetSenderID() == 6)
+		{
+		movetoframe(eye, 1, eyespeed);
+		}
+	else
+	If(GetSenderID() == 7)
+		{
+		PlaySoundLocal(cogstringno, 1.0, 0.0, 0);
+		JKPrintUniString(-1, 62110);
+		// Print("Mara Jade, Ka'Pa no wishes to see you");
+		played=1;
+		}
+	else
+	if(GetSenderID() == 8)
+		{
+		movetoframe(eye, 2, eyespeed);
+		}
+	else
+	If(GetSenderID() == 10)
+		{
+		movetoframe(droiddoor, 0, doorspeed);
+		PlaySoundThing(doorclose, droiddoor, 1, -1, -1, 0);
+		played=0;
+		done=0;
+		}
+	else
+	If(GetSenderID() == 12)
+		{
+		movetoframe(droiddoor, 0, doorspeed);
+		PlaySoundThing(doorclose, droiddoor, 1, -1, -1, 0);
+		played=0;
+		done=0;
+		}
+	else
+	If(GetSenderID() == 13)
+		{
+		If(line) return;
+		line=1;
+		PlaySoundLocal(voiceline, 1.0, 0.0, 0);
+		jkPrintUNIString(-1, 62106);
+		}
+
+	return;
+
+
+
+end
+
+
+ 

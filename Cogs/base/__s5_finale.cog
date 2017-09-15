@@ -1,0 +1,159 @@
+# Jedi Knight Cog Script
+#
+# __S5_finale.cog
+#
+# [YB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+message     startup
+message     escaped
+
+thing       Kyle                             nolink
+thing       Mara                             nolink
+thing       camera1                          nolink
+thing       camera2                          nolink
+thing       camera3                          nolink
+
+material    KyleTip_mat=sabergreen0.mat      local
+material    KyleSide_mat=sabergreen1.mat     local
+material    MaraTip_mat=saberblue0.mat       local
+material    MaraSide_mat=saberblue1.mat      local
+
+template    tpl_wall=+ssparks_wall           local
+template    tpl_blood=+ssparks_blood         local
+template    tpl_saber=+ssparks_saber         local
+
+sound       KK95001_snd=KK95001.wav          local
+sound       KK95002_snd=KK95002.wav          local
+sound       KK95003_snd=KK95003.wav          local
+sound       MJ95004_snd=MJ95004.wav          local
+sound       KK95005_snd=KK95005.wav          local
+sound       MJ95006_snd=MJ95006.wav          local
+sound       KK95007_snd=KK95007.wav          local
+sound       MJ95008_snd=MJ95008.wav          local
+
+int         cancel                           local
+
+int         dummy                            local
+
+end
+
+# ========================================================================================
+
+code
+
+startup:
+   player = GetLocalPlayerThing();
+   SetActorFlags(player, 0xa00000);
+
+   jkBeginCutscene();
+
+   cancel = 0;
+
+   AISetMode(Kyle, 0x2000);
+   AISetMode(Mara, 0x2000);
+
+   jkSetSaberInfo(Kyle, KyleSide_mat, KyleTip_mat, 0.003, 0.001, 0.118, tpl_wall, tpl_blood, tpl_saber);
+   jkSetFlags(Kyle, 0x5);
+
+   jkSetSaberInfo(Mara, MaraSide_mat, MaraTip_mat, 0.003, 0.001, 0.118, tpl_wall, tpl_blood, tpl_saber);
+   jkSetFlags(Mara, 0x5);
+
+   //SetCurrentCamera(0);
+   //SetCameraFocus(0, camera1);
+
+   Sleep(3.0);
+   if (cancel) return;
+
+
+   call clear_display;
+   jkPrintUNIString(-1, 95001);
+   PlayVoiceLocal(KK95001_snd, 1, 0, 4);
+   Sleep(GetSoundLen(KK95001_snd) + 2.0);
+
+
+   call clear_display;
+   jkPrintUNIString(-1, 95002);
+   PlayVoiceLocal(KK95002_snd, 1, 0, 4);
+   Sleep(GetSoundLen(KK95002_snd) + 2.0);
+
+   call clear_display;
+   jkPrintUNIString(-1, 95003);
+   PlayVoiceLocal(KK95003_snd, 1, 0, 4);
+   Sleep(GetSoundLen(KK95003_snd) + 2.0);
+
+   call clear_display;
+   jkPrintUNIString(-1, 95004);
+   PlayVoiceLocal(MJ95004_snd, 1, 0, 4);
+   Sleep(GetSoundLen(MJ95004_snd) + 2.0);
+
+   call clear_display;
+   jkPrintUNIString(-1, 95005);
+   PlayVoiceLocal(KK95005_snd, 1, 0, 4);
+   Sleep(GetSoundLen(KK95005_snd) + 2.0);
+
+   call clear_display;
+   jkPrintUNIString(-1, 95006);
+   PlayVoiceLocal(MJ95006_snd, 1, 0, 4);
+   Sleep(GetSoundLen(MJ95006_snd) + 2.0);
+
+   call clear_display;
+   jkPrintUNIString(-1, 95007);
+   PlayVoiceLocal(KK95007_snd, 1, 0, 4);
+   Sleep(GetSoundLen(KK95007_snd) + 2.0);
+
+   call clear_display;
+   jkPrintUNIString(-1, 95008);
+   PlayVoiceLocal(MJ95008_snd, 1, 0, 4);
+   Sleep(GetSoundLen(MJ95008_snd) + 2.0);
+
+   Sleep(5.0);
+
+   Print("End...");
+   Sleep(15.0);
+   if (cancel) return;
+
+   call endcut;
+   return;
+
+# ........................................................................................
+
+clear_display:
+   Print(" ");
+   Print(" ");
+   Print(" ");
+   Print(" ");
+   Print(" ");
+   Return;
+
+# ........................................................................................
+
+escaped:
+   WakeUp();
+   cancel = 1;
+   call endcut;
+   Return;
+
+# ........................................................................................
+
+endcut:
+   jkEndCutscene ();
+
+   ClearActorFlags(player, 0xa00000);
+   SetCurrentCamera(0);
+   SetCameraFocus(0, player);
+
+   Print(" ");
+   Print(" ");
+   Print(" ");
+   Print(" ");
+   Print(" ");
+
+   Return;
+
+end
+

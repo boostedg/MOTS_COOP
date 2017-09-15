@@ -1,0 +1,47 @@
+# Jedi Knight Cog Script
+#
+# S2L4_Randomlight.cog
+#
+# random lighting and sound.
+#
+# [DS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+#
+
+symbols
+
+thing		lightthing	
+flex		minLight=0.0
+flex		maxLight=1.0	
+flex		min_interval=0.0
+flex		range_interval=4.0
+sound		sound1
+flex        volume=0.5
+
+message		startup
+message		timer
+end
+
+#-----------------------------------
+code
+
+startup:
+	settimerEx(min_interval+(rand()*range_interval), 0, 0, 0);
+      return;
+timer:
+	If (GetSenderID()==0)
+	{
+	settimerEx(min_interval+(rand()*range_interval), 0, 0, 0);
+	SetThingLight(lightthing, (minLight+rand()*maxLight), 0);
+	PlaySoundThing(sound1, lightthing, volume, -1, 10, 0);
+	settimerEx(0.1, 1, 0, 0);
+	}
+	else
+	If (getsenderid()==1)
+	{
+	SetThingLight(lightthing, minlight, 0);
+	}
+return;
+end
+ 

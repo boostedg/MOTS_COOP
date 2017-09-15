@@ -1,0 +1,45 @@
+# Jedi Knight Cog Script
+# S4L1_message.cog
+# triggers voice and unistring
+# [SH]
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+   message		startup
+   message		crossed
+   message		entered
+   message		touched
+   message		activated
+   sector		sector0
+   sector		sector1
+   surface		surf0
+   surface		surf1
+   thing		object
+   int		done=0	local
+   flex		sleeptime=0
+   flex		volume=1
+   int		startvoice=0
+   int        	string=64100                     	  
+   sound		voice
+end
+
+code
+startup:
+   if (!startvoice) return;
+activated:
+touched:
+entered:
+crossed:
+   if (done) return;
+   done=1;
+   Sleep(sleeptime);
+   if ((object<=0)||(GetCurFrame(object)==0)) 
+	{
+		if(GetThingHealth(GetLocalPlayerThing()) > 0)
+		{
+			PlaySoundLocal(voice, volume, 0.0, 0x100);	
+   			if (string!=-1) jkPrintUNIString(-1, string);
+		}
+	}
+   return;
+end

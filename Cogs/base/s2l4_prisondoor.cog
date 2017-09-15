@@ -1,0 +1,53 @@
+# Jedi Knight Cog Script
+#
+# S2L4_rancordoor.cog
+#
+# [DS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+#
+
+symbols
+	message	activated	
+
+	thing		door0
+      sound       onsound=16metalcreak02.wav
+	float		moveSpeed=0.5
+
+	int		doorStatus	local
+	int		moveStatus	local
+end
+
+# ========================================================================================
+
+code
+
+activated:
+	call CheckStatus;
+	if (moveStatus) return;
+	if (doorStatus == 0) {					// all pieces are at frame 0
+           garbage = PlaySoundThing(onSound, door0, 0.6, -1, -1, 0); 
+           call OpenDoors;
+	}
+	return;
+
+# ........................................................................................
+
+OpenDoors:
+      MoveToFrame(door0, 1, moveSpeed);
+	return;
+
+# ........................................................................................
+
+CheckStatus:
+	moveStatus = 0;
+	doorStatus = 0;
+	if (door0 >= 0) {
+			moveStatus = moveStatus + IsThingMoving(door0);
+			doorStatus = doorStatus + GetCurFrame(door0);
+		}
+	return;
+
+end
+
+ 

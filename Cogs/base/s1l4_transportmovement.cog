@@ -1,0 +1,55 @@
+##S1L4_TransportMovementTest.cog
+
+symbols
+message		entered
+message		arrived
+message		startup
+thing		transport	linkid=1
+int		activated=0	local
+int		reached=0	local
+end
+
+code
+entered:
+	if((GetSenderID()==1)&&(activated==0))
+	{
+		activated=1;
+		MoveToFrame(transport,1,1.5);
+		reached=1;
+		return;
+	}
+	return;	
+arrived:
+	if((GetSenderID()==1)&&(reached==1))
+	{
+		MoveToFrame(transport,2,2.0);
+		Sleep(0.25);
+		reached=2;
+		return;
+	}
+	if((GetSenderID()==1)&&(reached==2))
+	{
+		MoveToFrame(transport,3,4);
+		reached=3;
+		return;
+	}
+	if((GetSenderID()==1)&&(reached==3))
+	{
+		MoveToFrame(transport,4,4);
+		reached=4;
+		return;
+	}
+	if((GetSenderID()==1)&&(reached==4))
+	{
+		MoveToFrame(transport,5,4);
+		reached=5;
+		return;
+	}
+	if((GetSenderID()==1)&&(reached==5))
+	{
+		MoveToFrame(transport,6,3.75);
+		reached=6;
+		return;
+	}
+	return;
+end

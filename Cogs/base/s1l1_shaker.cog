@@ -1,0 +1,66 @@
+# Jedi Knight Cog Script
+#
+# S1L1_shaker.cog
+#
+# Shake, rattle, and roll
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved		
+# ========================================================================================
+
+symbols
+message		startup
+message		timer
+message		pulse
+
+sound		wav0
+
+flex		min_interval
+flex		range_interval
+flex		min_volume
+flex		range_volume
+
+int		temp			local
+int		counter=0		local
+	
+vector		posOffset		local
+vector		angOffset		local
+
+end
+	
+# ========================================================================================
+
+code
+
+startup:
+	SetTimer(min_interval+(rand()*range_interval));
+	return;
+
+# .................................................................................
+
+timer:
+
+	PlaySoundLocal(wav0, (min_volume+(rand()*range_volume)), ((rand()*2)-1.0), 0);
+	SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .5, 80.0);
+	SetTimer(min_interval+(rand()*range_interval));
+	SetPulse(0.1);
+	return;
+
+# .................................................................................
+
+pulse:
+	if (counter < 8) {
+		counter=counter+1;
+		posOffset = VectorSet(Rand()*0.01, Rand()*0.01, Rand()*0.01);
+		angOffset = VectorSet(Rand(), Rand(), Rand());
+		SetPOVShake(posOffset, angOffset, .5, 80.0);
+		// SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .1, 80.0);
+	}
+	else if (counter == 8) {
+		SetPulse(0);
+		counter=0;
+	}
+	return;
+end
+

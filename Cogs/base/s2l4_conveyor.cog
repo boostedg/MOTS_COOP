@@ -1,0 +1,136 @@
+# Jedi Knight Cog Script
+#
+# S2L4_conveyor.cog
+#
+#  A nifty little droid conveyour belt w/ burning face action.
+#
+# [KS & DS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+#
+
+symbols
+      	message     	entered
+	message		exited
+      	message     	pulse
+	message		touched
+	message		damaged
+	message		timer
+
+	sector		gocon
+	sector		stopcon			
+	vector		vec0					desc=conveyor_direction
+	float		speedc=1.0      		local
+	float		speedp=1.0	      		local
+
+	surface		convey0		nolink
+	surface		convey1		nolink
+	surface		convey2		nolink
+	surface		convey3		nolink
+	surface		convey4		nolink
+	surface		convey5		nolink
+	surface		convey6		nolink
+	surface		convey7		nolink
+	surface		ouch
+      	thing       	soundthing
+      	sound       	sound0=00conveyoramb01.wav  	local
+	int		garbage				local
+	int		cnt				local
+
+	#Droid Parts Stuff
+      	template    	droidpart1
+      	template    	droidpart2
+      	template    	droidpart3
+      	thing       	droidghost
+      	thing       	dummy0           		local
+      	thing       	dummy1           		local
+      	thing       	dummy2           		local
+
+	int		done=0				local
+	int		soundcon=0			local
+ 	sound		wav0=ForceFieldHum01.wav	local
+   	sound		wav1=ForceFieldHit01.wav	local
+
+	int		victim=-1			local
+   	int		playerx=1   			local
+   	int		damaging=1			local
+
+	float		maxDamage=10.0			local
+	float		minDamage=5.0			local
+  	float		interval=0.25			local
+
+end
+
+code
+entered:
+	if (GetSenderRef()==gocon)
+	{
+		if (done) return;
+		done=1;
+      		SetPulse(1);
+		if (soundcon) return;
+		soundcon=1;
+		for (cnt = 0; cnt<=7; cnt=cnt+1) 
+		{
+		if (convey0[cnt] >= 0) garbage=slidewall(convey0[cnt], vec0, speedc);
+      		PlaySoundThing(sound0, soundthing, 0.3, 5, 10, 0x1);
+      		}
+	}
+	      return;
+exited:
+	if (GetSenderRef()==stopcon)
+	{
+	done=0;
+	SetPulse(0);
+	}
+	return;
+pulse:
+	SetPulse(0);
+	dummy0=CreateThing(droidpart1, droidghost);
+      	MoveToFrame(dummy0, 1, speedp);
+	WaitForStop(dummy0);
+	DestroyThing(dummy0);
+
+     	dummy1=CreateThing(droidpart2, droidghost);
+      	MoveToFrame(dummy1, 1, speedp);
+	WaitForStop(dummy1);
+	DestroyThing(dummy1);
+
+	dummy2=CreateThing(droidpart3, droidghost);
+      	MoveToFrame(dummy2, 1, speedp);
+	WaitForStop(dummy2);
+	DestroyThing(dummy2);
+	call keepgoing;
+      	return;      
+
+keepgoing:
+	if (done)
+	{
+	SetPulse(0.5);
+	}
+	return;
+
+touched:
+   	if (damaging == 0) return;
+	victim = GetSourceRef();
+	damage = (Rand() * (maxDamage - minDamage)) + minDamage;
+	DamageThing(victim, damage, 0x2, victim);
+  	PlaySoundPos(wav1, GetSurfaceCenter(ouch), 0.8, 5, 20, 0);
+   	damaging=0;
+   	SetTimer(interval);
+	return;
+
+damaged:
+   if (GetParam(1) ==1)
+      playerx=GetLocalPlayerThing();
+      {
+         damage = (Rand()*(maxdamage - mindamage)) + mindamage;
+         DamageThing(playerx, damage, 0x01, playerx);
+      }
+   return;
+
+timer:
+   damaging=1;
+   return;
+
+end 

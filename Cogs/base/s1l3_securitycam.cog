@@ -1,0 +1,72 @@
+# S1L3_SecurityCam.cog
+#
+# Security camera cog.  Modification of 00_securitycam.cog.  Modified by Chris Klie.
+#
+# [YB/CK]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+thing       camera						//the camera object
+thing		GhostCamera						//corresponding ghost camera object
+int         player                        local
+int         triggerNum=10000              local
+int		triggerAlive			local
+int		triggerDead				local
+int         active=0                      local
+int		CameraNumber=1					//1 thru 11 don't use the same number twice
+int		PulseValue=1					//how often the camera checks for the player
+int		WarmUpTime=1					//how long the camera takes to warm up
+int		IAmSleeping=0			local
+int		IAmDead=0				local
+vector      cameraPos                     local
+message     startup
+message    	killed
+message     pulse
+message	activated
+message	timer
+message	entered
+message	trigger
+sector	GoSector				linkid=1	//camera warms up when player enters
+end
+
+code
+startup:
+   triggerNum=(triggerNum+CameraNumber);
+   if(PulseValue<1) PulseValue=1;
+   if(PulseValue>5) PulseValue=5;
+   if(triggerNum>10011) triggerNum=0;
+   if(triggerNum<10001) triggerNum=0;
+   if(triggerNum==0) return;
+   triggerAlive=(triggerNum+11);				
+   triggerDead=(triggerNum+22);
+   SendTrigger(-1,triggerAlive,camera,0,0,0);
+   player=GetLocalPlayerThing();
+   cameraPos=GetThingPos(camera);
+   SetPulse(PulseValue);
+   return;
+killed:
+   Active=0;
+   SetPulse(0.0);
+   SendTrigger(-1,triggerDead,camera,0,0,0);
+   return;
+pulse:
+   if(!Active) return;  
+   if((FirstThingInView(camera,60,5.0,0x400)!=-1)&&(IAmSleeping==0))
+   {
+      if(VectorDist(cameraPos,GetThingPos(player))<2.0) SendTrigger(-1,triggerNum,camera,0,0,0);
+   }
+   return;
+trigger:
+   if(GetSourceRef()==triggerDead) IAmDead=1;
+   return;
+entered:
+   if((GetSenderID()==1)&&(IAmSleeping==0)&&(IAmDead==0)&&(Active==0))
+   {
+	IAmSleeping=1;
+	Sleep(WarmUpTime);
+	Active=1;
+	IAmSleeping=0;
+   }
+   return;					
+end

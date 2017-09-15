@@ -1,0 +1,71 @@
+#  Jedi Knight Missions Cog Script
+#  S4L1_hangdoor.cog
+#  Controls hanger doors, sends message for xwings, then turns elevator to manual control.
+#  [SH]
+#  (c) 1997 LucasArts  Entertainment Co. All Right Reserved 
+
+symbols
+   message		startup
+   message		user0
+   message		user2
+   message		user3
+   message 		activated
+   thing		door0
+   thing		door1
+   thing		pullswitch	
+   int		launched=0		local
+   int		istalking=0		local
+   flex		doorspeed=4.0
+   sound		wav0=activate02.wav
+   sound		wav1=funicularstart01.wav
+   sound		wav2=funicularmove01.wav
+   sound		wav3=df_door3-3.wav
+   sound		wav4=lgclick1.wav   	
+   cog		xcog
+   cog		platcog
+   cog		xbackup		local
+   cog		platbackup		local
+end
+
+code
+startup:
+   SetSectorAdjoins(GetThingSector(door0),0);
+   return;	
+user0:
+   MoveToFrame(pullswitch,1,1);
+   if (launched==0)
+	{
+	Sleep(1.0);
+	launched=1;
+	PlaySoundThing(wav1,door0,1.0,2,3,0);
+	PlaySoundThing(wav1,door1,1.0,2,3,0);
+	SetSectorAdjoins(GetThingSector(door0),1);
+	Sleep(2.0);
+	MoveToFrame(door0,1,doorspeed);
+	MoveToFrame(door1,1,doorspeed);
+	PlaySoundThing(wav2,door0,1.0,2,3,0);
+	PlaySoundThing(wav2,door1,1.0,2,3,0);
+	SendMessageEx(GetMasterCOG(), user0, 0, 0, 0, 0);
+   	SendMessage(platcog,user0);
+      SendMessage(platbackup,user0);
+	SendMessage(xcog,user0);
+	SendMessage(xbackup,user0);
+	}
+   return;
+user2:
+   xbackup=GetSenderRef();
+   return;
+user3:
+   platbackup=GetSenderRef();
+   return;
+activated:
+   if ((IsMoving(door0))||(istalking)) return;
+   if ((GetSenderRef()==door0)||(GetSenderRef()==door1))
+	{
+	istalking=1;
+	PlaySoundThing(wav3,door0,0.5,-1,-1,0);
+	Sleep(GetSoundLen(wav3));
+	istalking=0;
+	}
+   return;
+end

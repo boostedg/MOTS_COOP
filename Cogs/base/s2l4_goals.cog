@@ -1,0 +1,42 @@
+# Jedi Knight Cog Script
+#
+# S2L4_Goals.COG
+#
+# Endlevel cog for level S2L4
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# ========================================================================================
+
+symbols
+
+sector		goal0
+sector		goal3
+
+message		entered
+
+int		done0=0			local
+int		done3=0			local
+
+end
+# ========================================================================================
+code
+
+entered:
+
+   if((!done0) && (GetSenderRef() == goal0))
+   {
+      SendMessageEx(GetMasterCOG(), user2, 0, 0, 0, 0);
+      done0 = 1;
+      Return;
+   }
+
+   if((!done3) && (GetSenderRef() == goal3))
+   {
+      SendMessageEx(GetMasterCOG(), user2, 3, 0, 0, 0);
+      done3 = 1;
+      Return;
+   }
+   Return;
+end

@@ -1,0 +1,110 @@
+# Jedi Knight Cog Script
+#
+# S2L4_DEVICE.COG
+#
+#
+# [KS & DS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+thing       door0                            linkid=1
+
+thing       device0                          linkid=2
+thing       player                           local
+
+flex        movespeed=2.0
+flex        lightvalue=0.5
+
+sound       onSound=16metalcreak01.wav              local
+sound       AlarmSound=00Alarmloop03.wav            local
+sound       locksound=df_door2-3.wav         local
+
+int         doorsector                       local
+int         doorstatus=0                     local
+int         movestatus=0                     local
+int         garbage=-1                       local
+int         dummy=0                          local
+int         dummy1=0                         local
+
+message     startup                          
+message     touched
+message     user0
+message     user1
+message	    activated
+
+sound		mj62402=mj62402.wav		local
+sound		mj62403=mj62403.wav		local
+sound		vc62404=vc62404.wav		local
+
+end
+
+code
+startup:
+ 
+   doorsector = GetThingSector(door0);
+   SectorAdjoins(doorsector, 0);
+   SectorLight(doorsector, lightvalue, 0.0); // add some light to door sector
+   return;
+//-------------------------------------------------------------------------------------------
+activated:
+
+ if (GetSenderId() == 1)
+      {
+      dummy=PlaySoundLocal(locksound, 1, 0, 0);
+      }
+	return;
+//-------------------------------------------------------------------------------------------
+touched:
+	if (GetSenderId() == 2)
+      	{
+        call checkstatus;
+        if (movestatus) return;
+        if (doorstatus == 0)                      // all pieces are at frame 0
+           {
+            garbage = PlaySoundThing(onSound, door0, 0.6, -1, -1, 0);      // play activate sound
+             sectoradjoins(doorsector, 1);
+            call user1; 
+            call open_doors;
+      	SendMessageEx(GetMasterCOG(), user2, 2, 0, 0, 0);
+	Sleep(2);
+	jkPrintUNIString(-1, 62402);
+	PlayVoiceLocal(mj62402, 1.0, 0.0, 0);
+	Sleep(GetSoundLen(mj62402));
+	jkPrintUNIString(-1, 62403);
+	PlayVoiceLocal(mj62403, 1.0, 0.0, 0);
+	Sleep(GetSoundLen(mj62403));
+	Sleep(1.0);
+	jkPrintUNIString(-1, 62404);
+	PlayVoiceLocal(vc62404, 1.0, 0.0, 0);
+	
+           }
+      }
+    return;
+
+#.........................................................................................
+user1: 
+  dummy1=playsoundlocal(AlarmSound, 1, 0, 1);
+return;
+
+user0:
+  stopsound(dummy1, 0);
+return;
+
+# ........................................................................................
+
+open_doors:
+   movetoframe(door0, 1, movespeed);
+    return;
+
+checkstatus:
+   movestatus = ismoving(door0);
+   doorstatus = getcurframe(door0);
+    return;
+
+
+end
+
+
+ 

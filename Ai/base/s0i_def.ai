@@ -1,0 +1,22 @@
+# Jedi Knight MOTHS AI File
+#
+# s0_def.AI
+#
+# Sith Jedi Statue 0 default AI
+# Medium difficulty
+# Sentry
+#
+# [SRS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+alignment=-1.0, rank=0.5, fov=180, maxstep=4.0, sightdist=7.0, heardist=4.0
+
+
+#Listen			0.0, 2.0
+#p0 - Investigate % (0 never, 1 always)
+#p1 - Distance to move from danger?
+
+LookForTarget	200.0, 0.0
+#p0 - interval look (msec)
+#p1 - Time to sleep before check again (msec)

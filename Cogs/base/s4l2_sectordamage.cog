@@ -1,0 +1,47 @@
+# Jedi Knight Cog Script
+#
+# 12_sectordamage.cog (modified)
+#
+# sector damage for central core
+#
+# [YB]  / [DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+
+
+symbols
+
+message		startup
+message		pulse
+
+sector		sector0
+
+int		numsectors=1	local
+int		i					local
+int		plsector			local
+int		player			local
+
+end
+
+code
+startup:
+		SetPulse(2);
+		return;
+		
+pulse:
+
+      //print("nasty, ouch");
+
+		player=jkGetLocalPlayer();
+		plsector=GetThingSector(player);
+		for (i=0; i < numsectors; i=i+1)
+		if (sector0[i]==plsector)
+		DamageThing(player, 1, 8, 0);
+		return;
+end
+
+
+
+

@@ -1,0 +1,132 @@
+# Jedi Knight Cog Script
+#
+# s2l4_sectorzap.cog
+#
+# Shock treatment
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+#
+#
+
+symbols
+
+message		entered
+message		pulse
+message		exited
+message		user7
+message		startup
+
+sector		killwater1
+sector		killwater2
+sector		killwater3
+sector		killwater4
+sector		killwater5
+sector		killwater6
+sector		killwater7
+sector		killwater8
+sector		killwater9
+
+int		player			local
+int		noburn=0		local
+
+cog		watertrap
+
+end
+
+code
+#-------------------------------------------------------------------------------------------
+startup:
+	player = GetLocalPlayerThing();	
+	return;
+#-------------------------------------------------------------------------------------------
+entered:
+
+	if ((GetSenderRef()==killwater1)&&(noburn==0))
+	{
+	  setpulse(0.5);
+	}
+	if ((GetSenderRef()==killwater2)&&(noburn==0))
+	{
+	  setpulse(0.5);
+	}
+	if ((GetSenderRef()==killwater3)&&(noburn==0))
+	{
+	  setpulse(0.5);
+	}
+	if ((GetSenderRef()==killwater4)&&(noburn==0))
+	{
+	  setpulse(0.5);
+	}
+	if ((GetSenderRef()==killwater5)&&(noburn==0))
+	{
+	  setpulse(0.5);
+	}
+	if ((GetSenderRef()==killwater6)&&(noburn==0))
+	{
+	  setpulse(0.5);
+	}
+	if ((GetSenderRef()==killwater7)&&(noburn==0))
+	{
+	  setpulse(0.5);
+	}
+	if ((GetSenderRef()==killwater8)&&(noburn==0))
+	{
+	  setpulse(0.5);
+	}
+	if ((GetSenderRef()==killwater9)&&(noburn==0))
+	{
+	  setpulse(0.5);
+	}
+	return;
+#-------------------------------------------------------------------------------------------
+pulse:
+	dummy = DamageThing(player, 30, 0x1, player);
+	Return;
+#-------------------------------------------------------------------------------------------
+exited:	
+	if ((GetSenderRef()==killwater1)&&(noburn==0))
+	{
+	  setpulse(0.0);
+	}
+	if ((GetSenderRef()==killwater2)&&(noburn==0))
+	{
+	  setpulse(0.0);
+	}
+	if ((GetSenderRef()==killwater3)&&(noburn==0))
+	{
+	  setpulse(0.0);
+	}
+	if ((GetSenderRef()==killwater4)&&(noburn==0))
+	{
+	  setpulse(0.0);
+	}
+	if ((GetSenderRef()==killwater5)&&(noburn==0))
+	{
+	  setpulse(0.0);
+	}
+	if ((GetSenderRef()==killwater6)&&(noburn==0))
+	{
+	  setpulse(0.0);
+	}
+	if ((GetSenderRef()==killwater7)&&(noburn==0))
+	{
+	  setpulse(0.0);
+	}
+	if ((GetSenderRef()==killwater8)&&(noburn==0))
+	{
+	  setpulse(0.0);
+	}
+	if ((GetSenderRef()==killwater9)&&(noburn==0))
+	{
+	  setpulse(0.0);
+	}
+	return;
+#-------------------------------------------------------------------------------------------
+
+user7:
+	noburn=1;
+	return;
+#-------------------------------------------------------------------------------------------
+end

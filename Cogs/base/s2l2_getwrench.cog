@@ -1,0 +1,50 @@
+# Jedi Knight Cog Script
+#
+# Copy of
+# a copy of 
+# 09_getwrench.cog
+#
+# Player picks up wrench needed throughout level
+#
+# [RD]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved		
+# ========================================================================================
+
+symbols
+
+message	touched
+message	user0			
+
+thing		wrench
+
+sound		handy=kk60018.wav	
+sound		exactly=kk60009.wav
+
+int		tool=-1			local
+
+end
+
+# ========================================================================================
+
+code
+
+touched:
+	if (tool == 1)
+	{
+		PlaySoundLocal(exactly, 1, 0.0, 0);		
+	}
+	else
+	{
+		PlaySoundLocal(handy, 1, 0.0, 0);
+	}
+	return;
+
+# ........................................................................................
+
+user0:
+	tool = 1;
+	return;
+
+end
+

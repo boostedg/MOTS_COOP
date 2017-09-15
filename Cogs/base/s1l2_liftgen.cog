@@ -1,0 +1,43 @@
+# Jedi Knight Cog Script
+#
+# S1L2_LiftGen.cog
+#
+# Simple... just spawn one guy and move him somewhere...
+# Modified for S1L2 to activate on switch.
+#
+# [YB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+thing       pos                              desc=generator_ghost
+thing       targetThing                      desc=target_ghost
+template    enemyTpl                         desc=enemy_to_generate
+
+surface     theSurface
+
+int         enemy                            local
+flex        done=0                           local
+
+message     activated
+
+end
+
+# ========================================================================================
+
+code
+
+activated:
+   if(done) return;
+   done = 1;
+
+   enemy = CreateThing(enemyTpl, pos);
+   AISetMoveThing(enemy, targetThing);
+
+   Return;
+
+end
+
+

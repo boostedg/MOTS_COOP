@@ -1,0 +1,203 @@
+# Jedi Knight Cog Script
+#
+# S2L4_CSRancor.cog
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+message		startup
+message     	crossed
+message		escaped
+
+surface		adjoin
+int		done=0			local
+
+thing       Mara                             nolink   # Mara
+thing		mara2
+thing       camera1                          nolink   # ghost
+thing	   	camera2
+thing		camera3
+thing		camera4
+
+thing       francor                            nolink   # Cutscene rancor
+thing	    francor2				nolink  # ghost
+thing       rancor				nolink  # real rancor
+thing	    rancor2
+
+sound       wav0=RancRoar.wav       local
+sound       wav1=RancWake.wav       local
+sound       wav2=MJ82401.WAV       local
+
+
+int         player                           local
+int         effectHandle                local
+int	cancel				local
+int	oldcamera			local
+
+sector	rasect1
+sector	rasect2
+sector	rasect3
+
+thing	ralight
+thing	ralight2
+
+end
+
+# ========================================================================================
+code
+
+startup:
+ 	AISetMode(rancor, 0x2000);
+	SetThingLight(ralight2, 0.0, 0);
+	return;
+
+endcut:
+	jkEndCutscene ();
+
+   SetMusicVol(1.0);
+
+   player = GetLocalPlayerThing();
+   ClearActorFlags(player, 0xa00000);
+   AIClearMode(rancor, 0x2000);
+   AISetMode(rancor, 0x4);
+   AISetLookPos(rancor, GetThingPos(player));
+   AISetMovePos(rancor, GetThingPos(player));
+	SetThingLight(ralight, 0.7, 0);
+	SetSectorLight(rasect1, 0.10, 0);
+	SetSectorLight(rasect2, 0.10, 0);
+	SetSectorLight(rasect3, 0.10, 0);
+   SetCurrentCamera(0);
+   SetCameraFocus(player, oldcamera);
+
+   Print(" ");
+   Print(" ");
+   Print(" ");
+   Print(" ");
+   Print(" ");
+   
+	return; 
+# ========================================================================================
+crossed:
+	
+	if (done) return;
+	done=1;
+	Sleep(0.2);
+	if (cancel) return;
+   player = GetLocalPlayerThing();
+   SetActorFlags(player, 0xa00000);
+	StopThing(player);
+
+	jkBeginCutscene ();
+	cancel = 0;
+
+#	call endcut;
+#	return;
+	
+   // -------------------------------------------------------------------------
+   // PART I : the rancor pit
+   // -------------------------------------------------------------------------
+
+	oldcamera=GetCurrentCamera(player);
+   SetCurrentCamera(0);
+   SetCameraFocus(0, camera1);
+	StopThing(player);
+
+   AISetMode(francor, 0x2000);
+   AISetMode(rancor, 0x2000);
+   AISetMode(Mara, 0x2000);
+	PlayMode(francor, 21);
+
+   Sleep(0.5);
+	if (cancel) return;
+// mara runs up
+
+   AIClearMode(mara, 0x2000);
+   AIClearMode(mara, 0x606);
+   AISetLookPos(mara, GetThingPos(mara2));
+	AISetMoveSpeed(mara, 2.0);
+   AISetMovePos(mara, GetThingPos(mara2));
+	Sleep(1);
+	if (cancel) return;
+	AISetMoveSpeed(mara, 1.0);
+	Sleep(1);
+	if (cancel) return;
+
+// camera switches to behind rancor and he growls
+	SetCameraFocus(0, camera2);
+	Sleep(1);
+	if (cancel) return;
+	PlaySoundLocal(wav1, 1.0, 0.0, 0);
+	PlayMode(francor, 1);
+	Sleep(1);
+	if (cancel) return;
+// fake rancor moves
+
+   AIClearMode(francor, 0x2000);
+   AIClearMode(francor, 0x606);
+   AISetLookPos(francor, GetThingPos(francor2));
+	AISetMoveSpeed(francor, 1.0);
+   AISetMovePos(francor, GetThingPos(francor2));
+	SetThingLight(ralight2, 0.7, 5.0);
+
+// real rancor moves to match location
+
+   AIClearMode(rancor, 0x2000);
+   AIClearMode(rancor, 0x606);
+   AISetLookPos(rancor, GetThingPos(rancor2));
+	AISetMoveSpeed(rancor, 1.0);
+   AISetMovePos(rancor, GetThingPos(rancor2));
+   AISetMode(rancor, 0x2000);
+	Sleep(2);
+	if (cancel) return;
+   StopThing(rancor);
+
+// rancor camera
+
+	SetCameraFocus(0, camera3);
+	Sleep(2);
+	if (cancel) return;
+
+	PlayMode(francor, 37);
+	Sleep(0.5);
+	if (cancel) return;
+	PlaySoundLocal(wav0, 1.0, 0.0, 0);
+	Sleep(3);
+	if (cancel) return;
+
+// mara camera
+
+	SetCameraFocus(0, camera4);
+	Sleep(1);
+	if (cancel) return;
+
+   jkPrintUNIString(-1, 82401);
+	PlaySoundLocal(wav2, 1.0, 0.0, 0);
+
+	Sleep(2);
+	if (cancel) return;
+  
+   Sleep(2.0);
+	if (cancel) return;
+  
+
+   // -------------------------------------------------------------------------
+   // END CUTSCENE, ENTER LEVEL
+   // -------------------------------------------------------------------------
+
+	call endcut;	
+   return;
+
+# ========================================================================================
+
+escaped:
+	WakeUp ();
+	cancel = 1;
+	call endcut;
+	return;
+
+end
+

@@ -1,0 +1,78 @@
+# Jedi Knight Cog Script
+#
+# S1L1_fan.COG
+#
+# Fan that damages player.
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+thing       	ghost_fan               	nolink,desc=ghost_fan
+
+sector	    	fansector
+
+flex        	damage_amount=10             	local
+
+int         	the_fan                      	local
+int         	player                       	local
+
+sound       	fan_snd=BigFan01.wav          	local
+
+message     	startup
+message		entered
+message		exited
+message		pulse
+message		user3	
+	
+int		nofan=0				local
+int		fansound			local
+
+end
+
+# ========================================================================================
+
+code
+startup:
+	player = GetLocalPlayerThing();
+
+      	the_fan = ghost_fan;
+     	fansound = PlaySoundThing(fan_snd, the_fan, 1.0, 10.0, 13.0, 0x041);
+
+   Return;
+
+# ........................................................................................
+
+entered:
+	if (nofan) return;
+	
+       	DamageThing(player, damage_amount, 0x01, player);
+	SetPulse(1);
+
+   Return;
+# ........................................................................................
+pulse:
+	if (nofan) return;
+	DamageThing(player, damage_amount, 0x01, player);
+	
+	return;
+
+# ........................................................................................
+exited:
+	if (nofan) return;
+	SetPulse(0);
+	
+	return;
+# ........................................................................................
+
+user3:
+	nofan=1;
+	StopSound(fansound, 0);
+	return;
+# ........................................................................................
+
+end
+

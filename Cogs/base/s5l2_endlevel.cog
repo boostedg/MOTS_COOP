@@ -1,0 +1,99 @@
+# Jedi Knight Cog Script
+#
+# S5L2_ENDLEVEL.COG
+#
+# Endlevel cog for level S5L2
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# ========================================================================================
+
+symbols
+
+message         startup
+message         user0
+message     shutdown
+
+sound           mj75301=mj75301.wav    local
+
+int             player           local
+sound           goalsnd=Accomplish1.wav   local
+end
+
+# ========================================================================================
+
+## Code Section
+code
+
+startup:
+   // This is the master COG, so register it.
+   SetMasterCOG(GetSelfCOG());
+
+   player = GetLocalPlayerThing();
+
+   // Setup the goals first string in cogStrings.uni so the UI knows about it.
+   SetInv(player, 99, 52000);
+
+   // Setup all the goals as displayed at start
+   SetGoalFlags(player, 0, 1);
+   //SetGoalFlags(player, 1, 1);
+   //SetGoalFlags(player, 2, 1);
+
+   // Play the movie
+   jkStartupCutscene ("s5l2ocs.san");
+
+   // Initialize weapon.
+   Sleep(0.05);
+   SetFireWait(player, -1);
+   SetMountWait(player, 0);
+   SetCurInvWeapon(player, 0);
+   SelectWeapon(player, 131);
+
+   Return;
+
+# ........................................................................................
+
+user0:
+   jkPrintUNIString(player, 350);
+
+   if(GetParam(0) == 0)
+   {
+      PlaySoundThing(goalsnd, player, 1.0, -1, -1, 0);
+      SetGoalFlags(player, 0, 2);
+   SetGoalFlags(player, 1, 1);
+      Return;
+   }
+
+   if(GetParam(0) == 1)
+   {
+      PlaySoundThing(goalsnd, player, 1.0, -1, -1, 0);
+      SetGoalFlags(player, 1, 2);
+   SetGoalFlags(player, 2, 1);
+      Return;
+   }
+
+   if(GetParam(0) == 2)
+   {
+      SetGoalFlags(player, 2, 2);
+      PlaySoundThing(goalsnd, player, 1.0, -1, -1, 0);
+   Sleep(0.5);
+      PlayVoiceLocal(mj75301, 1, 0, 132);
+      jkPrintUNIString(-1, 75301);
+		Sleep(GetSoundLen(mj75301));
+   Sleep(1.5);
+      jkEndLevel(1);
+      Return;
+   }
+
+   Return;
+# ........................................................................................
+shutdown:
+   ChangeInv(player, 16, 2);
+      // Give a force star if the player finds all the secrets
+      if((GetInv(player, 71) != 0) && (GetInv(player, 70) == GetInv(player, 71)))
+         ChangeInv(player, 16, 1);
+
+   Return;
+
+end

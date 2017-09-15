@@ -1,0 +1,51 @@
+# Jedi Knight Cog Script
+#
+# S1L1_BrokenDoor.cog
+#
+# Script for a broken door that does not open
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+# ========================================================================================
+
+symbols
+
+thing		door0		
+sound    	wav0
+cog		power
+int		poweron=0		local
+
+message		user1
+message		activate
+
+sector		doorsector		local
+int		doorStatus		local
+int		moveStatus		local
+message		startup
+
+end
+
+# ========================================================================================
+code
+startup:
+	doorSector = GetThingSector(door0);
+	SetSectorAdjoins(doorSector, 0);
+	return;
+
+activate:
+	if (poweron == 0)
+	{
+	PlaySoundThing(wav0, door0, 0.6, -1, -1, 0);
+	}
+	else if (poweron == 1)
+	{
+	SetSectorAdjoins(doorSector, 1);
+	MoveToFrame(door0, 1, 8);
+	}
+	return;
+#========================================================================================
+user1:
+	poweron=1;
+	return;
+end

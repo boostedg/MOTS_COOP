@@ -1,0 +1,70 @@
+# Jedi Knight Cog Script
+#
+# S4L2_EXPLOWALL.COG
+#
+# Shootable wall cog for level S4L2
+#
+# [DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+message		damaged
+message     timer
+
+thing       wall                          mask=0xfff
+
+thing			ghost0
+thing			ghost1
+thing			ghost2
+thing			ghost3
+
+template		explosion_tpl=+03_exp			local
+template    explodedwall_tpl=00ExpWall1b  local
+
+int         done=0                        local
+
+flex        hitpoints=50.0
+flex        currentDamage=0.0             local
+
+end
+
+
+code
+  
+damaged:
+
+ if (done) Return;  
+
+ if(GetParam(1)!=1)
+  {
+    currentDamage=currentDamage + GetParam(0);
+    if (currentDamage > hitpoints)
+    
+    {
+     CreateThing(explodedwall_tpl, wall);
+     DestroyThing(wall);
+     SetTimerEx(0.05, 1, 0, 0);
+     done=1;
+    }
+  }
+  return;
+
+timer:
+     
+     CreateThing(explosion_tpl, ghost0);
+     Sleep(0.05);
+     CreateThing(explosion_tpl, ghost1);
+     Sleep(0.05);
+     CreateThing(explosion_tpl, ghost2);
+     Sleep(0.05);
+     CreateThing(explosion_tpl, ghost2);
+
+     Return;
+
+     
+
+
+end
+

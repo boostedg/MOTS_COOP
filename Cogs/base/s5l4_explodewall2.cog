@@ -1,0 +1,189 @@
+# Jedi Knight Cog Script
+#
+# S5L4_EXPLODEWALL2.COG
+#
+# Explodable wall cog for level S5L4 (modified for S5L4)
+#
+# [DB] with Tim Longo on Bass. [RF]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+int         done=0   local
+
+message  entered
+message  pulse
+message  arrived
+
+sector   entersector
+cog      fade0
+cog      fade1
+cog      fade2
+cog      fade3
+cog      fade4
+cog      fade5
+cog      fade6
+
+thing    wall0                            
+thing    wall1
+thing    wall2
+thing    wall3
+thing    wall4
+thing    wall5
+
+thing    ghost0
+thing    ghost1
+thing    ghost2
+thing    ghost3
+thing    ghost4
+thing    ghost5
+
+thing    sith0                         mask=-1  
+thing    sith1                         mask=-1  
+thing    sith2                         mask=-1
+thing    sith3                         mask=-1  
+thing    sith4                         mask=-1  
+thing    sith5                         mask=-1  
+
+thing    rsith0   local                mask=-1
+thing    rsith1   local                mask=-1
+thing    rsith2   local                mask=-1
+thing    rsith3   local                mask=-1
+thing    rsith4   local                mask=-1
+thing    rsith5   local                mask=-1
+
+thing    statue   linkid=1
+thing    disc
+
+thing    light0
+thing    light1
+thing    light2
+thing    light3
+thing    light4
+thing    light5   
+
+template lightning=+S5L4_lightning     local
+template partSystem=+dustcloud         local
+template explodedwall_tpl
+template enemy_tpl                     desc=enemy_to_generate
+
+sound    sound0
+sound    sound1
+
+end
+
+code
+entered:
+   if (done) Return;
+   done=1;
+   MoveToFrame(statue, 1, 0.5);
+   MoveToFrame(disc, 1, 0.5);
+   return;
+
+arrived:
+   if (GetSenderId() != 1) return;
+   
+   Sleep(0.5);
+
+   SendMessage(fade0, user0);
+   SendMessage(fade1, user0);
+   SendMessage(fade2, user0);
+   SendMessage(fade3, user0);
+   SendMessage(fade4, user0);
+   SendMessage(fade5, user0);
+   SendMessage(fade6, user0);
+               
+   CreateThing(lightning, light0);
+   PlaySoundThing(sound0, light0, 1, -1, -1, 0);
+   Sleep(0.25);
+   CreateThing(partSystem, ghost0);
+   PlaySoundThing(sound1, ghost0, 1, -1, -1, 0);
+   Sleep(0.25);
+   CreateThing(explodedwall_tpl, wall0);
+   DestroyThing(wall0);
+   rsith0 = CreateThing(enemy_tpl,sith0);
+   
+   Sleep(0.5);
+
+   CreateThing(lightning, light1);
+   PlaySoundThing(sound0, light1, 1, -1, -1, 0);
+   Sleep(0.25);
+   CreateThing(partSystem, ghost1);
+   PlaySoundThing(sound1, ghost1, 1, -1, -1, 0);
+   Sleep(0.25);
+   CreateThing(explodedwall_tpl, wall1);
+   DestroyThing(wall1);
+   rsith1 = CreateThing(enemy_tpl,sith1);
+   
+   SetPulse(1.0);
+   Return;
+
+pulse:
+   if(rsith0)
+   {
+      if(GetThingHealth(rsith0) <= 0)
+      {
+         CreateThing(lightning, light0);
+         PlaySoundThing(sound0, light0, 1, -1, -1, 0);
+         CreateThing(partSystem, ghost2);
+         PlaySoundThing(sound1, ghost2, 1, -1, -1, 0);
+         CreateThing(explodedwall_tpl, wall2);
+         DestroyThing(wall2);
+         rsith2 = CreateThing(enemy_tpl,sith2);
+   
+         rsith0 = 0;
+      }
+   }
+
+   if(rsith1)
+   {
+      if(GetThingHealth(rsith1) <= 0)
+      {
+         CreateThing(lightning, light1);
+         PlaySoundThing(sound0, light1, 1, -1, -1, 0);
+         CreateThing(partSystem, ghost3);
+         PlaySoundThing(sound1, ghost3, 1, -1, -1, 0);
+         CreateThing(explodedwall_tpl, wall3);
+         DestroyThing(wall3);
+         rsith3 = CreateThing(enemy_tpl,sith3);
+   
+         rsith1 = 0;
+      }
+   }
+   
+   if(rsith2)
+   {
+      if(GetThingHealth(rsith2) <= 0)
+      {
+         CreateThing(lightning, light0);
+         PlaySoundThing(sound0, light0, 1, -1, -1, 0);
+         CreateThing(partSystem, ghost4);
+         PlaySoundThing(sound1, ghost4, 1, -1, -1, 0);
+         CreateThing(explodedwall_tpl, wall4);
+         DestroyThing(wall4);
+         rsith2 = CreateThing(enemy_tpl,sith4);
+   
+         rsith2 = 0;
+      }
+   }
+   
+   if(rsith3)
+   {
+      if(GetThingHealth(rsith3) <= 0)
+      {
+         CreateThing(lightning, light1);
+         PlaySoundThing(sound0, light1, 1, -1, -1, 0);
+         CreateThing(partSystem, ghost5);
+         PlaySoundThing(sound1, ghost5, 1, -1, -1, 0);
+         CreateThing(explodedwall_tpl, wall5);
+         DestroyThing(wall5);
+         rsith3 = CreateThing(enemy_tpl,sith5);
+   
+         rsith3 = 0;
+      }
+   }
+   Return;
+
+end
+

@@ -1,0 +1,105 @@
+# Jedi Knight Cog Script
+#
+# S2L4_SEWERDOOR.COG
+#
+# Opens up door to go to rancor.
+#
+# [DS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+#
+
+symbols
+
+thing       door0
+thing       door1                            
+surface     switch0
+
+flex        movespeed=0.5
+flex        lightvalue=0.1
+int         key=56
+
+sound       locked_snd=00ElectrExplo01.wav    
+sound       onSound=forcefieldhit01.wav       
+sector      doorsector                       local
+sector      doorsector1                      local
+int         doorstatus                       local
+int         movestatus                       local
+int         player                           local
+
+message     startup
+message     activated
+message	    timer
+
+sound	mj62407=mj62407.wav			local
+sound	splash=splash1.wav			local
+sound	yell=Mj61086.wav			local
+
+cog	pry
+
+end
+
+code
+startup:
+   doorsector = GetThingSector(door0);
+   doorsector1 = GetThingSector(door1);
+   SectorAdjoins(doorsector, 0);
+   SectorAdjoins(doorsector1, 0);
+   SectorLight(doorsector, lightvalue, 0.0); 
+   SectorLight(doorsector1, lightvalue, 0.0); 
+   return;
+
+# ........................................................................................
+
+activated:
+   if (getsenderref() == door0) return;
+   if (getsenderref() == door1) return;
+   player = jkGetLocalPlayer();
+   if (GetInv(player, 56) == 1.0)  
+   {                                         
+      call checkstatus;
+      if(movestatus) return;
+      if(doorstatus == 0)
+      {                                      
+      garbage = PlaySoundThing(onSound, door0, 0.6, -1, -1, 0);      
+      garbage = setwallcel(switch0, 1);
+	PlayVoiceLocal(yell, 0.7, 0.0, 0);
+      SectorAdjoins(doorsector, 1);
+      SectorAdjoins(doorsector1, 1);
+      SetInvActivated(player, 56, 1);
+	Sleep(0.5);
+	PlaySoundLocal(splash, 0.5, 0.0, 0);
+      SetTimer(2);   
+      call open_doors;
+   }
+   }
+   else
+   {
+      	PlaySoundThing(locked_snd, player, 1.0, -1, -1, 0);
+	Sleep(1);
+      	jkPrintUNIString(-1, 62407);
+	PlayVoiceLocal(mj62407, 1.0, 0.0, 0);
+	SendMessage(pry, user1);
+   }
+
+   Return;
+
+// ........................................................................................
+
+open_doors:
+   movetoframe(door0, 1, movespeed);
+   movetoframe(door1, 1, movespeed);
+   return;
+// ........................................................................................
+checkstatus:
+   movestatus = ismoving(door0);
+   doorstatus = getcurframe(door0);
+   return;
+// ........................................................................................
+timer:
+	SetInvActivated(player, 56, 0);
+	return;
+end
+
+
+ 

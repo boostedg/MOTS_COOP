@@ -1,0 +1,156 @@
+# Jedi Knight MOTHS AI File
+#
+# st_def_11.AI
+#
+# StormTrooper default for S1L1 AI
+# Medium difficulty
+# Sentry
+#
+# [SRS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+alignment=-1.0, rank=0.5, fov=170, maxstep=0.2, sightdist=5.0, heardist=2.0, accuracy=0.20
+
+#instinct			args
+BlindFire       	1500.0, 0.50, 0, 0.8, 0.0, 0.20
+#p0 - Fire Rate in (msec)
+#p1 - Fire % 0 never 1 allways
+#p2 - Weapon 0 - primary 1 - secondary
+#p3 - MinDot Max shoot angle
+#p4 - MinDist Don't shoot closer than this
+#p5 - ShotError % 0 to 1
+
+#CircleStrafe	6000.0, 30.0, 1.5, 1000.0, 1.0
+#p0 - Freq of Straf Check (msec)
+#p1 - %Yaw change on move (30-45 typical)
+#p2 - Max Dist to attempt Strafe
+#p3 - Update interval (typically 1000msec)
+#p4 - 0 single dir strafe, 1 random strafe
+
+#Crouch
+#p0 - How long to stand between crouches
+
+#Flee
+#p0 - Distance considered to be out of danger
+#p1 - Interval to check for new flee dir
+#p2 - Duration of flee in seconds (10s is default)
+
+Follow			0.0, 1.5
+#p0 - Min Distance to allow
+#p1 - Max Dist to allow
+#p2 - Max Melee dist (rifle/punch combo)
+#p3 - Set to 1 to disable LOS checking (enemy doesn't need to see)
+
+#ForcePowers
+#p0 - Interval for Force power check
+#p1 - Min Dist for FP1
+#p2 - Max Dist for FP1
+#p3 - Min Dist for FP2
+#p4 - Max Dist for FP2
+#p5 - Min Dist for FP3
+#p6 - Max Dist for FP3
+#p7 - % Interval for FP1
+#p8 - % Interval for FP2
+#p9 - % Interval for FP3
+#p10 - recharge time for FP1 (msec)
+#p11 - recharge time for FP2 (msec)
+#p12 - recharge time for FP3 (msec)
+
+#HitAndRun
+#p0 - Time after Attack till flee (msec)
+#p1 - Time till reengaging (msec)
+
+#Jump				1000.0, 4.0, 4.0
+#p0 - Time between jump checks
+#p1 - Max jump height (Ai Thinks not Actual)
+#p2 - Max jump dist (Ai Thinks not Actual)
+
+Listen			0.75, 2.0
+#p0 - Investigate % (0 never, 1 always)
+#p1 - Distance to move from danger?
+
+#LobFire
+#p0 - Fire Rate (msec)
+#p1 - Min Dot
+#p2 - Min Dist (don't fire if closer)
+#p3 - Max Dist (don't fire if further)
+#p4 - % Error in aim
+#p5 - % use secondary (0 always primary, 1 always second)
+
+LookForOpposingTarget	500.0, 20000.0
+#p0 - interval look (msec)
+#p1 - Time to sleep before check again (msec)
+
+OpenDoors
+
+PrimaryFire     	2000.0, 0.8, 5.0, 0.20, 0.0, 300.0, 0.40, 0.0, 1.0, 500
+#p0 - Ave Time between shots (msec)
+#p1 - Min Fire dot (1.0 - facing, 0 - 180deg, -1.0 360deg)
+#p2 - Max Dist (wont fire if further)
+#p3 - Error (Error in aim 0-1)
+#p4 - Min Dist (Wont fire if closer)
+#p5 - Ready Time (between wake & first shot in msec)
+#p6 - Lead % (0 -1)
+#p7 - Use Secondary % (1.0 always)
+#p8 - Burst Count (#-1, 0 never)
+#p9 - Burst Interval (time between shots, msec)
+
+#RandomTurn        10000 1.0
+#p0 - interval for turn (msec)
+#p1 - min dist to see for valid (ave 1 or 2)
+
+ReturnHome
+
+#Retreat
+#p0 - Health % (below could flee)
+#p1 - %moral fail (will flee)
+#p2 - time moral checks (msec)
+#p3 - maximum number of times we will retreat before not retreating anymore
+
+Roam              10000 5.0
+#p0 - How often pick new roam
+#p1 - Radius to roam from home
+
+#SaberFighting	0.40, 0.225, 45.0, 900.0, 0.25, 25.0, 1100.0
+#p0 - Strike% 0 never 1 continuous
+#p1 - Att1 Range
+#p2 - Att1 Damage
+#p3 - Att1 Duration
+#p4 - Att2 Range
+#p5 - Att2 Damage
+#p6 - Att2 Duration
+#p7 - Att3 Range
+#p8 - Att3 Damage
+#p9 - Att3 Duration
+#p10 - Att4 Range
+#p11 - Att4 Damage
+#p12 - Att4 Duration
+
+#SenseDanger
+#p0 - min to trigger (0 always)
+#p1 - on sight (nonzero flee if see player)
+
+Talk            	10000.0, 0.10
+#p0 - interval between voice (msec)
+#p1 - %chance of say (0 never, 1 always)
+
+#TurretFire
+#p0 - fire rate (msec)
+#p1 - turn rate (pitch & yaw, anlges/sec )
+#p2 - Yaw range (0 - 180)
+#p3 - Pitch Range (0 - 180)
+#p4 - Max Dist
+#p5 - Heath min % to cause berzerk
+#p6 - Fire Rate in Berzerk (msec)
+#p7 - Time from Berzerk till death (msec)
+#p8 - %lead chance (0 never, 1 always)
+
+#Withdraw
+#p0 - interval to check for new dir (typical 5000, msec)
+#p1 - Distance considered as withdrew
+
+Dodge           	0.2, 0.1
+#p0 - how far to get from projectile
+#p1 - scale factor for how much to move
+

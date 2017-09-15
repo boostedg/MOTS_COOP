@@ -1,0 +1,22 @@
+# Jedi Knight Cog Script
+# S4L1_ammo.cog
+# triggers voice and unistring
+# [SH]
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+   message		activated
+   surface		surf0	
+   sound		wav0=activate02.wav
+end
+
+code
+activated:
+   if (GetWallCel(surf0)==1) return;
+   SetWallCel(surf0,1);
+   PlaySoundPos(wav0, SurfaceCenter(surf0), 0.5,-1,-1,0);
+   ChangeInv(GetLocalPlayerThing(),92,100.0);
+      Sleep(1.0);
+   SetWallCel(surf0,0);
+   return;
+end

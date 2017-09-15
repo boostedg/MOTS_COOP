@@ -1,0 +1,32 @@
+# Jedi Knight Cog Script
+#
+# S2L4_breakgrate.cog
+#
+# "grate" = front of adjoin
+# "grateback" = back of adjoin
+# set grate to no move
+# 
+# [KS & DS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+message	crossed
+
+surface     grate
+thing       soundthing
+sound       breaksound
+int	done=0			local
+
+end
+
+code
+
+crossed:
+	if (done) return;
+	done=1;
+      Playsoundthing(breaksound, soundthing, 1, -1, -1, 0);
+	return;
+end
+ 

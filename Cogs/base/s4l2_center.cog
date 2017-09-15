@@ -1,0 +1,252 @@
+# Jedi Knight Cog Script
+#
+# S4L2_center.cog
+#
+# cog for central core
+#
+# [DB]/ [YB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+message		startup
+message     activated
+message     touched
+message		pulse
+message     timer
+
+sector		sector0     nolink
+sector		sector1     nolink
+sector		sector2     nolink
+sector		sector3     nolink
+
+surface     switch0         linkid=0
+surface     switch1         linkid=1
+surface     switch2         linkid=2
+surface     switch3         linkid=3
+
+surface  	scroll0		nolink
+surface	   scroll1		nolink
+surface	   scroll2		nolink
+surface	   scroll3		nolink
+surface	   scroll4		nolink
+surface	   scroll5		nolink
+surface	   scroll6		nolink
+surface	   scroll7		nolink
+surface	   scroll8		nolink
+surface	   scroll9		nolink
+surface	   scroll10		nolink
+surface	   scroll11		nolink
+
+int	anim0=-1	local
+int	anim1=-1	local
+int	anim2=-1	local
+int	anim3=-1	local
+int	anim4=-1	local
+int	anim5=-1	local
+int	anim6=-1	local
+int	anim7=-1	local
+int	anim8=-1	local
+int	anim9=-1	local
+int	anim10=-1	local
+int	anim11=-1	local
+
+
+surface     badfloor0   mask=0x404          
+surface     badfloor1   mask=0x404        
+surface     badfloor2   mask=0x404
+surface     badfloor3   mask=0x404      
+
+thing		   ghost0	linkid=-1
+thing		   ghost1	linkid=-1
+thing		   ghost2	linkid=-1
+thing		   ghost3	linkid=-1
+thing		   ghost4	linkid=-1
+thing		   ghost5	linkid=-1
+
+template	   water=+superenerg2	local
+
+vector	   vec0			desc=scroll_direction
+
+float		   speed=2.0	desc=scroll_speed
+float		   time=10.0	desc=time_off
+
+flex		   pulserate=0.25
+
+int         victim=-1   local
+
+flex        damage=0    local
+flex        garbage=0   local
+
+int         cnt			local
+
+flex        maxDamage=90
+flex        minDamage=50
+
+int         sender      local
+
+message     entered
+
+end
+
+code
+startup:
+	call start_effects;
+	Return;
+
+activated:
+	sender = GetSenderRef();
+	if((sender == switch0) || (sender == switch2))
+	{
+		SetWallCel(switch0, 1);
+		SetWallCel(switch2, 1);
+	}
+
+	if((sender == switch1) || (sender == switch3))
+	{
+		SetWallCel(switch1, 1);
+		SetWallCel(switch3, 1);
+	}
+
+	if((GetWallCel(switch0) == 1) && (GetWallCel(switch1) == 1))
+		call stop_effects;
+
+	Return;
+
+stop_effects:
+	SetSectorThrust(sector0, '0 0 1', 4.0);
+   SetSectorThrust(sector1, '0 0 1', 4.0);
+	SetSectorThrust(sector2, '0 0 1', 4.0);
+	SetSectorThrust(sector3, '0 0 1', 4.0);
+
+   SetWallCel(badfloor0, 1);
+   SetWallCel(badfloor1, 1);
+   SetWallCel(badfloor2, 1);
+   SetWallCel(badfloor3, 1);
+
+	for(cnt = 0; cnt < 12; cnt = cnt + 1)
+	{
+		if(anim0[cnt] != -1) 
+		{
+			StopAnim(anim0[cnt]);
+			anim0[cnt] = -1;
+		}
+	}
+   
+   SetTimerEx(time, 1, 0, 0);
+	Return;
+
+start_effects:
+	SetWallCel(switch0, 0);
+	SetWallCel(switch1, 0);
+	SetWallCel(switch2, 0);
+	SetWallCel(switch3, 0);
+
+   SetWallCel(badfloor0, 0);
+   SetWallCel(badfloor1, 0);
+   SetWallCel(badfloor2, 0);
+   SetWallCel(badfloor3, 0);
+
+
+	SetSectorThrust(sector0, '0 0 0', 0.0);
+	SetSectorThrust(sector1, '0 0 0', 0.0);
+	SetSectorThrust(sector2, '0 0 0', 0.0);
+	SetSectorThrust(sector3, '0 0 0', 0.0);
+
+	for(cnt = 0; cnt < 12; cnt = cnt + 1)
+	{
+		if(scroll0[cnt] >= 0) anim0[cnt] = SlideWall(scroll0[cnt], vec0, speed);
+	}
+
+  	SetTimerEx(6*rand(), 2, 0, 0);
+
+	Return;
+
+timer:
+      if (GetSenderId()==1)
+         {
+		      call start_effects;
+         }
+
+	   if (GetSenderId()==2)
+         {
+         number = rand()*6;
+	      garbage = CreateThing(water, ghost0[number]);	
+	      SetTimerEx(6*rand(), 2, 0, 0);
+         }
+      
+      Return;
+
+pulse:
+      
+      foundavictim=0;
+
+      victim=FirstThingInSector(GetSurfaceSector(badfloor0));
+
+      while (victim!=-1)
+         {
+         foundavictim=1;
+         if (GetAttachFlags(victim) & 1)
+         garbage=DamageThing(victim, 20, 0x2, victim);
+         victim=NextThingInSector(victim);
+         }
+
+      victim=FirstThingInSector(GetSurfaceSector(badfloor1));
+
+      while (victim!=-1)
+         {
+         foundavictim=1;
+         if (GetAttachFlags(victim) & 1)
+         garbage=DamageThing(victim, 20, 0x2, victim);
+         victim=NextThingInSector(victim);
+         }
+
+      victim=FirstThingInSector(GetSurfaceSector(badfloor2));
+
+      while (victim!=-1)
+         {
+         foundavictim=1;
+         if (GetAttachFlags(victim) & 1)
+         garbage=DamageThing(victim, 20, 0x2, victim);
+         victim=NextThingInSector(victim);
+         }
+
+      victim=FirstThingInSector(GetSurfaceSector(badfloor3));
+
+      while (victim!=-1)
+         {
+         foundavictim=1;
+         if (GetAttachFlags(victim) & 1)
+         garbage=DamageThing(victim, 20, 0x2, victim);
+         victim=NextThingInSector(victim);
+         }
+
+
+      if (!foundavictim) SetPulse(0);
+   	
+   Return;
+   
+
+entered:
+touched:
+   
+   sender=GetSenderRef();
+   if ((sender==switch0)||
+       (sender==switch1)||
+       (sender==switch2)||
+       (sender==switch3))
+   Return;
+
+   SetPulse(0.5);
+
+   Return;
+
+   
+   end
+
+
+		
+
+
+

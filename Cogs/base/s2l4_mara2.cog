@@ -1,0 +1,47 @@
+# Jedi Knight Cog Script
+#
+# S2L4_Mara2.COG
+#
+# Cog for Stronghold to start player with no weapons.
+#
+# [KS]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+                                                         
+symbols
+message    	startup
+
+int		player		local
+
+end
+
+# ========================================================================================
+
+code
+
+startup:
+	player = GetLocalPlayerThing();
+
+	Sleep(0.05);
+
+	SetInv(player, 2, 0);
+	SetInv(player, 3, 0);
+	SetInv(player, 4, 0);
+	SetInv(player, 5, 0);
+	SetInv(player, 6, 0);
+	SetInv(player, 7, 0);
+	SetInv(player, 8, 0);
+	SetInv(player, 9, 0);
+	SetInv(player, 10, 0);
+	SetInv(player, 11, 0);
+	SetInv(player, 12, 0);
+	SetInv(player, 15, 0);
+
+	SelectWeapon(player, 1);
+
+	return;
+
+end
+
+

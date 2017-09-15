@@ -1,0 +1,156 @@
+# Jedi Knight Cog Script
+#
+# __S1L3_cutscene.cog
+#
+# [YB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+message     startup
+message     escaped
+
+thing       Kyle                             nolink
+thing       camera1                          nolink
+thing       camera2                          nolink
+thing       camera3                          nolink
+
+thing       cannon0                          nolink
+thing       cannon1                          nolink
+thing       cannon2                          nolink
+thing       cannon3                          nolink
+thing       cannon4                          nolink
+
+sound       KK91301_snd=KK91301.wav          local
+sound       fireSound=concuss5.wav           local
+template    partSystem=+upenergyhi2          local
+template    projectile=+concbullet           local
+template    projectile3=+concblast2          local
+
+int         cancel                           local
+
+int         dummy                            local
+int         dummy1                           local
+int         dummy2                           local
+int         dummy3                           local
+
+end
+
+# ========================================================================================
+
+code
+
+startup:
+   player = GetLocalPlayerThing();
+   SetActorFlags(player, 0xa00000);
+
+   jkBeginCutscene();
+   cancel = 0;
+
+   // -------------------------------------------------------------------------
+   // cannon view
+   // -------------------------------------------------------------------------
+
+   SetCurrentCamera(0);
+   SetCameraFocus(0, camera1);
+
+   Sleep(1.0);
+   if (cancel) return;
+
+   // Build up effect
+   dummy = CreateThing(partSystem, cannon0);
+   Sleep(0.1);
+   dummy = CreateThing(partSystem, cannon0);
+   Sleep(0.1);
+   dummy = CreateThing(partSystem, cannon0);
+   Sleep(0.1);
+   dummy = CreateThing(partSystem, cannon0);
+   Sleep(0.1);
+   dummy1 = CreateThing(partSystem, cannon0);
+   Sleep(0.1);
+   dummy2 = CreateThing(partSystem, cannon0);
+   Sleep(0.1);
+   dummy3 = CreateThing(partSystem, cannon0);
+   Sleep(0.4);
+
+   // Quad fire
+   SetPOVShake('0.0 -.01 0.0', '1.0 0.0 0.0', .5, 80.0);
+   FireProjectile(cannon1, projectile3, -1, -1, '0.02 0.15 0.0', '0 0 0', 1.0, 0, 0, 0);
+   FireProjectile(cannon2, projectile3, -1, -1, '0.02 0.15 0.0', '0 0 0', 1.0, 0, 0, 0);
+   FireProjectile(cannon3, projectile3, -1, -1, '0.02 0.15 0.0', '0 0 0', 1.0, 0, 0, 0);
+   FireProjectile(cannon4, projectile3, -1, -1, '0.02 0.15 0.0', '0 0 0', 1.0, 0, 0, 0);
+   Sleep(0.05);
+   FireProjectile(cannon1, projectile, -1, -1, '0.02 0.15 0.0', '0 0 0', 1.0, 0, 0, 0);
+   FireProjectile(cannon2, projectile, -1, -1, '0.02 0.15 0.0', '0 0 0', 1.0, 0, 0, 0);
+   FireProjectile(cannon3, projectile, -1, -1, '0.02 0.15 0.0', '0 0 0', 1.0, 0, 0, 0);
+   FireProjectile(cannon4, projectile, -1, -1, '0.02 0.15 0.0', '0 0 0', 1.0, 0, 0, 0);
+   Sleep(0.05);
+   DestroyThing(dummy1);
+   DestroyThing(dummy2);
+   DestroyThing(dummy3);
+
+   Sleep(3.0);
+   if (cancel) return;
+
+   // -------------------------------------------------------------------------
+   // exterior view
+   // -------------------------------------------------------------------------
+
+   // SetCurrentCamera(0);
+   SetCameraFocus(0, camera2);
+
+   Sleep(5.0);
+   if (cancel) return;
+
+   // -------------------------------------------------------------------------
+   // Back inside
+   // -------------------------------------------------------------------------
+
+   // SetCurrentCamera(0);
+   SetCameraFocus(0, camera3);
+
+   Sleep(1.5);
+   if (cancel) return;
+
+   Print(" ");
+   Print(" ");
+   jkPrintUNIString(-1, 91301);
+   // PlaySoundLocal(KK91301_snd, 1, 0, 4);
+   Sleep(15.0);
+   if (cancel) return;
+
+   call endcut;   
+   return;
+
+# ........................................................................................
+
+escaped:
+   WakeUp();
+   cancel = 1;
+   call endcut;
+   Return;
+
+# ........................................................................................
+
+endcut:
+   jkEndCutscene ();
+
+   //AutosaveGame();
+   //SetMusicVol(1.0);
+
+   ClearActorFlags(player, 0xa00000);
+   SetCurrentCamera(0);
+   SetCameraFocus(0, player);
+
+   Print(" ");
+   Print(" ");
+   Print(" ");
+   Print(" ");
+   Print(" ");
+
+   Return;
+
+end
+

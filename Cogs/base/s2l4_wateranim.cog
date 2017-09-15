@@ -1,0 +1,37 @@
+# Jedi Knight Cog Script
+#
+# S2L4_wateranim.cog
+#
+# [YB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+symbols
+	message		startup		
+
+	surface		sign
+	surface		sign1
+	surface		sign2
+	surface		sign3
+	surface		sign4
+	surface		sign5
+	surface		sign6
+	surface		sign7
+	surface           sign8
+	surface           sign9
+
+
+	float			fps=5.0		desc=playback_speed
+	int			i				local
+end
+
+## Code Section
+code
+startup:
+	for (i=0; i<=9; i=i+1)
+	{
+		if (sign[i] >= 0) SurfaceAnim(sign[i], fps, 0x1);
+	}
+	return;
+end
+
+ 

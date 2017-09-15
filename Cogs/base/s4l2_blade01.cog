@@ -1,0 +1,95 @@
+# Jedi Knight Cog Script
+#
+# S4L2_blade01.cog
+#
+# [DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+message  startup
+message  crossed
+message  touched
+message  arrived
+
+
+thing    blade    nolink
+thing    dummy
+
+keyframe spinner=S4L2fana.key
+
+flex     speed=5
+flex     snooze=6.5
+
+surface  adjoin0
+
+sound    fansound=bigfan01.wav
+
+int      keyNum   local
+
+int      started=0  local
+
+end
+
+# ========================================================================================
+
+code
+
+startup:
+
+   SetThingFlags(dummy, 0x10);
+
+   Return;
+
+
+crossed:
+
+   if (started==1) return;
+
+   started=1;
+
+   Sleep(snooze);
+
+   keyNum=playkey(blade, spinner, 1, 0x02);
+
+   PlaySoundPos(fansound, GetThingPos(blade), 1.0, 0.1, 10, 1);
+
+   MoveToFrame(dummy, 1, speed);
+
+   Return;
+
+
+touched:
+
+   DamageThing(GetLocalPlayerThing(), 500, 0x1, -1);
+
+   Return;
+
+
+arrived:
+
+   if (GetCurFrame(dummy)==0)
+
+      {
+         //StopKey(blade, keyNum);
+
+         keyNum=playkey(blade, spinner, 1, 0x02);
+
+         MoveToFrame(dummy, 1, speed);
+      }
+
+   if (GetCurFrame(dummy)==1)
+
+      {
+
+      MoveToFrame(dummy, 0, speed);
+      
+      }
+
+   Return;
+
+
+end
+

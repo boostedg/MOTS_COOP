@@ -1,0 +1,74 @@
+# Jedi Knight Missions Cog Script
+#
+# After triggerSurface receives damage that fits the triggerMask mask,
+# creates a sparkTemplate thing at sparkSpot at an interval between
+# minimumDelay and maximumDelay.  Usually used to create sparks.
+# Could be used to create a wall that can be slashed, resulting in
+# in, say, Tribbles falling out.
+#
+# [RF]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+message	created
+message	damaged
+message	timer
+
+surface	triggerSurface
+int		triggerMask=20
+
+template	sparkTemplate=+sparks
+
+thing    sparkSpot
+
+flex		minimumDelay=0.5
+flex		maximumDelay=1.0
+
+sound    sparksound=00electrexplo3.wav
+
+int		type            local
+flex     nextSpark       local
+int      sparkingNow=0   local
+
+end
+
+## COG code section
+code
+
+created:
+		// If there is no surface attached, then just start right up.
+	if (!triggerSurface || (triggerSurface == -1))
+		call StartSparking;
+	return;
+
+damaged:
+	type = GetParam(1);
+
+		// If this item took the right kind of damage.
+	if (BitTest(type, triggerMask))
+		call StartSparking;
+	return;
+
+timer:
+		// Make spark sound and thing
+	PlaySoundThing(sparksound, sparkSpot, 1, -1, -1, 0);
+	CreateThing(sparkTemplate, sparkSpot);
+
+		// Set an appointment for next time.
+	nextSpark = minimumDelay + (Rand() * (maximumDelay - minimumDelay));
+	SetTimer(nextSpark);
+	return;
+
+StartSparking:
+		// Don't reenter!
+	if (!sparkingNow)
+	{
+		sparkingNow = 1;
+		SetTimer(minimumDelay);
+	}
+	return;
+end
+
+ 

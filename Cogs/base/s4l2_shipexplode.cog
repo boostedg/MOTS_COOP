@@ -1,0 +1,53 @@
+# Jedi Knight Cog Script
+#
+# S4L2_shipexplode.COG
+#
+# Ship explosion for end of level S4L2
+#
+# [DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+symbols
+
+message		damaged
+
+thing		ship					mask=-1
+
+sound		shipcrack
+sound		shipexplode
+
+thing		ghost0
+thing		ghost1
+thing		ghost2
+
+template	explosion_tpl=+Z95_exp 		local
+
+flex        	curdamage=0                 	local
+flex		damage
+
+end
+
+
+code
+  
+damaged:
+
+   curdamage=curdamage + GetParam(0);
+
+   if (curdamage<damage) Return;
+
+	DestroyThing(ship);
+	playsoundpos(shipexplode, getthingpos(ship), 1.0, -1, -1, 0);
+
+	// make 3 ghost objects explode with raildet explosion
+	CreateThing(explosion_tpl, ghost0);
+	Sleep(0.05);
+   CreateThing(explosion_tpl, ghost1);
+   Sleep(0.05);
+   CreateThing(explosion_tpl, ghost2);
+
+	return;
+
+end
+

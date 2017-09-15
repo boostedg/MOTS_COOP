@@ -1,0 +1,25 @@
+# Jedi Knight AI File
+#
+# RYTHERDEFAULT.AI0
+#
+# Ree Yees with Thermals and Fists AI
+# Easy difficulty
+#
+# [CR]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+alignment=-1.0, rank=0.5, fov=200, maxstep=0.4, sightdist=5.0, heardist=2.0, accuracy=0.10
+
+#instinct	args
+###########################################
+
+Jump					2000.0, 0.2, 0.2
+LookForTarget   	500.0, 30000.0
+Listen          	0.60, 2.0
+PrimaryFire     	1500.0, 0.6, 0.15, 0.00, 0.0, 200.0, 0.0, 1.00, 0.00, 0.00
+LobFire         	2500.0, 0.8, 0.5, 4.0, 0.20, 0
+BlindFire       	4000.0, 0.80, 0, 0.8, 1.0, 0.20
+Follow          	0.5, 4.0, 0.05
+OpenDoors
+Talk            	10000.0, 0.10

@@ -1,0 +1,36 @@
+# Jedi Knight Cog Script
+#
+# S4l2_bluedroid.cog
+#
+# collect the blue wrench when you kill a droid
+#
+# [DB]
+#
+# (C) 1997 LucasArts Entertainment Co. All Rights Reserved
+
+
+symbols
+
+message		killed
+
+thing			droid		mask=0xfff
+
+thing       blueWrench     nolink
+
+#template		BWK_tpl=BlueWrenchKey 	local
+
+end
+
+
+code
+
+           	
+killed:
+
+   TeleportThing(blueWrench, droid);
+
+   SetPhysicsFlags(blueWrench, 1);
+
+	return;
+
+end
